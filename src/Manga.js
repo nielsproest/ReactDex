@@ -229,7 +229,7 @@ class ChapterList extends React.Component {
 		}
 
 		return (
-			<div className="chapter-container">
+			<div className="chapter-container" style={{ padding: "0" }}>
 				<Row className="no-gutters">
 					{(manga == null) ? (
 						<React.Fragment>
@@ -273,8 +273,8 @@ class ChapterList extends React.Component {
 					//TODO: Group by volume-chapter-group etc.
 					return (<Row className="no-gutters">
 						{/* If latest then display_manga_link_v2 (see chapters.tpl.php) */}
-						<Col className={manga == null ? "col-md-9" : ""}>
-							<Row className="chapter-row d-flex no-gutters p-2 align-items-center border-bottom odd-row">
+						<Col className={manga == null ? "col-md-9 pmm-0" : "pmm-0"}>
+							<Row className="chapter-row d-flex no-gutters pm-2 align-items-center border-bottom odd-row">
 								<Col className="col-auto text-center " style={{flex: "0 0 2.5em"}}>
 									{is_read(c)}
 								</Col>

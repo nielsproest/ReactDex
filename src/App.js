@@ -77,7 +77,7 @@ function MangaPage() {
 	let { mangaId, mangaTitle } = useParams();
 
 	return (
-		<Row>
+		<Row bsPrefix="notrow">
 			<MangaDisplay id={mangaId}/>
 		</Row>
 	);
