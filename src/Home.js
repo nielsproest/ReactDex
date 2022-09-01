@@ -42,13 +42,13 @@ export class MangaCard extends React.Component {
 		if (group != null) {
 			return (
 				<div className="text-truncate py-0 mb-1">
-					<div className='text-truncate py-0 mb-1'>{[display_fa_icon('users'), " ", display_group_link_v2(group[0])]}</div>
+					<div className='text-truncate ml-1 py-0 mb-1'>{[display_fa_icon('users'), " ", display_group_link_v2(group[0])]}</div>
 				</div>
 			)
 		} else {
 			return (
 				<div className="text-truncate py-0 mb-1">
-					<div className='text-truncate py-0 mb-1'>{[display_fa_icon('user'), " ", display_user_link_v2(chap.GetRelationship("user")[0])]}</div>
+					<div className='text-truncate py-0 ml-1 mb-1'>{[display_fa_icon('user'), " ", display_user_link_v2(chap.GetRelationship("user")[0])]}</div>
 				</div>
 			)
 		}
@@ -88,7 +88,7 @@ export class MangaCard extends React.Component {
 				})}
 				{/*TODO: Dont rely on a chapter existing*/}
 				{this.uploaderDisplay(manga.GetRelationship("chapter")[0])}
-				<div className='text-truncate py-0 mb-1'>{[display_fa_icon('clock', '', '', 'far'), ' ', manga.GetRelationship("chapter")[0].getUpdateDiff(), " ago"]}</div>
+				<div className='text-truncate ml-1 py-0 mb-1'>{[display_fa_icon('clock', '', '', 'far'), ' ', manga.GetRelationship("chapter")[0].getUpdateDiff(), " ago"]}</div>
 			</Col>
 		)
 	}
