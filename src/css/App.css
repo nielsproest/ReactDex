@@ -13,12 +13,15 @@
 .user_level_vip { color: rgb(241, 196, 15); }
 .user_level_donor { color: rgb(241, 196, 15); }
 .user_level_dev {
+	/* Firefox */
+	-moz-animation: rainbow 10s infinite; 
 	/* Chrome, Safari, Opera */
 	-webkit-animation: rainbow 10s infinite; 
-	/* Standar Syntax */
+	/* Standard Syntax */
 	animation: rainbow 10s infinite; 
 }
- 
+.user_level_god {}
+
 /* Chrome, Safari, Opera */
 @-webkit-keyframes rainbow{
 	14%{color: red;}

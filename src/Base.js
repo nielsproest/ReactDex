@@ -196,7 +196,8 @@ export function DFooter() {
 		<footer className="footer">
 			<p className="m-0 text-center text-muted" value="© 2018 - 2021 |&nbsp;">
 				<a href="https://mangadex.org/" target="_blank" rel="noopener noreferrer" title="MangaDex">Powered by MangaDex</a> |&nbsp;
-				<a href="https://mangadex.network/" target="_blank" rel="noopener noreferrer" title="MD@Home">MD@Home</a>
+				<a href="https://mangadex.network/" target="_blank" rel="noopener noreferrer" title="MD@Home">MD@Home</a> |&nbsp;
+				<a href="https://github.com/SagsMug/ReactDex" target="_blank" rel="noopener noreferrer" title="Github">Github repo</a>
 			</p>
 		</footer>
 	);
