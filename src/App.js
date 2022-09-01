@@ -84,7 +84,7 @@ function MangaPage() {
 }
 
 function Home() {
-	document.title = "ReactDex - Home";
+	document.title = "Home - ReactDex";
 
 	return (
 		<Row>
@@ -126,7 +126,7 @@ function UserPage() {
 }
 
 function Search() {
-	document.title = `Search - ${search_query}`;
+	document.title = `Search ${search_query} - ReactDex`;
 
 	const useQuery = new URLSearchParams(useLocation().search);
 
@@ -142,7 +142,7 @@ function Search() {
 }
 
 function PLogin() {
-	document.title = "Login";
+	document.title = "Login - ReactDex";
 
 	return (
 		<Row>
@@ -152,7 +152,7 @@ function PLogin() {
 }
 
 function Signup() {
-	document.title = "Signup";
+	document.title = "Signup - ReactDex";
 
 	return (
 		<Row>
@@ -162,7 +162,7 @@ function Signup() {
 }
 
 function Follows() {
-	document.title = "Follows";
+	document.title = "Follows - ReactDex";
 
 	return (
 		<Row>
@@ -172,7 +172,7 @@ function Follows() {
 }
 
 function Updates() {
-	document.title = "Updates";
+	document.title = "Updates - ReactDex";
 
 	return (
 		<Row>
@@ -182,7 +182,7 @@ function Updates() {
 }
 
 function Titles() {
-	document.title = "Titles";
+	document.title = "Titles - ReactDex";
 
 	return (
 		<Row>
@@ -192,7 +192,7 @@ function Titles() {
 }
 
 function Featured() {
-	document.title = "Featured";
+	document.title = "Featured - ReactDex";
 
 	return (
 		<Row>
@@ -202,7 +202,7 @@ function Featured() {
 }
 
 function Random() {
-	document.title = "Random";
+	document.title = "Random - ReactDex";
 
 	return (
 		<Row>
@@ -212,17 +212,17 @@ function Random() {
 }
 
 function History() {
-	document.title = "History";
+	document.title = "History - ReactDex";
 
 	return (
 		<Row>
-			Random page goes here
+			History page goes here
 		</Row>
 	);
 }
 
 function Top() {
-	document.title = "Top";
+	document.title = "Top - ReactDex";
 
 	return (
 		<Row>
@@ -232,7 +232,7 @@ function Top() {
 }
 
 function PageNotFound() {
-	document.title = "Page not found";
+	document.title = "Page not found - ReactDex";
 
 	return (
 		<Row>
