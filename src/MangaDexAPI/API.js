@@ -245,6 +245,7 @@ export class UserToken {
 
 	setAuth() {
 		axios.defaults.headers.common['Authorization'] = this.state.session;
+		localStorage.setItem("USERTOKEN", JSON.stringify(this.state));
 	}
 	refreshTimer() {
 		//Token expires after 15 minutes
