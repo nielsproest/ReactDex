@@ -875,7 +875,7 @@ export class ChapterDisplay extends React.Component {
 							loading={loading}
 							page={idx}
 							key={idx}
-							onError={() => setTimeout(() => this.fetchPages(), 500)}
+							onError={() => this.fetchPages()}
 						/>
 					)
 				})
