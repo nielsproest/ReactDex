@@ -529,7 +529,7 @@ pre.code-box {
 }
 
 select.form-control:not([size]):not([multiple]) {
-	-webkit-appearance: menulist;
+	/*-webkit-appearance: menulist;*/
 }
 
 /*
