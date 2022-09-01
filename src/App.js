@@ -226,7 +226,7 @@ function Top() {
 
 	return (
 		<Row>
-			RIP Technoblade
+			RIP Technoblade 
 		</Row>
 	);
 }
@@ -261,14 +261,12 @@ function LoginCheck() {
 			if (cat) {
 				const UT = new UserToken(JSON.parse(cat), true);
 				UT.valid().then((_) => {
-					UT.getInfo().then((_) => {
-						if (UT.state != undefined && UT.state.valid) {
-							setUser(UT);
-						} else {
-							localStorage.removeItem("USERTOKEN");
-							setUser(null);
-						}
-					})
+					if (UT.state != undefined && UT.state.valid) {
+						UT.getInfo().then((_) => setUser(UT));
+					} else {
+						localStorage.removeItem("USERTOKEN");
+						setUser(null);
+					}
 				})
 			}
 		}	
