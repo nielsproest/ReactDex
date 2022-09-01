@@ -390,7 +390,7 @@ export class Sidebars extends React.Component {
 	static contextType = UserContext;
 
 	render() { 
-		const user = this.context;
+		const { user, setUser } = this.context;
 
 		return (
 			<Col lg={4}>
