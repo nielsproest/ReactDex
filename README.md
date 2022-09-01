@@ -1,11 +1,12 @@
+## What is this project
+This project is an attempt to revive the old MangaDex layout using ReactJS.\
+It uses the MangaDex API to retrieve data, and is designed as a single page application.\
+You can try the latest build at: https://kanyehub.com/ .\
+WARNING: This project is unfinished, and may be unstable, so try it at your own risk.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Production build
-
-Can be found at https://kanyehub.com/
-WARNING: This is not finished code, and may be unstable
 
 ## Available Scripts
 
@@ -24,7 +25,7 @@ You may also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn run build`
+### `yarn build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -34,7 +35,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn run eject`
+### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
