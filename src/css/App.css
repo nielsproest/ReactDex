@@ -9,6 +9,9 @@
 .user_level_mdathome { color: rgb(26, 121, 57); }
 .user_level_mod { color: rgb(233, 30, 99); }
 .user_level_staff { color: rgb(233, 30, 99); }
+.user_level_relations { color: rgb(230, 126, 34); }
+.user_level_vip { color: rgb(241, 196, 15); }
+.user_level_donor { color: rgb(241, 196, 15); }
 .user_level_dev {
 	/* Chrome, Safari, Opera */
 	-webkit-animation: rainbow 10s infinite; 

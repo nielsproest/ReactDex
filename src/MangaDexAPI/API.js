@@ -1,43 +1,12 @@
 import axios from "axios"
 import React from "react";
+import { isDevBuild, slugify, getTimeDiff } from "../utility";
 
 /*
  * Duty: Take care of ALL MangaDex API interactions
  * Duty: Handle login tokens (and saving them)
  */
 
-const TIME_MS = 0.001;
-const TIME_SECOND = 1;
-const TIME_MINUTE = TIME_SECOND * 60;
-const TIME_HOUR = TIME_MINUTE * 60;
-const TIME_DAY = TIME_HOUR * 24;
-const TIME_WEEK = TIME_DAY * 7;
-const TIME_MONTH = TIME_DAY * 30;
-const TIME_YEAR = TIME_MONTH * 12;
-const TIME_DECADE = TIME_YEAR * 10;
-const TIME_CENTURY = TIME_YEAR * 100;
-const TIME_MILLENNIUM = TIME_YEAR * 1000;
-const TIME_TABLE = [
-	[TIME_DECADE, "decade"],
-	[TIME_YEAR, "year"],
-	[TIME_MONTH, "month"],
-	[TIME_DAY, "day"],
-	[TIME_HOUR, "hour"],
-	[TIME_MINUTE, "min"],
-	[TIME_SECOND, "sec"],
-	[TIME_MS, "ms"],
-];
-export const slugify = str =>
-	str
-		.toLowerCase()
-		.trim()
-		.replace(/[^\w\s-]/g, '')
-		.replace(/[\s_-]+/g, '-')
-		.replace(/^-+|-+$/g, '');
-
-function isDevBuild() {
-	return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development');
-}
 export const CORS_BYPASS = isDevBuild() ? "" : "https://corsheaderproxy.corry.workers.dev/corsproxy/";
 
 //TODO: Checkout scripts\reader\api.js
@@ -109,22 +78,7 @@ class MdData {
 	}
 	getUpdateDiff() {
 		const ms = (Date.now() - Date.parse(this.attributes.updatedAt));
-		const s = ms * TIME_MS;
-
-		if (ms > 0) {
-			for (var i in TIME_TABLE) {
-				const key = TIME_TABLE[i][0]
-				const value = TIME_TABLE[i][1];
-				
-				var val = s / key;
-				if (val >= 1) {
-					val = Math.round(val);
-					return `${val} ${value}${(val > 1 && value != "ms") ? "s" : ""}`;
-				}
-			}
-		}
-
-		return "0";
+		return getTimeDiff(ms);
 	}
 	getId() {
 		return this.id;

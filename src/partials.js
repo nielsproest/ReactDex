@@ -3,6 +3,7 @@ import Alert from 'react-bootstrap/Alert';
 import {
 	Link
 } from "react-router-dom";
+import { getTimeDiff } from "./utility";
 
 //scripts/display.req.php
 
@@ -89,26 +90,32 @@ export function display_user_link(user, $show_badge = 0, $show_mah_badge = 0) {
 }
 
 export function display_user_link_v2(user, note = '') {
-	//var levelClassname = str_replace(' ', '', ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $user->level_name ?? 'guest')), '_'));
-
 	var levelClassname = "user_level_member";
+
 	const userrole = Array.from(user.attributes.roles);
-	if ([].includes(user.id)) {
+	if (userrole.includes("ROLE_DEVELOPER")) {
 		levelClassname = "user_level_dev";
 	} else if (userrole.includes("ROLE_BANNED")) {
 		levelClassname = "user_level_banned";
 	} else if (userrole.includes("ROLE_STAFF")) {
 		levelClassname = "user_level_staff";
+	} else if (userrole.includes("ROLE_PUBLIC_RELATIONS")) {
+		levelClassname = "user_level_relations";
+
 	} else if (userrole.includes("ROLE_FORUM_MODERATOR") || userrole.includes("ROLE_GLOBAL_MODERATOR")) {
 		levelClassname = "user_level_mod";
-	} else if (userrole.includes("ROLE_MD_AT_HOME")) {
-		levelClassname = "user_level_mdathome";
+	} else if (userrole.includes("ROLE_VIP")) {
+		levelClassname = "user_level_vip";
+	} else if (userrole.includes("ROLE_DONOR")) { //Unsure
+		levelClassname = "user_level_donor";
 	} else if (userrole.includes("ROLE_POWER_UPLOADER")) {
 		levelClassname = "user_level_power_uploader";
-	} else if (userrole.includes("ROLE_CONTRIBUTOR")) {
-		levelClassname = "user_level_contributor";
+	} else if (userrole.includes("ROLE_MD_AT_HOME")) {
+		levelClassname = "user_level_mdathome";
 	} else if (userrole.includes("ROLE_GROUP_LEADER")) {
 		levelClassname = "user_level_group_leader";
+	} else if (userrole.includes("ROLE_CONTRIBUTOR")) {
+		levelClassname = "user_level_contributor";
 	} else if (userrole.includes("ROLE_GROUP_MEMBER")) {
 		levelClassname = "user_level_group_member";
 	}
@@ -121,27 +128,11 @@ export function display_user_link_v2(user, note = '') {
 		</Link>
 	);
 
-	/*
-	if ($user->show_premium_badge ?? false)
-		$string .= " <a href='/support'>" . display_fa_icon('gem', 'Supporter', '', 'far') . "</a>";
-
-	if ($user->show_md_at_home_badge ?? false)
-		$string .= " <a href='/md_at_home'>" . display_fa_icon('network-wired', 'MD@H Host', '', 'fas' . ($user->show_md_at_home_badge == 2 ? ' text-warning' : '')) . "</a>";
-
-	if ($user->is_thread_starter ?? false)
-	    $string .= " <span class='badge badge-primary'>OP</span>";
-	if ($note)
-	    $string .= " <span class='badge badge-secondary' style='white-space: normal;'>" . htmlspecialchars($note, ENT_QUOTES) . "</span>";
-	*/
-
 	return string;
 }
 
 
 export function display_lang_flag_v3(language, div = 0) {
-	/*if (is_array($language))
-		$language = (object) $language;*/
-
 	var res = (<span className={`rounded flag flag-${language}`} title='English'></span>)
 
 	if (div) {
@@ -150,10 +141,6 @@ export function display_lang_flag_v3(language, div = 0) {
 		</div>)
 	}
 	return res;
-}
-
-export function get_time_ago(t) {
-	return t;
 }
 
 //TODO: Maybe move? Seems a little involved for a partial
@@ -193,7 +180,7 @@ export function display_reading_history(user) {
 									{[
 										display_fa_icon('clock', '', '', 'far'), 
 										' ', 
-										get_time_ago(c.attributes.createdAt)
+										getTimeDiff(Date.now() - c.attributes.createdAt)
 									]}
 								</span>
 							</p>
@@ -205,6 +192,15 @@ export function display_reading_history(user) {
 		} else {
 			return (<p class='text-center m-0 p-3'>Go and read a chapter!</p>);
 		}
+	}
+
+	//TODO: This function
+	if (user) {
+		return display_alert('info m-2', 'Notice', 
+			[
+				"Not Implemented",
+			]
+		);
 	}
 
 	return display_alert('info m-2', 'Notice', 

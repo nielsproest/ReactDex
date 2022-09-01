@@ -27,16 +27,12 @@ import {
 	display_labels
 } from "./partials"
 
-import API, {slugify} from "./MangaDexAPI/API";
+import API from "./MangaDexAPI/API";
+import { slugify, capitalizeFirstLetter } from "./utility";
 
 //TODO: Move direct access (.attribute) functions to API classes
 
-//TODO: Move to util class
-function capitalizeFirstLetter(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-//TODO: Move to util class
+//TODO: Move to util class maybe
 export class DPagination extends React.Component {
 	constructor(props) {
 		super(props);

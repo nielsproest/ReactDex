@@ -28,19 +28,7 @@ import {
 import { UserContext } from "./user-context";
 
 import API, {slugify} from "./MangaDexAPI/API";
-import { toHaveAccessibleDescription } from "@testing-library/jest-dom/dist/matchers";
-
-
-function getElementByXpath(path) {
-	return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-}
-
-function checkVisible(elm) {
-	var rect = elm.getBoundingClientRect();
-	var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-	return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
-}
-
+import { getElementByXpath, checkVisible } from "./utility";
 
 class SettingsModal extends React.Component {
 	constructor(props) {
