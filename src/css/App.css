@@ -1,0 +1,229 @@
+
+/* User Levels */
+.user_level_banned { color:#3f3f3f; }
+.user_level_member { color: rgb(250, 250, 250); }
+.user_level_group_member { color: rgb(250, 250, 250); }
+.user_level_group_leader { color:rgb(52, 152, 219); }
+.user_level_contributor { color:rgb(32, 102, 148); }
+.user_level_power_uploader { color:rgb(46, 204, 113); }
+.user_level_mdathome { color: rgb(26, 121, 57); }
+.user_level_mod { color: rgb(233, 30, 99); }
+.user_level_staff { color: rgb(233, 30, 99); }
+.user_level_dev {
+	/* Chrome, Safari, Opera */
+	-webkit-animation: rainbow 10s infinite; 
+	/* Standar Syntax */
+	animation: rainbow 10s infinite; 
+}
+ 
+/* Chrome, Safari, Opera */
+@-webkit-keyframes rainbow{
+	14%{color: red;}
+	28%{color: orange;}
+	42%{color: yellow;}
+	57%{color: green;}
+	71%{color: blue;}
+	85%{color: indigo;}
+	100%{color: violet;}
+}
+
+/* Standar Syntax */
+@keyframes rainbow{
+	14%{color: red;}
+	28%{color: orange;}
+	42%{color: yellow;}
+	57%{color: green;}
+	71%{color: blue;}
+	85%{color: indigo;}
+	100%{color: violet;}
+}
+
+.chapter-container {
+	padding: 0;
+}
+.tab-content {
+	padding: 0;
+}
+
+div.sm_md_logo {
+	width: 80px;
+	height: 120px;
+	overflow: hidden;
+}
+
+.max-width {
+	max-width: 100%;
+}
+
+.float-left {
+	float: left!important;
+}
+.float-right {
+	float: right!important;
+}
+.iconfix {
+	margin-top: auto!important;
+	margin-bottom: auto!important;
+	width: unset!important;
+}
+
+.no-gutters {
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.ml-1, .mx-1 {
+	margin-left: .25rem!important;
+}
+
+.right5 {
+	margin-right: 5px;
+}
+
+.footer {
+	position: absolute;
+	padding: 10px 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 50px;
+}
+
+/* TODO: Comply with ISO 639-1 */
+.flag{
+	display:inline-block;
+	background:url(../themes/flags-flat-24-20201130.png) no-repeat;
+	background-size:100%;
+	width:24px;
+	min-width:24px;
+	height:24px;
+	vertical-align:bottom;
+	opacity:0.75;
+}
+.flag-_unknown{background-position:0 -0px}
+.flag-bd{background-position:0 -24px}
+.flag-bg{background-position:0 -48px}
+.flag-br{background-position:0 -72px}
+.flag-zh{background-position:0 -96px}
+.flag-ct{background-position:0 -120px}
+.flag-cz{background-position:0 -144px}
+.flag-de{background-position:0 -168px}
+.flag-da{background-position:0 -192px}
+.flag-es{background-position:0 -216px}
+.flag-fi{background-position:0 -240px}
+.flag-fr{background-position:0 -264px}
+.flag-en{background-position:0 -288px}
+.flag-gr{background-position:0 -312px}
+.flag-hk{background-position:0 -336px}
+.flag-hu{background-position:0 -360px}
+.flag-id{background-position:0 -384px}
+.flag-il{background-position:0 -408px}
+.flag-in{background-position:0 -432px}
+.flag-ir{background-position:0 -456px}
+.flag-it{background-position:0 -480px}
+.flag-ja{background-position:0 -504px}
+.flag-ko{background-position:0 -528px}
+.flag-kz{background-position:0 -552px}
+.flag-lt{background-position:0 -576px}
+.flag-mm{background-position:0 -600px}
+.flag-mn{background-position:0 -624px}
+.flag-mx{background-position:0 -648px}
+.flag-my{background-position:0 -672px}
+.flag-nl{background-position:0 -696px}
+.flag-no{background-position:0 -720px}
+.flag-ph{background-position:0 -744px}
+.flag-pl{background-position:0 -768px}
+.flag-pt{background-position:0 -792px}
+.flag-ro{background-position:0 -816px}
+.flag-rs{background-position:0 -840px}
+.flag-ru{background-position:0 -864px}
+.flag-sa{background-position:0 -888px}
+.flag-se{background-position:0 -912px}
+.flag-th{background-position:0 -936px}
+.flag-tr{background-position:0 -960px}
+.flag-ua{background-position:0 -984px}
+.flag-vn{background-position:0 -1008px}
+
+div.tiny_logo {
+	width: 40px;
+	height: 60px;
+	overflow: hidden;
+}
+
+.badge {
+	user-select: none;
+}
+
+.ml-1 {
+	display: inline;
+}
+
+.badge-primary {
+	color: #fff;
+	background-color: #337ab7;
+	margin-left: 5px;
+}
+
+.badge-primary[href]:hover, .badge-primary[href]:focus {
+	color: #fff;
+	text-decoration: none;
+	background-color: #286090;
+}
+
+.bg-light2 {
+	background-color: rgb(235 235 235);
+	box-shadow: inset 0 1px 0 rgb(255 255 255 / 15%), 0 1px 5px rgb(0 0 0 / 8%);
+	border-bottom: none;
+}
+
+.strong {
+	font-weight: bold;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.toplike {
+	height: 60vh!important;
+}
+
+/** social media buttons on frontpage **/
+.social-media-btns {
+	padding: 4px;
+	line-height: 0;
+	margin: 1px;
+}
+.social-media-btns > div {
+	margin: 0;
+	padding: 0;
+}
+.social-media-btns > div:hover {
+	background: rgba(128, 128, 128, 0.2);
+}
+.social-media-btns > div > a {
+	display: block;
+	width: 100%;
+	padding-top: 100%;
+	margin: 0;
+	font-size: 0;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+.social-media-btns > div:nth-child(1) > a {
+	background-image: url('../themes/misc/sm-tw.png');
+}
+.social-media-btns > div:nth-child(2) > a {
+	background-image: url('../themes/misc/sm-rd.png');
+}
+.social-media-btns > div:nth-child(3) > a {
+	background-image: url('../themes/misc/sm-dc.png');
+}
+.social-media-btns > div:nth-child(4) > a {
+	background-image: url('../themes/misc/sm-wp.png');
+}
+.social-media-btns > div:nth-child(5) > a {
+	background-image: url('../themes/misc/sm-tl.png');
+}
