@@ -630,7 +630,7 @@ export class ChapterDisplay extends React.Component {
 		}
 
 		var scangroup = chapter.GetRelationship("scanlation_group");
-		if (scangroup != null) {
+		if (scangroup != null && scangroup.length > 0) {
 			scangroup = scangroup[0];
 			return (
 				<li>
@@ -642,7 +642,7 @@ export class ChapterDisplay extends React.Component {
 		}
 
 		var scanuser = chapter.GetRelationship("user");
-		if (scanuser != null) {
+		if (scanuser != null && scanuser.length > 0) {
 			scanuser = scanuser[0];
 			return (
 				<li>
@@ -1079,7 +1079,11 @@ export class ChapterDisplay extends React.Component {
 		//TODO: Use feed endpoint instead
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {
 			const ch = c.data[0];
-			document.title = `${ch.GetRelationship("manga")[0].getTitle()} - ${ch.getTitle()}`;
+			const manga = ch.GetRelationship("manga")[0];
+			const user = ch.GetRelationship("user")[0];
+			const group = ch.GetRelationship("scanlation_group");
+
+			document.title = `${manga.getTitle()} - ${ch.getTitle()}`;
 
 			//TODO: Sort by oneshot-volume-chapter (see reader/api.js line 241)
 			this.setState({
@@ -1088,12 +1092,9 @@ export class ChapterDisplay extends React.Component {
 			//If user logged in
 			//this.renderer.onRead = () => API.readChapter(ch.getId());
 
-			const manga = ch.GetRelationship("manga")[0];
-			const user = ch.GetRelationship("user")[0];
-			const group = ch.GetRelationship("scanlation_group")[0];
 			API.aggregate(
 				manga.getId(), 
-				{"groups": [group.getId()]}
+				(group != null && group.length > 0) ? {"groups": [group.getId()]} : {}
 			).then((cs) => {
 				var chs = [];
 				Object.values(cs.volumes).forEach((v) => {

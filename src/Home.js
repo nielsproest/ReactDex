@@ -38,10 +38,11 @@ export class MangaCard extends React.Component {
 	//TODO: Loading screen with placeholder
 
 	uploaderDisplay(chap) {
-		if (chap.GetRelationship("scanlation_group") != null) {
+		const group = chap.GetRelationship("scanlation_group");
+		if (group != null) {
 			return (
 				<div className="text-truncate py-0 mb-1">
-					<div className='text-truncate py-0 mb-1'>{[display_fa_icon('users'), " ", display_group_link_v2(chap.GetRelationship("scanlation_group")[0])]}</div>
+					<div className='text-truncate py-0 mb-1'>{[display_fa_icon('users'), " ", display_group_link_v2(group[0])]}</div>
 				</div>
 			)
 		} else {
