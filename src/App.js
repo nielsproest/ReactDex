@@ -264,7 +264,7 @@ function LoginCheck() {
 					if (UT.state != undefined && UT.state.valid) {
 						UT.getInfo().then((_) => {
 							setUser(UT);
-							this.refreshTimer();
+							UT.refreshTimer();
 						});
 					} else {
 						localStorage.removeItem("USERTOKEN");
