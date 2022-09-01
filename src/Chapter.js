@@ -875,7 +875,7 @@ export class ChapterDisplay extends React.Component {
 							loading={loading}
 							page={idx}
 							key={idx}
-							onError={() => this.fetchPages()}
+							onError={() => setTimeout(() => this.fetchPages(), 500)}
 						/>
 					)
 				})
@@ -1115,6 +1115,7 @@ export class ChapterDisplay extends React.Component {
 	fetchPages() {
 		console.log("fetchPages");
 		//TODO: Lock while not done
+		//TODO: Detect failure
 		API.chapterPages(this.props.id).then((c) => {
 			this.setState({
 				pages: c
