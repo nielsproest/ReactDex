@@ -81,7 +81,7 @@ class SettingsModal extends React.Component {
 						</div>
 						<div className="form-group row advanced">
 							<label className="col-sm-4 col-form-label">Maximum container width</label>
-							<div className="col px-0 my-auto input-group">
+							<div className="col my-auto input-group">
 								<input data-setting="containerWidth" className="form-control" type="number" min="0" step="50" placeholder="Leave empty for 100%" />
 								<div className="input-group-append">
 									<span className="input-group-text">pixels</span>
@@ -243,7 +243,7 @@ class SettingsModal extends React.Component {
 						</div>
 						<div className="row form-group">
 							<label className="col-sm-4 col-form-label">Touchscreen swipe sensitivity</label>
-							<div className="col px-0 my-auto">
+							<div className="col my-auto">
 								<select className="form-control" data-setting="swipeSensitivity">
 									<option value="0">Off</option>
 									<option value="1">Very low</option>
@@ -258,7 +258,7 @@ class SettingsModal extends React.Component {
 						<h5><span className='fas fa-folder-open fa-fw' aria-hidden='true' title=''></span> Other settings</h5>
 						<div className="row form-group mb-1">
 							<label className="col-sm-4 col-form-label">Preload images (0 to <span className="preload-max-value">5</span>)</label>
-							<div className="col px-0 my-auto">
+							<div className="col my-auto">
 								<input data-setting="preloadPages" className="form-control" type="number" min="0" max="5" placeholder="The amount of images" />
 							</div>
 						</div>
@@ -284,7 +284,7 @@ class SettingsModal extends React.Component {
 						</div>*/}
 						<div className="row form-group">
 							<label className="col-sm-4 col-form-label">Image server</label>
-							<div className="col px-0 my-auto">
+							<div className="col my-auto">
 								<select className="form-control" data-setting="imageServer">
 									<option value="0">Automatic</option>
 									<option value="na">NA/EU 1</option>

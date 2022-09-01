@@ -200,7 +200,7 @@ nav.navbar {
 	/*background: linear-gradient(to right, rgba(64, 64, 64, 0), rgba(64, 64, 64, 0.4));
 	opacity: 0;*/
 	display: block;
-	border-left: 1px solid rgba(128, 128, 128, 0.5);
+	border-left: 3.5px solid rgba(128, 128, 128, 0.5);
 }
 #reader-controls-collapser-bar:hover {
 	opacity: 1;
