@@ -1094,7 +1094,7 @@ export class ChapterDisplay extends React.Component {
 
 			API.aggregate(
 				manga.getId(), 
-				(group != null && group.length > 0) ? {"groups": [group.getId()]} : {}
+				(group != null && group.length > 0) ? {"groups": [group[0].getId()]} : {}
 			).then((cs) => {
 				var chs = [];
 				Object.values(cs.volumes).forEach((v) => {
