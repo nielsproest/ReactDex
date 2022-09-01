@@ -262,7 +262,10 @@ function LoginCheck() {
 				const UT = new UserToken(JSON.parse(cat), true);
 				UT.refresh().then((_) => {
 					if (UT.state != undefined && UT.state.valid) {
-						UT.getInfo().then((_) => setUser(UT));
+						UT.getInfo().then((_) => {
+							setUser(UT);
+							this.refreshTimer();
+						});
 					} else {
 						localStorage.removeItem("USERTOKEN");
 						setUser(null);
