@@ -306,6 +306,7 @@ export class UserToken {
 			} else {
 				this.state.session = req.data.token.session;
 				this.state.refresh = req.data.token.refresh;
+				this.state.valid = true;
 				this.state.date = Date.now();
 				this.setAuth();
 			}

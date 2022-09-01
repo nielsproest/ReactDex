@@ -260,7 +260,7 @@ function LoginCheck() {
 			const cat = localStorage.getItem("USERTOKEN");
 			if (cat) {
 				const UT = new UserToken(JSON.parse(cat), true);
-				UT.valid().then((_) => {
+				UT.refresh().then((_) => {
 					if (UT.state != undefined && UT.state.valid) {
 						UT.getInfo().then((_) => setUser(UT));
 					} else {
