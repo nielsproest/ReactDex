@@ -1100,7 +1100,13 @@ export class ChapterDisplay extends React.Component {
 			//If user logged in
 			//this.renderer.onRead = () => API.readChapter(ch.getId());
 
-			API.aggregate(c.data[0].GetRelationship("manga")[0].getId()).then((cs) => {
+			const manga = ch.GetRelationship("manga")[0];
+			const user = ch.GetRelationship("user")[0];
+			const group = ch.GetRelationship("scanlation_group")[0];
+			API.aggregate(
+				manga.getId(), 
+				{"groups": [group.getId()]}
+			).then((cs) => {
 				var chs = [];
 				Object.values(cs.volumes).forEach((v) => {
 					{Object.values(v.chapters).forEach((c) => {
