@@ -1,15 +1,22 @@
 /* light slate theme by TeslaCuil */
 body[theme="light-slate"] {
 
-    a,
-    .nav-tabs .nav-link:not(.active):hover,
-    .nav-tabs .nav-link:focus {
-        color: #04101b;
-    }
+.bg-custom {
+	@extend .bg-light
+}
+.navbar-custom {
+	@extend .navbar-light !optional
+}
 
-    a:hover {
-        color: #101f47;
-    }
+a,
+.nav-tabs .nav-link:not(.active):hover,
+.nav-tabs .nav-link:focus {
+	color: #04101b;
+}
+
+a:hover {
+	color: #101f47;
+}
 
 
 .card-header > a {

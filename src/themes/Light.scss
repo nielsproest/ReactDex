@@ -6,6 +6,13 @@
 
 body[theme="light"] {
 
+.bg-custom {
+	@extend .bg-light
+}
+.navbar-custom {
+	@extend .navbar-light !optional
+}
+
 a {
     color: #337ab7;
     text-decoration: none;

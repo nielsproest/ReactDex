@@ -9,6 +9,13 @@ body[theme="dark"] {
   background-color: #272b30;
   --bs-border-color: #3c4044;
 
+.bg-custom {
+	@extend .bg-dark
+}
+.navbar-custom {
+	@extend .navbar-dark !optional
+}
+
 .bg-reader-controls {
 	background-color: #272b30;
 }

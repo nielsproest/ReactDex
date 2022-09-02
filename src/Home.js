@@ -208,12 +208,12 @@ export class MangaCards extends React.Component {
 			<Col lg={8}>
 				{/*mobile_app_ad*/}
 				<Card className="card mb-3">
-					<Card.Header className="text-center bg-dark">{display_fa_icon("external-link-alt")} <Link to="/updates">Latest updates</Link></Card.Header>
+					<Card.Header className="text-center bg-custom">{display_fa_icon("external-link-alt")} <Link to="/updates">Latest updates</Link></Card.Header>
 					<Tabs
 						defaultActiveKey="latest_update"
 						fill
 						variant="pills"
-						className="mb-2 border-bottom bg-dark"
+						className="mb-2 border-bottom bg-custom"
 					>
 						<Tab eventKey="latest_update" title="Latest updates">
 							{/* scripts/display.req.php line 123 */}
@@ -423,12 +423,12 @@ export class Sidebars extends React.Component {
 
 				{/* Top chapters */}
 				<Card className="card mb-3">
-					<Card.Header className="text-center bg-dark">{display_fa_icon("external-link-alt")} <Link to="/stats/top">Top chapters</Link></Card.Header>
+					<Card.Header className="text-center bg-custom">{display_fa_icon("external-link-alt")} <Link to="/stats/top">Top chapters</Link></Card.Header>
 					<Tabs
 						defaultActiveKey="top_chapters_6h"
 						fill
 						variant="pills"
-						className="mb-2 border-bottom bg-dark"
+						className="mb-2 border-bottom bg-custom"
 					>
 						<Tab eventKey="top_chapters_6h" title="6h">
 							{/*TODO: Render on display, pass state on if displayed maybe*/}
@@ -471,12 +471,12 @@ export class Sidebars extends React.Component {
 				</div>
 				{/* Top manga box */}
 				<Card className="card mb-3">
-					<Card.Header className="text-center bg-dark">{display_fa_icon("external-link-alt")} <Link to="/top">Top manga</Link></Card.Header>
+					<Card.Header className="text-center bg-custom">{display_fa_icon("external-link-alt")} <Link to="/top">Top manga</Link></Card.Header>
 					<Tabs
 						defaultActiveKey="top_follows"
 						fill
 						variant="pills"
-						className="mb-2 border-bottom bg-dark"
+						className="mb-2 border-bottom bg-custom"
 					>
 						<Tab eventKey="top_follows" title="Follows">
 							<TopList type="top_follows" subtype="top_follows"></TopList>

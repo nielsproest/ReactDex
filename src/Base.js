@@ -107,7 +107,7 @@ export class DNavbar extends React.Component {
 		}
 
 		return (
-			<Navbar className="bg-dark" fixed="top" expand="lg" variant="dark">
+			<Navbar className="bg-custom navbar-custom" fixed="top" expand="lg">
 				{this.state.search && (search_nav())}
 				<Container fluid="lg">
 					<Link to="/" style={{ textDecoration: 'none' }}>
@@ -205,11 +205,51 @@ export function DFooter() {
 	);
 }
 
+class SiteTheme extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			theme: localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark"
+		}
+	}
+
+	setTheme(TYPE) {
+		localStorage.setItem("TYPE_OF_THEME", TYPE);
+		document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
+
+		this.setState({
+			theme: TYPE
+		});
+	}
+
+	render() {
+		return (
+			<Form.Group className="row">
+				<label htmlFor="language" className="col-lg-3 col-form-label-modal">Site theme:</label>
+				<div className="col-lg-9">
+					<select className="form-control selectpicker" onChange={(e) => {
+						const TYPE = e.target.value;
+						this.setTheme(TYPE);
+					}} value={this.state.theme}>
+						<option value={"light"}>Light</option>
+						<option value={"dark"}>Dark</option>
+						<option value={"light-bronze"}>Light-Bronze</option>
+						<option value={"dark-bronze"}>Dark-Bronze</option>
+						<option value={"light-slate"}>Light-Slate</option>
+						<option value={"dark-slate"}>Dark-Slate</option>
+						<option value={"abyss"}>Abyss</option>
+					</select>
+				</div>
+			</Form.Group>
+		)
+	}
+}
+
 export class DConfig extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isOpen: false
+			isOpen: false,
 		};
 	}
 
@@ -269,24 +309,7 @@ export class DConfig extends React.Component {
 
 				<Modal.Body>
 					<Form>
-						<Form.Group className="row">
-							<label htmlFor="language" className="col-lg-3 col-form-label-modal">Site theme:</label>
-							<div className="col-lg-9">
-								<select className="form-control selectpicker" onChange={(e) => {
-									const TYPE = e.target.value;
-									localStorage.setItem("TYPE_OF_THEME", TYPE);
-									document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
-								}} value={localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark"}>
-									<option value={"light"}>Light</option>
-									<option value={"dark"}>Dark</option>
-									<option value={"light-bronze"}>Light-Bronze</option>
-									<option value={"dark-bronze"}>Dark-Bronze</option>
-									<option value={"light-slate"}>Light-Slate</option>
-									<option value={"dark-slate"}>Dark-Slate</option>
-									<option value={"abyss"}>Abyss</option>
-								</select>
-							</div>
-						</Form.Group>
+						<SiteTheme />
 						<Form.Group className="form-group row">
 							<label htmlFor="default_lang_ids" className="col-lg-3 col-form-label-modal">Filter chapter languages:</label>
 							<Col lg="9">

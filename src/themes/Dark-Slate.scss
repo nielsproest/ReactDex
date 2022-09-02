@@ -1,5 +1,12 @@
 body[theme="dark-slate"] {
 
+.bg-custom {
+	@extend .bg-dark
+}
+.navbar-custom {
+	@extend .navbar-dark !optional
+}
+
 a,
 .nav-tabs .nav-link:not(.active):hover,
 .nav-tabs .nav-link:focus {

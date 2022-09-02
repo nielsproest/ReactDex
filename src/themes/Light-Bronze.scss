@@ -1,6 +1,13 @@
 /* Light Bronze theme by TeslaCuil */
 body[theme="light-bronze"] {
 
+.bg-custom {
+	@extend .bg-light
+}
+.navbar-custom {
+	@extend .navbar-light !optional
+}
+
 a,
 .nav-tabs .nav-link:not(.active):hover,
 .nav-tabs .nav-link:focus {
