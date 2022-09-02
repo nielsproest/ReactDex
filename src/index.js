@@ -4,7 +4,15 @@ import './css/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+//Load all themes (for that extra ram usage :) )
+import './themes/Abyss.css';
+import './themes/Dark-Bronze.css';
+import './themes/Dark-Slate.css';
 import './themes/Dark.css';
+import './themes/Light-Bronze.css';
+import './themes/Light-Slate.css';
+import './themes/Light.css';
 
 import { 
 	THEMES

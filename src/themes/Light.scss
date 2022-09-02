@@ -3,7 +3,9 @@
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
- 
+
+body[theme="light"] {
+
 a {
     color: #337ab7;
     text-decoration: none;
@@ -547,4 +549,6 @@ a.text-danger:focus {
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
     background-color: #337ab7;
+}
+
 }

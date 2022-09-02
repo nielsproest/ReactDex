@@ -1,40 +1,37 @@
-/* Light Bronze theme by TeslaCuil */
+/* light slate theme by TeslaCuil */
+body[theme="light-slate"] {
 
-a,
-.nav-tabs .nav-link:not(.active):hover,
-.nav-tabs .nav-link:focus {
-    color: #6c5409;
-}
+    a,
+    .nav-tabs .nav-link:not(.active):hover,
+    .nav-tabs .nav-link:focus {
+        color: #04101b;
+    }
 
-a:hover {
-    color: #83660c;
-}
+    a:hover {
+        color: #101f47;
+    }
+
 
 .card-header > a {
-    color: #d4ccb3;
+    color: #b3b7d4;
 }
 
 .card-header > a:hover {
-    color: #f5efdc;
+    color: #dce0f5;
 }
 
 .fas.fa-external-link-alt.fa-fw {
-    color: #f3f1ed;
+    color: #20303e;
 }
 
 .card-header.text-center >  a {
-    color: #eceae2;
-}
-
-.tab-content {
-    background: #FFF;
+    color: #e8e8f1;
 }
 
 #latest_updates, #follows_updates, #site_settings, #change_profile, #change_password, #upload_settings, #reader_settings, #filter_settings, .modal-body, .modal-footer, .well {
     background: #fff !important;
     color: black;
 }
-
 
 body {
     background-color: #fff;
@@ -46,22 +43,22 @@ body {
 }
 
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
-    color: #b79e6f;
+    color: #d4d8ea;
 }
 
-.bg-light, .bg-dark {
-    background-color: rgba(40,38,30, .95) !important;
-    border-bottom: 1px solid #484321;
+.bg-light, .bg-dark  {
+    background-color: rgba(56,64,73, .95) !important;
+    border-bottom: 1px solid #626d80;
     box-shadow: 0px 3px 8px rgba(40, 50, 66, .75);
 }
 
 .alert {
-    background: #d3ceba;
+    background: #b3bdd1;
     color: #1f1f20;
 }
 
 .breadcrumb {
-    background: #605d48;
+    background: #626d80;
     color: #e8e8f1;
 }
 
@@ -77,7 +74,7 @@ thead,
 .table-header,
 .card-header,
 .modal-header {
-    background: #3c3a34;
+    background: #47505f;
     color: #e8e8f1 !important;
 }
 
@@ -85,12 +82,8 @@ thead,
     background: #FFF !important;
 }
 
-a > .fa-sort {
-    background: transparent;
-}
-
 a > .fa-rss {
-    color: #bbb9b2;
+    color: #bebec6;
 }
 
 a:hover > .fa-rss {
@@ -98,7 +91,7 @@ a:hover > .fa-rss {
 }
 
 a.dropdown-toggle > .fa-sort {
-    color: #5a490e !important;
+    color: #184c7a !important;
     background: unset;
 }
 
@@ -107,11 +100,15 @@ a.dropdown-toggle > .fa-sort {
 }
 
 .row > .col-lg-6 {
-    border-bottom: 1px solid #7e7760 !important;
+    border-bottom: 1px solid #626d80 !important;
+}
+
+#content > h3 {
+    border-bottom: 1px solid #4f5969;
 }
 
 div.car-caption {
-     background-color: rgba(40,38,30, .9)
+    background-color: rgba(52, 62, 78, .85);
 }
 
 .btn-light,
@@ -122,16 +119,16 @@ div.car-caption {
 }
 
 .btn-light, .page-item .page-link, .page-item.disabled .page-link {
-    background: #534f3f;
+    background: #47505f;
 }
 
 .btn-light:hover, .btn-light:active, .btn-light:focus, .page-item.active .page-link {
-    background: #807b62 !important;
+    background: #626d80 !important;
     color: #ffffff;
 }
 
 .close {
-    color: #b7aa72;
+    color: #d5d5d5;
 }
 
 .close:hover, .close:focus {
@@ -143,7 +140,7 @@ div.car-caption {
 }
 
 .page-link:hover {
-    background: #625f4c !important;
+    background: #525c6d !important;
 }
 
 .navbar-light .navbar-nav .nav-link,
@@ -152,12 +149,12 @@ div.car-caption {
 }
 
 .navbar-light .navbar-nav .nav-link .d-xl-inline {
-    color: #f7f6f3 !important;
+    color: #f8f9fa !important;
 }
 
 .navbar-light .navbar-brand:hover,
 .navbar-light .navbar-brand:focus {
-    color: #cac5aa;
+    color: #afbbcf;
     text-shadow: none;
 }
 
@@ -167,15 +164,15 @@ div.car-caption {
 .navbar-light .navbar-nav .active > .nav-link,
 .navbar-light .navbar-nav .nav-link.show,
 .navbar-light .navbar-nav .nav-link.active {
-    color: #cac5aa;;
+    color: #afbbcf;
 }
 
 .nav.nav-tabs, .nav.nav-pills, .card-header-pills {
-    border-bottom: 3px solid #605d48 !important;
+    border-bottom: 3px solid #626d80 !important;
 }
 
 .dropdown-menu, .bg-reader-controls {
-    background: #edebe5;
+    background: #eceff2;
 }
 
 .dropdown-menu > a, .dropdown-menu > li > a {
@@ -183,9 +180,10 @@ div.car-caption {
 }
 
 .dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active {
-    background: #bebaad;
+    background: #9ca8bb;
     color: #000;
 }
+
 
 .bootstrap-select > .dropdown-toggle {
     color: #fff !important;
@@ -203,52 +201,73 @@ div.car-caption {
 .nav-tabs .nav-link.active:hover,
 .nav-tabs .nav-item.show .nav-link,
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    background: #605d48;
+    background: #626d80;
     color: white;
+}
+
+.nav-pills .nav-link:not(.active), .nav-pills .show > .nav-link {
+    background: #f8f9fa;
 }
 
 .nav-tabs .nav-link:not(.active):hover,
 .nav-tabs .nav-link:focus,
-.nav-pills .nav-link:not(.active):hover,
-.nav-pills .nav-link:not(.active):focus{
-    background: #e2e0d6;
-    color: #5a490e;
+.nav-pills .nav-link:not(.active):hover {
+    background: #e3e8f0;
+    color: #184c7a;
 }
 
-.nav-pills .nav-link:not(.active), .nav-pills .show > .nav-link {
-    background: #fff;
-}
 
 .float-right.btn-group > button {
     color: #e3e8f0;
 }
 
 #quick_search_button > .fa-search {
-    color: #69644f;
+    color: #4f5969;
 }
+
+#quick_search_button:hover > .fa-search,
+#quick_search_button:active > .fa-search,
+#quick_search_button:focus > .fa-search {
+    color: #5e84c2;
+}
+
+
 
 #quick_search_type:focus,
 #quick_search_type:hover,
 #quick_search_button:active,
 #quick_search_button:hover {
 
-    background-color: #e4e1d6 !important;
+    background-color: #dee4ee;
 }
 
 #quick_search_input,
 #quick_search_button,
 .input-group-btn {
-    background: #f7f4f1;
+    background: #f8f9fa;
 }
 
-#quick_search_type, .input-group-prepend > .form-control {
-    background-color: #f7f4f1 !important
+#uick_search_type, .input-group-prepend > .form-control {
+    background-color: #f8f9fa !important;
+}
+
+.btn-secondary, .btn-default, .btn-outline-secondary {
+    background: #959fb1;
+    color: #fff !important;
+    border: none;
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-default:hover, .btn-default:focus, .btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary.active {
+    background: #626d80 !important;
+    color: #FFF;
+}
+
+.btn:not(:disabled):not(.disabled):active, .btn:not(:disabled):not(.disabled).active {
+    background: #707d93 !important;
 }
 
 .form-control, .form-control:focus, .code-box {
-    border: 0;
-    border-bottom: 1px solid #534f3f;
-    color: #b5b0aa !important;
+    background: #dde1e8;
 }
 
 #post_reply_form > .form-group > .col-xs-12 > .btn-secondary {
@@ -257,63 +276,45 @@ div.car-caption {
 }
 
 #post_reply_form > .form-group > .col-xs-12 > .btn-secondary:hover {
-    background: #a49f7c;
+    background: #a2b3d1;
     color: black;
 }
 
-.btn-secondary, .btn-default, .btn-outline-secondary {
-    background: #7c725f;
-    color: #fff !important;
-    border: none;
-}
-
-.btn-secondary:hover, .btn-secondary:focus, .btn-default:hover, .btn-default:focus, .btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary.active {
-    background: #a49f7c !important;
-}
-
-.btn:not(:disabled):not(.disabled):active, .btn:not(:disabled):not(.disabled).active {
-    background: #b4af8b !important;
-}
-
 .badge-secondary, kbd {
-    background-color: #847d67;
+    background-color: #758593;
 }
 
 .reader-page-bar .thumb, .reader-page-bar:hover .thumb {
-    background: #918c6d !important;
+    background: #69758d;
 }
 
 .reader-page-bar .trail {
-    background: rgba(213, 190, 77, .25) !important;
+    background: rgba(125, 160, 228, .25);
 }
 
 .reader-page-bar .notch:not(.loaded) {
     background: repeating-linear-gradient(
          -45deg,
-         rgba(132,125,103, 0.05),
-         rgba(132,125,103, 0.05) 5px,
-         rgba(132,125,103, 0.15) 5px,
-         rgba(132,125,103, 0.15) 10px
+         rgba(153,161,174, 0.05),
+         rgba(153,161,174, 0.05) 5px,
+         rgba(153,161,174, 0.15) 5px,
+         rgba(153,161,174, 0.15) 10px
      );
 }
 
-.navbar-toggler {
-    background: #dddcd0;
-}
-
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-    background: #b8b796;
+    background: #969db8;
 }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
-    background: #d7d7c4;
+    background: #c4c6d7;
 }
 
-/* filter for changing color of in window scroll bars, super hacky method
+
+/* filter for changing color of in window scroll bars, super hacky method, feel free to remove.
     .row > .col-lg-6 > p:nth-child(4) {
-    filter: sepia(30%) saturate(100%) grayscale(0) contrast(95%) hue-rotate(0deg) invert(0%);
-}
-*/
+        filter: sepia(30%) saturate(100%) grayscale(0) contrast(95%) hue-rotate(200deg) invert(0%);
+}*/
 
 /* global theme changes */
 
@@ -415,7 +416,7 @@ div.car-caption {
     border: none;
 }
 
-#quick_search_input, #quick_search_button, .input-group-btn {
+#quick_search_input, #quick_search_button, .input-group-btn, .form-control, .form-control:focus {
     border: none;
     box-shadow: none;
     text-shadow: none;
@@ -472,4 +473,6 @@ div.car-caption {
 /* this is to fix tab highlight overlapping the bottom border (default is -1px) */
 .nav-tabs .nav-item {
     margin-bottom: 0;
+}
+
 }

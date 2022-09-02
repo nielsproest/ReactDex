@@ -4,16 +4,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
-body {
+body[theme="dark"] {
   color: #999;
   background-color: #272b30;
   --bs-border-color: #3c4044;
-}
-
-/*
-TODO: Mark all with body[style="dark"] .bg-reader-controls etc.
-to support themes
-*/
 
 .bg-reader-controls {
 	background-color: #272b30;
@@ -934,4 +928,6 @@ a.text-danger:focus {
 .form-control, .form-control:focus, .code-box {
   color: #b5b5b5;
   background-color: #25282b;
+}
+
 }

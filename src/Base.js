@@ -211,19 +211,24 @@ export class DConfig extends React.Component {
 		this.state = {
 			isOpen: false
 		};
-		//TODO: Use UserContext?
 	}
-	//TODO: Use API config
 
 	openModal = () => this.setState({ isOpen: true });
 	closeModal = () => this.setState({ isOpen: false });
 	saveModal = () => {
-		//DO STUFF
+		//TODO: Save in localStorage
 		return this.closeModal();
 	}
 
+	componentDidMount() {
+		const TYPE = localStorage.getItem("TYPE_OF_THEME");
+		if (TYPE != null) {
+			document.getElementsByName("body")[0].setAttribute("theme", TYPE);
+		}
+	}
+
 	loginWarning() {
-		if (true) {
+		if (false) {
 			return display_alert('info mx-auto', 'Info', [
 				"These settings are temporary. Please ",
 				display_fa_icon('pencil-alt'),
@@ -268,17 +273,17 @@ export class DConfig extends React.Component {
 							<label htmlFor="language" className="col-lg-3 col-form-label-modal">Site theme:</label>
 							<div className="col-lg-9">
 								<select className="form-control selectpicker" onChange={(e) => {
-									/*const TYPE = e.target.value;
+									const TYPE = e.target.value;
 									localStorage.setItem("TYPE_OF_THEME", TYPE);
-									window.location.reload(false);*/
-								}}>
-									<option value={0}>Light</option>
-									<option value={1}>Dark</option>
-									<option value={2}>Light-Bronze</option>
-									<option value={3}>Dark-Bronze</option>
-									<option value={4}>Light-Slate</option>
-									<option value={5}>Dark-Slate</option>
-									<option value={6}>Abyss</option>
+									document.getElementsByName("body")[0].setAttribute("theme", TYPE);
+								}} value={localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark"}>
+									<option value={"light"}>Light</option>
+									<option value={"dark"}>Dark</option>
+									<option value={"light-bronze"}>Light-Bronze</option>
+									<option value={"dark-bronze"}>Dark-Bronze</option>
+									<option value={"light-slate"}>Light-Slate</option>
+									<option value={"dark-slate"}>Dark-Slate</option>
+									<option value={"abyss"}>Abyss</option>
 								</select>
 							</div>
 						</Form.Group>
