@@ -629,7 +629,7 @@ export class MangaDisplay extends React.Component {
 								display_manga_ext_links($links_array)
 								*/}
 
-								<div className="row m-0 py-1 px-0 border-top">
+								{/*<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Reading progress:</div>
 									<div className="reading_progress col-lg-9 col-xl-10">
 										<ul className="list-inline m-0">
@@ -644,7 +644,7 @@ export class MangaDisplay extends React.Component {
 											<li className="list-inline-item"><button disabled title="You need to follow this title to use this function." type="button" className="btn btn-info btn-xs ml-1" id="edit_progress">{display_fa_icon("pencil-alt")}</button></li>
 										</ul>
 									</div>
-									{/*<div className="reading_progress display-none col-lg-9 col-xl-10">
+									<div className="reading_progress display-none col-lg-9 col-xl-10">
 										<form className="form-inline" id="edit_progress_form" method="post" data-title-id="$templateVar["manga"]->manga_id">
 											<ul className="list-inline m-0">
 												<li className="list-inline-item"><input style={{"width": "60px"}} type="text" className="form-control" id="volume" name="volume" value="$followed_manga_ids_array[$templateVar["manga"]->manga_id]["volume"] ?? """ />0/NA</li>
@@ -653,8 +653,8 @@ export class MangaDisplay extends React.Component {
 												<li className="list-inline-item"><button type="button" className="btn btn-warning" id="cancel_edit_progress">{display_fa_icon("undo")}</button></li>
 											</ul>
 										</form>
-									</div>*/}
-								</div>
+									</div>
+								</div>*/}
 				
 								{/*<?php if (validate_level($templateVar["user"], "gmod") && $templateVar["manga"]->manga_mod_notes) {
 								<div className="row m-0 py-1 px-0 border-top">
