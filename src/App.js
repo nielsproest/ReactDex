@@ -256,17 +256,23 @@ function PageNotFound() {
 function LoginCheck() {
 	const {user,setUser} = useContext(UserContext);
 	useEffect(() => {
+		console.log("LoginCheck - Check");
 		if (user == null || user.getUser() == null) {
+			console.log("LoginCheck - User was null");
 			const cat = localStorage.getItem("USERTOKEN");
 			if (cat) {
+				console.log("LoginCheck - Token exists");
 				const UT = new UserToken(JSON.parse(cat), true);
 				UT.refresh().then((_) => {
 					if (UT.state != undefined && UT.state.valid) {
+						console.log("LoginCheck - Refresh succeeded");
 						UT.getInfo().then((_) => {
+							console.log("LoginCheck - getInfo succeeded");
 							setUser(UT);
 							UT.refreshTimer();
 						});
 					} else {
+						console.log("LoginCheck - Refresh failed");
 						localStorage.removeItem("USERTOKEN");
 						setUser(null);
 					}
