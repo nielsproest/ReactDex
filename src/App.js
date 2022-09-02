@@ -11,6 +11,7 @@ import {
 	Route,
 	Link,
 	useParams,
+	useMatch,
 	useLocation,
 	useNavigate
 } from "react-router-dom";
@@ -231,6 +232,18 @@ function Top() {
 	);
 }
 
+function Outside() {
+	let { params } = useMatch("/outside/*");
+	const linkUrl = params["*"];
+	window.location.href = linkUrl;
+
+	return (
+		<Row>
+			These aren't the droids you're looking for
+		</Row>
+	);
+}
+
 function PageNotFound() {
 	document.title = "Page not found - ReactDex";
 
@@ -304,6 +317,7 @@ function App() {
 						<Route path="/user/:userId" element={<UserPage/>}></Route>
 						<Route path="/user/:userId/:userTitle" element={<UserPage/>}></Route>
 						<Route path="/chapter/:chapterId" element={<Chapter/>}></Route>
+						<Route path="/outside/*" element={<Outside/>}></Route>
 						<Route path="/titles" element={<Titles/>}></Route>
 						<Route path="/history" element={<History/>}></Route>
 						<Route path="/top" element={<Top/>}></Route>

@@ -43,6 +43,13 @@
 	100%{color: violet;}
 }
 
+a.disabled {
+	/* Make the disabled links grayish*/
+	color: gray;
+	/* And disable the pointer events */
+	pointer-events: none;
+}
+
 .tab-content {
 	padding: 0;
 }

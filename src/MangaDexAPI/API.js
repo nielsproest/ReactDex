@@ -89,6 +89,13 @@ class Chapter extends MdData {
 	isAvailable() {
 		return this.attributes.pages > 0;
 	}
+	isExternal() {
+		const ext = this.attributes.externalUrl;
+		return ext != null && ext != "";
+	}
+	getExternalUrl() {
+		return this.attributes.externalUrl;
+	}
 	/*getTitle() {
 		const chap = this.attributes.chapter;
 		const vol = this.attributes.volume;

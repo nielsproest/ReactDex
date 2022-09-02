@@ -184,6 +184,7 @@ class ChapterList extends React.Component {
 			});
 		}
 
+		//TODO: Move into its own class
 		const is_read = (chapter) => {
 			const user = this.props.user;
 			const chapterRead = this.state.chapterRead;
@@ -270,6 +271,19 @@ class ChapterList extends React.Component {
 					</Col>
 				</Row>
 				{chapters.data.map((c) => {
+					var chapter_link = c.getUrl();
+
+					var avail_class = ""
+					const available = c.isAvailable();
+					if (!available) {
+						if (c.isExternal()) {
+							//TODO: Mark as read?
+							chapter_link = `/outside/${c.getExternalUrl()}`;
+						} else {
+							avail_class = "disabled";
+						}
+					}
+
 					//TODO: Group by volume-chapter-group etc.
 					return (<Row className="no-gutters">
 						{/* If latest then display_manga_link_v2 (see chapters.tpl.php) */}
@@ -282,14 +296,14 @@ class ChapterList extends React.Component {
 									display: "flex",
 									flexWrap: "nowrap"
 								}}>
-									<Link to={c.getUrl()} className="text-truncate" style={{
+									<Link to={chapter_link} className={`text-truncate ${avail_class}`} style={{
 										width: "unset"
 									}}>
 										{false && display_fa_icon('file', '', '', 'far')}
 										{c.getTitle()}
 									</Link>
 									{false && <span class="badge badge-primary mx-1">END</span>}
-									{!c.isAvailable() && display_fa_icon('file-excel', 'Unavailable', 'mx-1 iconfix', 'fas')}
+									{!available && display_fa_icon('file-excel', 'Unavailable', 'mx-1 iconfix', 'fas')}
 								</Col>
 								{/*<Col className="col text-right " style={{flex: "0 0 3em"}}>
 									N/A
