@@ -15,6 +15,9 @@ body[theme="dark"] {
 .navbar-custom {
 	@extend .navbar-dark !optional
 }
+.navbar-brand {
+	color: #f8f9fa
+}
 
 .bg-reader-controls {
 	background-color: #272b30;
