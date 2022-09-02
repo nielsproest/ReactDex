@@ -223,7 +223,7 @@ export class DConfig extends React.Component {
 	componentDidMount() {
 		const TYPE = localStorage.getItem("TYPE_OF_THEME");
 		if (TYPE != null) {
-			document.getElementsByName("body")[0].setAttribute("theme", TYPE);
+			document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
 		}
 	}
 
@@ -275,7 +275,7 @@ export class DConfig extends React.Component {
 								<select className="form-control selectpicker" onChange={(e) => {
 									const TYPE = e.target.value;
 									localStorage.setItem("TYPE_OF_THEME", TYPE);
-									document.getElementsByName("body")[0].setAttribute("theme", TYPE);
+									document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
 								}} value={localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark"}>
 									<option value={"light"}>Light</option>
 									<option value={"dark"}>Dark</option>
