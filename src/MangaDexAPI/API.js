@@ -490,8 +490,12 @@ class DexFS {
 	}
 
 	async followsManga(mangaId) {
-		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/follows/manga/${mangaId}`);
-		return req.data.result == "ok";
+		try {
+			const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/follows/manga/${mangaId}`);
+			return req.data.result == "ok";
+		} catch (e) {
+			return false;
+		}
 	}
 	async followManga(mangaId) {
 		const req = await axios.post(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/follow`);
