@@ -143,11 +143,6 @@ export function display_lang_flag_v3(language, div = 0) {
 	return res;
 }
 
-
-function display_follow_button(user, array_of_manga_ids, manga_id, style = 0, dropup = 0) {
-	return (<div></div>)
-}
-
 //TODO: Maybe move? Seems a little involved for a partial
 export function display_reading_history(user) {
 	if (user && false) {

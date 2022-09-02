@@ -167,6 +167,8 @@ export class MangaCards extends React.Component {
 		this.followsGet();
 	}
 	componentDidUpdate(prevProps) {
+		console.log("MangaCards - componentDidUpdate");
+		//TODO: Or last update is old?
 		if (this.state.followMangas == null) {
 			this.followsGet();
 		}

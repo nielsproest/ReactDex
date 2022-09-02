@@ -40,7 +40,7 @@ export class Login extends React.Component {
 					<h1 className="text-center">Login</h1>
 					<hr/>
 					<p className="text-center text-muted">You are logged in.</p>
-					<Navigate replace to="/" />
+					<Navigate replace to={-1} />
 				</div>
 			)
 		}

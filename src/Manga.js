@@ -363,6 +363,97 @@ class MangaDisplayCovers extends React.Component {
 	}
 }
 
+class FollowButton extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isFollowed: null
+		}
+	}
+
+	static contextType = UserContext;
+
+	componentDidMount() {
+		const { user, setUser } = this.context;
+
+		//TODO: This doesn't always fire?
+		if (user != null) {
+			API.followsManga(this.props.id).then((r) => {
+				if (this.state.isFollowed != r) {
+					this.setState({
+						isFollowed: r
+					});
+				}
+			})
+		}
+	}
+
+	render() {
+		const { user, setUser } = this.context;
+
+		if (user == null || this.state.isFollowed == null) {
+			return (
+				<button 
+					className='btn btn-secondary' 
+					disabled 
+					title='You need to log in to use this function.'
+				>
+					{display_fa_icon('bookmark', 'Follow')} 
+					<span>Follow</span>
+				</button>
+			)
+		}
+
+		return (
+			<div className='btn-group'>
+				{this.state.isFollowed ? (
+					<button 
+						type='button' 
+						className='btn btn-primary'
+						onClick={(e) => {
+							API.unfollowManga(this.props.id).then((r) => {
+								if (r) {
+									this.setState({
+										isFollowed: false
+									});
+								}
+							})
+						}}
+						> 
+						{display_fa_icon("bookmark")}
+						<span>Unfollow</span>
+					</button>
+				) : (
+					<button
+						type='button' 
+						className='btn btn-secondary manga_follow_button'
+						onClick={(e) => {
+							API.followManga(this.props.id).then((r) => {
+								if (r) {
+									this.setState({
+										isFollowed: true
+									});
+								}
+							})
+						}}
+					>
+						{display_fa_icon('bookmark')}
+						<span>Follow</span>
+					</button>
+				)}
+
+				{/*i dont know what this does, except that its a dropdown <div class='dropdown-menu dropdown-menu-right'>
+				{!this.state.isFollowed ? <a class='dropdown-item manga_unfollow_button' id='$manga_id' data-manga-id='$manga_id' href='#'>" . display_fa_icon('bookmark', 'Unfollow') . " Unfollow</a>" : '');
+					foreach ($follow_types as $type) {
+						$disabled = (isset($array_of_manga_ids[$manga_id]) && $array_of_manga_ids[$manga_id]['follow_type'] == $type->type_id) ? "disabled" : "";
+						$return .= "<a class='$disabled dropdown-item manga_follow_button' data-manga-id='$manga_id' id='$type->type_id' href='#'>" . display_fa_icon($type->type_glyph, 'Follow') . " $type->type_name</a>";
+					}
+				}
+				</div>*/}
+			</div>
+		)
+	}
+}
 
 export class MangaDisplay extends React.Component {
 	constructor(props) {
@@ -577,6 +668,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-9 col-xl-10">
 										{/*display_upload_button($templateVar["user"])*/}
 										{/*display_follow_button($templateVar["user"], $followed_manga_ids_array, $templateVar["manga"]->manga_id)*/}
+										<FollowButton id={manga.getId()}/>
 										{/*display_manga_rating_button($templateVar["user"]->user_id, $templateVar["manga"]->get_user_rating($templateVar["user"]->user_id), $templateVar["manga"]->manga_id)*/}
 										{/*display_edit_manga($templateVar["user"], $templateVar["manga"])*/}
 										{/*<?php if (validate_level($templateVar["user"], "member")) :

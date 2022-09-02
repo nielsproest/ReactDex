@@ -489,6 +489,19 @@ class DexFS {
 		return APIResponseGen(req.data);
 	}
 
+	async followsManga(mangaId) {
+		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/follows/manga/${mangaId}`);
+		return req.data.result == "ok";
+	}
+	async followManga(mangaId) {
+		const req = await axios.post(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/follow`);
+		return req.data.result == "ok";
+	}
+	async unfollowManga(mangaId) {
+		const req = await axios.delete(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/follow`);
+		return req.data.result == "ok";
+	}
+
 	//TODO: Move to advanced chapter display?
 	async resolveByManga(items, resolver=(_) => "") {
 		var mangas = [];

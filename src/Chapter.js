@@ -436,12 +436,12 @@ class MenuConfig {
 	}
 }
 
-
-
 const ERIGHT = 0;
 const ELEFT = 1;
 
 class SinglePageRender {
+	//TODO: Should this be a React.Component
+	//So it learns the onBegin, onEnd and onRead itself?
 	constructor(page, dir=ERIGHT, distance=2) {
 		this.page = page;
 		this.direction = dir;
@@ -473,7 +473,8 @@ class SinglePageRender {
 		getElementByXpath("//div[contains(@class,'reader-images')]").setAttribute("page", i);
 		Array.from(document.getElementsByClassName("current-page")).forEach((e) => e.innerHTML = i+1);
 		document.getElementById("jump-page").value = i;
-		if (i > pages.length * 0.75) {
+		if ((i+1) >= Math.round(pages.length * 0.75)) {
+			console.log("pageCurrent", "onRead");
 			this.onRead();
 		}
 	}
@@ -606,7 +607,10 @@ export class ChapterDisplay extends React.Component {
 		};
 		this.renderer = null;
 		this.changeChild=React.createRef();
+		this.refreshCounter = 0;
 	}
+
+	static contextType = UserContext;
 
 	hasChapter() {
 		const c = this.state.chapter;
@@ -874,8 +878,9 @@ export class ChapterDisplay extends React.Component {
 							src={img_url}
 							loading={loading}
 							page={idx}
-							key={idx}
-							onError={() => this.fetchPages()}
+							key={idx} //Funny react requirement
+							refreshIdx={this.refreshCounter}
+							onError={(e) => this.fetchPages(e.target.refreshIdx)}
 						/>
 					)
 				})
@@ -929,7 +934,11 @@ export class ChapterDisplay extends React.Component {
 				long_strip.classList.remove("d-none");
 				single_page.classList.add("d-none");
 
-				this.renderer = new LongStripRender(this.renderer.pageCurrent());
+				const new_renderer = new LongStripRender(this.renderer.pageCurrent());
+				new_renderer.onBegin = this.renderer.onBegin;
+				new_renderer.onEnd = this.renderer.onEnd;
+				new_renderer.onRead = this.renderer.onRead;
+				this.renderer = new_renderer;
 			}
 			/*if (!double_page.classList.contains("d-none")) {
 			}*/
@@ -937,7 +946,11 @@ export class ChapterDisplay extends React.Component {
 				long_strip.classList.add("d-none");
 				single_page.classList.remove("d-none");
 
-				this.renderer = new SinglePageRender(this.renderer.pageCurrent());
+				const new_renderer = new SinglePageRender(this.renderer.pageCurrent());
+				new_renderer.onBegin = this.renderer.onBegin;
+				new_renderer.onEnd = this.renderer.onEnd;
+				new_renderer.onRead = this.renderer.onRead;
+				this.renderer = new_renderer;
 			}
 		}
 	}
@@ -1045,6 +1058,8 @@ export class ChapterDisplay extends React.Component {
 		});
 	}
 	componentDidMount() {
+		const { user, setUser } = this.context;
+
 		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
 			f.style.display = "none";
 		});
@@ -1076,7 +1091,7 @@ export class ChapterDisplay extends React.Component {
 			}
 		}, false);
 
-		//TODO: Use feed endpoint instead
+		//TODO: Use feed endpoint instead?
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {
 			const ch = c.data[0];
 			const manga = ch.GetRelationship("manga")[0];
@@ -1090,7 +1105,9 @@ export class ChapterDisplay extends React.Component {
 				chapter: c
 			});
 			//If user logged in
-			//this.renderer.onRead = () => API.readChapter(ch.getId());
+			if (user != null) {
+				this.renderer.onRead = () => API.readChapter(ch.getId());
+			}
 
 			API.aggregate(
 				manga.getId(), 
@@ -1109,18 +1126,25 @@ export class ChapterDisplay extends React.Component {
 			});
 		});
 
-		this.fetchPages();
+		this.fetchPages(this.refreshCounter);
 	}
 
-	fetchPages() {
-		console.log("fetchPages");
-		//TODO: Lock while not done
-		//TODO: Detect failure
-		API.chapterPages(this.props.id).then((c) => {
-			this.setState({
-				pages: c
-			})
-		});
+	fetchPages(idx) {
+		const counter = this.refreshCounter;
+
+		if (idx == counter) {
+			console.log("fetchPages: ", counter);
+
+			this.refreshCounter += 1;
+			setTimeout(() => {
+				//TODO: Detect failure
+				API.chapterPages(this.props.id).then((c) => {
+					this.setState({
+						pages: c
+					});
+				});
+			}, Math.pow(counter * 100, 2)); //Exponential backoff
+		}
 	}
 
 	//Done when changing chapter
@@ -1131,6 +1155,7 @@ export class ChapterDisplay extends React.Component {
 				chapters: [],
 				pages: null
 			});
+			this.refreshCounter = 0;
 			this.componentDidMount();
 		}
 	}
