@@ -1,7 +1,7 @@
 ## What is this project
 This project is an attempt to revive the old MangaDex layout using ReactJS.\
 It uses the MangaDex API to retrieve data, and is designed as a single page application.\
-You can try the latest build at: https://kanyehub.com/ .\
+You can try the latest build at: https://reactdex.org/ .\
 WARNING: This project is unfinished, and may be unstable, so try it at your own risk.
 
 # Getting Started with Create React App

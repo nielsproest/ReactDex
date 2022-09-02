@@ -285,7 +285,7 @@ function App() {
 			<UserContext.Provider value={{ user, setUser }}>
 				<LoginCheck />
 				<DNavbar/>
-				<Container fluid="lg" role="main" id="content" style={{
+				<Container fluid="xxl" role="main" id="content" style={{
 					marginBottom: "50px", 
 					marginTop: "20px"
 				}}>
