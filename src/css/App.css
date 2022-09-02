@@ -1,26 +1,25 @@
 
 /* User Levels */
-.user_level_banned { color:#3f3f3f; }
-.user_level_member { color: rgb(250, 250, 250); }
-.user_level_group_member { color: rgb(250, 250, 250); }
-.user_level_group_leader { color:rgb(52, 152, 219); }
-.user_level_contributor { color:rgb(32, 102, 148); }
-.user_level_power_uploader { color:rgb(46, 204, 113); }
-.user_level_mdathome { color: rgb(26, 121, 57); }
-.user_level_mod { color: rgb(233, 30, 99); }
-.user_level_staff { color: rgb(233, 30, 99); }
-.user_level_relations { color: rgb(230, 126, 34); }
-.user_level_vip { color: rgb(241, 196, 15); }
-.user_level_donor { color: rgb(241, 196, 15); }
+.user_level_banned { color:#3f3f3f!important; }
+.user_level_member { color: rgb(250, 250, 250)!important; }
+.user_level_group_member { color: rgb(250, 250, 250)!important; }
+.user_level_group_leader { color:rgb(52, 152, 219)!important; }
+.user_level_contributor { color:rgb(32, 102, 148)!important; }
+.user_level_power_uploader { color:rgb(46, 204, 113)!important; }
+.user_level_mdathome { color: rgb(26, 121, 57)!important; }
+.user_level_mod { color: rgb(233, 30, 99)!important; }
+.user_level_staff { color: rgb(233, 30, 99)!important; }
+.user_level_relations { color: rgb(230, 126, 34)!important; }
+.user_level_vip { color: rgb(241, 196, 15)!important; }
+.user_level_donor { color: rgb(241, 196, 15)!important }
 .user_level_dev {
 	/* Firefox */
-	-moz-animation: rainbow 10s infinite; 
+	-moz-animation: rainbow 10s infinite!important; 
 	/* Chrome, Safari, Opera */
-	-webkit-animation: rainbow 10s infinite; 
+	-webkit-animation: rainbow 10s infinite!important; 
 	/* Standard Syntax */
-	animation: rainbow 10s infinite; 
+	animation: rainbow 10s infinite!important; 
 }
-.user_level_god {}
 
 /* Chrome, Safari, Opera */
 @-webkit-keyframes rainbow{
