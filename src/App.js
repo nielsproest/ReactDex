@@ -30,7 +30,8 @@ import {
 
 import { 
 	DNavbar, 
-	DFooter
+	DFooter,
+	SiteThemeSet
 } from "./Base"
 
 import { 
@@ -268,6 +269,15 @@ function PageNotFound() {
 //TODO: Move into login file
 function LoginCheck() {
 	const {user,setUser} = useContext(UserContext);
+
+	useEffect(() => {
+		const TYPE = localStorage.getItem("TYPE_OF_THEME");
+		if (TYPE != null) {
+			console.log("SET_THEME", TYPE);
+			SiteThemeSet(TYPE);
+		}
+	});
+
 	useEffect(() => {
 		console.log("LoginCheck - Check");
 		if (user == null || user.getUser() == null) {

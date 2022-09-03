@@ -205,7 +205,7 @@ export function DFooter() {
 	);
 }
 
-function SiteThemeSet(TYPE) {
+export function SiteThemeSet(TYPE) {
 	localStorage.setItem("TYPE_OF_THEME", TYPE);
 	document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
 
@@ -282,13 +282,6 @@ export class DConfig extends React.Component {
 	saveModal = () => {
 		//TODO: Save in localStorage
 		return this.closeModal();
-	}
-
-	componentDidMount() {
-		const TYPE = localStorage.getItem("TYPE_OF_THEME");
-		if (TYPE != null) {
-			SiteThemeSet(TYPE);
-		}
 	}
 
 	loginWarning() {
