@@ -451,9 +451,13 @@ class DexFS {
 		return this._chapter("https://api.mangadex.org/chapter", custom, limit, offset);
 	}
 	async chapterPages(chapterId) {
-		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/at-home/server/${chapterId}`);
-		req.data.baseUrl = `${CORS_BYPASS}${req.data.baseUrl}`;
-		return APIResponseGen(req.data);
+		try {
+			const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/at-home/server/${chapterId}`);
+			req.data.baseUrl = `${CORS_BYPASS}${req.data.baseUrl}`;
+			return APIResponseGen(req.data);
+		} catch (e) {
+			return null;
+		}
 	}
 	async readChapters(mangaId) {
 		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/read`);

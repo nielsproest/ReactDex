@@ -1142,15 +1142,15 @@ export class ChapterDisplay extends React.Component {
 			this.refreshCounter += 1;
 			setTimeout(() => {
 				//TODO: Detect failure
-				try {
-					API.chapterPages(this.props.id).then((c) => {
+				API.chapterPages(this.props.id).then((c) => {
+					if (c == null) {
+						this.fetchPages(counter+1);
+					} else {
 						this.setState({
 							pages: c
 						});
-					});
-				} catch (e) {
-					this.fetchPages(counter+1);
-				}
+					}
+				});
 			}, Math.pow(counter * 250, 2)); //Exponential backoff
 		}
 	}
