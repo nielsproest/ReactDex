@@ -1136,7 +1136,7 @@ export class ChapterDisplay extends React.Component {
 		const counter = this.refreshCounter;
 
 		if (idx == counter) {
-			const waiter = 200*Math.pow(1.7, counter);
+			const waiter = Math.min(200*Math.pow(1.7, counter), 2000);
 			console.log("fetchPages: ", counter, waiter);
 
 			this.refreshCounter += 1;
