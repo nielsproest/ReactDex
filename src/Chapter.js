@@ -884,7 +884,7 @@ export class ChapterDisplay extends React.Component {
 							page={idx}
 							key={idx} //Funny react requirement
 							refreshIdx={this.refreshCounter}
-							onError={(e) => this.fetchPages(e.target.refreshIdx)}
+							onError={(e) => console.log(e)}
 						/>
 					)
 				})
