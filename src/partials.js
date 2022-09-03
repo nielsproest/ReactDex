@@ -8,7 +8,7 @@ import { getTimeDiff } from "./utility";
 //scripts/display.req.php
 
 export function display_fa_icon(name, title="", _class="", set="fas") {
-	return (<span className={`${set} fa-${name} fa-fw ${_class}`} aria-hidden='true' title={title}></span>)
+	return (<span className={`${set} fa-${name} fa-fw ${_class}`} aria-hidden='true' title={title} />)
 }
 
 export function display_alert(type, strong, text) {
@@ -18,6 +18,28 @@ export function display_alert(type, strong, text) {
 			<strong>{strong}:</strong> {text}
 		</div>
 	);
+}
+
+export function display_count_comments(count, type = '', chapter) {
+	//TODO: Pretty display number with number_format
+	if (count != null) {
+		if (type)
+			return (
+				<a href={`${chapter.getUrl()}/comments`} className="disabled">
+					<span class='badge badge-secondary' title={`${count} comments`}>
+						{display_fa_icon('comments', '', '', 'far')}
+						&nbsp;
+						{count}
+					</span>
+				</a>
+			)
+		else
+			return (
+				<span class='badge badge-secondary'>
+					{count}
+				</span>
+			)
+	}
 }
 
 export function display_labels(hentai) {

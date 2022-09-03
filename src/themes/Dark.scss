@@ -148,7 +148,8 @@ a:focus {
 
 .list-group-item {
   background-color: #2e3338;
-  border: 1px solid rgba(0, 0, 0, 0.875);
+  border: 1px solid var(--bs-border-color);
+  /*border: 1px solid rgba(0, 0, 0, 0.875);*/
 }
 
 .card {

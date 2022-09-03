@@ -43,11 +43,43 @@
 	100%{color: violet;}
 }
 
+/*
+Bootstrap 5 reduced it from 12 to 6 (0-5 respectively) 
+So we undo that
+*/
+@media (min-width: 992px) {
+	.order-lg-1 { order: 0 }
+	.order-lg-2 { order: 1 }
+	.order-lg-3 { order: 2 }
+	.order-lg-4 { order: 3 }
+	.order-lg-5 { order: 4 }
+	.order-lg-6 { order: 5 }
+	.order-lg-7 { order: 6 }
+	.order-lg-8 { order: 7 }
+	.order-lg-9 { order: 8 }
+	.order-lg-10 { order: 9 }
+	.order-lg-11 { order: 10 }
+	.order-lg-12 { order: 11 }
+}
+
 a.disabled {
 	/* Make the disabled links grayish*/
 	color: gray;
 	/* And disable the pointer events */
 	pointer-events: none;
+}
+
+.text-right {
+	text-align: right;
+}
+.text-left {
+	text-align: left;
+}
+.text-center {
+	text-align: center;
+}
+.text-justify {
+	text-align: justify;
 }
 
 .tab-content {
@@ -87,6 +119,11 @@ div.sm_md_logo {
 }
 .float-right {
 	float: right!important;
+}
+.funnyfloat-left {
+	padding-left: 5px!important;
+	float: left!important;
+	text-align: left;
 }
 .iconfix {
 	margin-top: auto!important;

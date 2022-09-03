@@ -24,7 +24,8 @@ import {
 	display_user_link_v2,
 	display_group_link_v2 ,
 	display_lang_flag_v3,
-	display_labels
+	display_labels,
+	display_count_comments
 } from "./partials"
 
 import API from "./MangaDexAPI/API";
@@ -232,40 +233,38 @@ class ChapterList extends React.Component {
 		return (
 			<div className="chapter-container" style={{ padding: "0" }}>
 				<Row className="no-gutters">
-					{(manga == null) ? (
-						<React.Fragment>
-							<Col md="3" className="d-none d-md-flex no-gutters flex-nowrap align-items-center p-2 border-bottom">
-								{display_fa_icon("book", "Title")}
-							</Col>
-							<div className="w-100 d-md-none"></div>
-						</React.Fragment>
-					) : (<div></div>)}
-					<Col className={manga == null ? "col-md-9" : ""}>
+					{/*page != manga
+						<div class="col col-md-3 d-none d-md-flex no-gutters flex-nowrap align-items-center p-2 border-bottom">
+							{display_fa_icon('book', 'Title')}
+						</div>
+						<div class="w-100 d-md-none"></div>
+					*/}
+					<Col>
 						<Row className="chapter-row d-flex no-gutters p-2 align-items-center border-bottom odd-row">
-							<Col className="col-auto text-center " style={{flex: "0 0 2.5em"}}>
-								{display_fa_icon("eye", "Read")}
+							<Col lg={{order: 1}} className="col-auto text-center" style={{flex: "0 0 2.5em"}}>
+								{display_fa_icon('eye', 'Read')}
 							</Col>
-							<Col lg="5" sm="3" className="row no-gutters pr-1">
-								{display_fa_icon("file", "Chapter", "", "far")}
+							<Col lg={{span: 5, order: 2}} className="col row no-gutters pr-1">
+								{display_fa_icon('file', 'Chapter', '', 'far funnyfloat-left')}
 							</Col>
-							{/*<Col className="col text-right " style={{flex: "0 0 3em"}}>
-								{display_fa_icon("comments", "Comments")}
-							</Col>*/}
+							<Col lg={{order: 3}} className="text-right" style={{flex: "0 0 3em"}}>
+								{display_fa_icon('comments', 'Comments')}
+							</Col>
+							<Col lg={{span: 1, order: 8}} className="col-2 ml-1 text-right">
+								{display_fa_icon('clock', 'Age', '', 'far')}
+							</Col>
 							<div className="w-100 d-lg-none"></div>
-							<Col className="col-auto text-center " style={{flex: "0 0 2.5em"}}>
-								{display_fa_icon("globe", "Language")}
+							<Col lg={{order: 4}} className="col-auto text-center" style={{flex: "0 0 2.5em"}}>
+								{display_fa_icon('globe', 'Language')}
 							</Col>
-							<Col className="col ">
-								{display_fa_icon("users", "Group")}
+							<Col lg={{order: 5}}>
+								{display_fa_icon('users', 'Group')}
 							</Col>
-							<Col lg="1" className="col-auto text-right mx-1 ">
-								{display_fa_icon("user", "Uploader")}
+							<Col lg={{span: 1, order: 6}} className="col-auto text-right mx-1">
+								{display_fa_icon('user', 'Uploader')}
 							</Col>
-							<Col lg="1" className="col-2 text-right text-info ">
-								{display_fa_icon("eye", "Views")}
-							</Col>
-							<Col lg="1" className="col-2 ml-1 text-right ">
-								{display_fa_icon("clock", "Age", "", "far")}
+							<Col lg={{span: 1, order: 7}} className="col-2 text-right text-info">
+								{display_fa_icon('eye', 'Views')}
 							</Col>
 						</Row>
 					</Col>
@@ -289,13 +288,11 @@ class ChapterList extends React.Component {
 						{/* If latest then display_manga_link_v2 (see chapters.tpl.php) */}
 						<Col className={manga == null ? "col-md-9 pmm-0" : "pmm-0"}>
 							<Row className="chapter-row d-flex no-gutters pm-2 align-items-center border-bottom odd-row">
-								<Col className="col-auto text-center " style={{flex: "0 0 2.5em"}}>
+								<Col lg={{order: 1}} className="col-auto text-center" style={{flex: "0 0 2.5em"}}>
 									{is_read(c)}
 								</Col>
-								<Col lg="5" sm="3" className="row no-gutters pr-1" style={{
-									display: "flex",
-									flexWrap: "nowrap"
-								}}>
+
+								<Col lg={{span: 5, order: 2}} className="col row no-gutters align-items-center flex-nowrap text-truncate pr-1">
 									<Link to={chapter_link} className={`text-truncate ${avail_class}`} style={{
 										width: "unset"
 									}}>
@@ -305,27 +302,32 @@ class ChapterList extends React.Component {
 									{false && <span class="badge badge-primary mx-1">END</span>}
 									{!available && display_fa_icon('file-excel', 'Unavailable', 'mx-1 iconfix', 'fas')}
 								</Col>
-								{/*<Col className="col text-right " style={{flex: "0 0 3em"}}>
-									N/A
-								</Col>*/}
+
+								<Col lg={{order: 3}} className="text-right" style={{flex: "0 0 3em"}}>
+									{display_count_comments(0, "chapter", c)}
+								</Col>
+
+								<Col lg={{span: 1, order: 8}} className="col-2 ml-1 text-right text-truncate">
+									{c.getUpdateDiff()} ago
+								</Col>
+
 								<div className="w-100 d-lg-none"></div>
-								<Col className="col-auto text-center " style={{flex: "0 0 2.5em"}}>
+
+								<Col lg={{order: 4}} className="col-auto text-center" style={{flex: "0 0 2.5em"}}>
 									{display_lang_flag_v3(c.getLang())}
 								</Col>
 
-								<Col className="text-truncate">
+								<Col lg={{order: 5}} className="text-truncate">
 									{display_group_link_v2(c.GetRelationship("scanlation_group"))}
 								</Col>
 
-								<Col lg="1" className="col-auto text-right mx-1 text-truncate">
+								<Col lg={{span: 1, order: 6}} className="col-auto text-right mx-1 text-truncate">
 									{display_user_link_v2(c.GetRelationship("user")[0])}
 								</Col>
-								<Col lg="1" className="col-2 text-right text-info ">
-									<span className="d-none d-md-inline d-lg-none d-xl-inline">N/A</span>
-									<span className="d-inline d-md-none d-lg-inline d-xl-none" title="N/A">N/A</span>
-								</Col>
-								<Col lg="1" className="col-3 text-right text-truncate">
-									{c.getUpdateDiff()} ago
+
+								<Col lg={{span: 1, order: 7}} className="col-2 text-right text-info">
+									<span class="d-none d-md-inline d-lg-none d-xl-inline">N/A</span>
+									<span class="d-inline d-md-none d-lg-inline d-xl-none" title="Views N/A">N/A</span>
 								</Col>
 							</Row>
 						</Col>
