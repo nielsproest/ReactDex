@@ -449,6 +449,7 @@ class SinglePageRender {
 		this.onBegin = () => {};
 		this.onEnd = () => {};
 		this.onRead = () => {};
+		this.onReadCalled = false;
 		this._setRenderer("single-page");
 		this.pageCurrentSet(page);
 		this.load();
@@ -474,8 +475,11 @@ class SinglePageRender {
 		Array.from(document.getElementsByClassName("current-page")).forEach((e) => e.innerHTML = i+1);
 		document.getElementById("jump-page").value = i;
 		if ((i+1) >= Math.round(pages.length * 0.75)) {
-			console.log("pageCurrent", "onRead");
-			this.onRead();
+			if (!this.onReadCalled) {
+				console.log("pageCurrent", "onRead");
+				this.onReadCalled = true;
+				this.onRead();
+			}
 		}
 	}
 	pageAll() {
@@ -1138,12 +1142,16 @@ export class ChapterDisplay extends React.Component {
 			this.refreshCounter += 1;
 			setTimeout(() => {
 				//TODO: Detect failure
-				API.chapterPages(this.props.id).then((c) => {
-					this.setState({
-						pages: c
+				try {
+					API.chapterPages(this.props.id).then((c) => {
+						this.setState({
+							pages: c
+						});
 					});
-				});
-			}, Math.pow(counter * 100, 2)); //Exponential backoff
+				} catch (e) {
+					this.fetchPages(counter+1);
+				}
+			}, Math.pow(counter * 250, 2)); //Exponential backoff
 		}
 	}
 
