@@ -7,14 +7,7 @@
 body[theme="dark"] {
   color: #999;
   background-color: #272b30;
-  --bs-border-color: #3c4044;
 
-.bg-custom {
-	@extend .bg-dark
-}
-.navbar-custom {
-	@extend .navbar-dark !optional
-}
 .navbar-brand {
 	color: #f8f9fa
 }

@@ -205,6 +205,32 @@ export function DFooter() {
 	);
 }
 
+function SiteThemeSet(TYPE) {
+	localStorage.setItem("TYPE_OF_THEME", TYPE);
+	document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
+
+	Array.from(document.getElementsByClassName("bg-custom")).forEach((e) => {
+		e.classList.remove("bg-light");
+		e.classList.remove("bg-dark");
+		
+		if (TYPE.includes("dark") || TYPE.includes("abyss")) {
+			e.classList.add("bg-dark");
+		} else {
+			e.classList.add("bg-light");
+		}
+	});
+	Array.from(document.getElementsByClassName("navbar-custom")).forEach((e) => {
+		e.classList.remove("navbar-light");
+		e.classList.remove("navbar-dark");
+		console.log(e);
+		
+		if (TYPE.includes("dark") || TYPE.includes("abyss")) {
+			e.classList.add("navbar-dark");
+		} else {
+			e.classList.add("navbar-light");
+		}
+	});
+}
 class SiteTheme extends React.Component {
 	constructor(props) {
 		super(props);
@@ -214,9 +240,7 @@ class SiteTheme extends React.Component {
 	}
 
 	setTheme(TYPE) {
-		localStorage.setItem("TYPE_OF_THEME", TYPE);
-		document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
-
+		SiteThemeSet(TYPE);
 		this.setState({
 			theme: TYPE
 		});
@@ -263,7 +287,7 @@ export class DConfig extends React.Component {
 	componentDidMount() {
 		const TYPE = localStorage.getItem("TYPE_OF_THEME");
 		if (TYPE != null) {
-			document.getElementsByTagName("body")[0].setAttribute("theme", TYPE);
+			SiteThemeSet(TYPE);
 		}
 	}
 
