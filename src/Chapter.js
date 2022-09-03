@@ -1171,6 +1171,7 @@ export class ChapterDisplay extends React.Component {
 	render() {
 		var mobile_class = this.state.isMobile ? 'layout-vertical' : 'layout-horizontal';
 
+		//TODO: Dont remove fit-vertical and fit-horizontal
 		return (
 			<Container 
 				className={`reader row flex-column no-gutters ${mobile_class} fit-vertical fit-horizontal`} 
