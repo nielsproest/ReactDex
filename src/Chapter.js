@@ -882,9 +882,8 @@ export class ChapterDisplay extends React.Component {
 							src={img_url}
 							loading={loading}
 							page={idx}
-							key={idx} //Funny react requirement
 							refreshIdx={this.refreshCounter}
-							onError={(e) => console.log(this,e)}
+							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshIdx.value))}
 						/>
 					)
 				})
