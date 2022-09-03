@@ -1136,7 +1136,7 @@ export class ChapterDisplay extends React.Component {
 		const counter = this.refreshCounter;
 
 		if (idx == counter) {
-			console.log("fetchPages: ", counter, Math.pow(counter * 100, 2));
+			console.log("fetchPages: ", counter, Math.pow(100, counter));
 
 			this.refreshCounter += 1;
 			setTimeout(() => {
@@ -1150,7 +1150,7 @@ export class ChapterDisplay extends React.Component {
 						});
 					}
 				});
-			}, Math.pow(counter * 100, 2)); //Exponential backoff
+			}, Math.pow(100, counter)); //Exponential backoff
 		}
 	}
 
