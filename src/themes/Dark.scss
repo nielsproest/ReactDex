@@ -7,6 +7,11 @@
 body[theme="dark"] {
   color: #999;
   background-color: #272b30;
+  --bs-border-color: #3c4044;
+
+.footer {
+	background-color: #2e3338;
+}
 
 .navbar-brand {
 	color: #f8f9fa

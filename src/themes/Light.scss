@@ -6,6 +6,10 @@
 
 body[theme="light"] {
 
+.footer {
+	background-color: rgba(var(--bs-light-rgb),1);
+}
+
 a {
     color: #337ab7;
     text-decoration: none;

@@ -1,5 +1,10 @@
 body[theme="dark-slate"] {
+	--bs-border-color: #626d80;
+	background-color: #4c5564;
 
+.footer {
+	background-color: #2f333a;
+}
 a,
 .nav-tabs .nav-link:not(.active):hover,
 .nav-tabs .nav-link:focus {
