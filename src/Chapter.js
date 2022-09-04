@@ -447,7 +447,7 @@ class SinglePageRender extends React.Component {
 
 		this.page = props.page;
 		this.direction = props.dir != null ? props.dir : ERIGHT;
-		this.distance = props.distance != null ? props.distance : 2;
+		this.distance = props.distance != null ? props.distance : 4;
 		this.onReadCalled = false;
 	}
 	componentDidMount() {
@@ -493,6 +493,8 @@ class SinglePageRender extends React.Component {
 				this.props.onRead();
 			}
 		}
+
+		this.load();
 	}
 	pageAll() {
 		return document.getElementsByClassName("reader-image");
@@ -551,7 +553,6 @@ class SinglePageRender extends React.Component {
 		} else {
 			this.props.onEnd();
 		}
-		this.load();
 	}
 	pagePrev(e) {
 		const element = e.target;
@@ -565,7 +566,6 @@ class SinglePageRender extends React.Component {
 		} else {
 			this.props.onBegin();
 		}
-		this.load();
 	}
 	render() {
 		return (<React.Fragment></React.Fragment>)
@@ -615,6 +615,7 @@ class LongStripRender extends SinglePageRender {
 	}
 }
 
+//TODO: Unify this better
 class PageRenderer extends React.Component {
 	constructor(props) {
 		super(props);
@@ -759,7 +760,7 @@ class PageRenderer extends React.Component {
 			return (
 				dataTbl.map((id, idx) => {
 					const displayed = idx != 0 ? "d-none" : "";
-					const loading = idx < 2 ? "eager" : "lazy";
+					const loading = idx < 5 ? "eager" : "lazy";
 					const img_url = `${pages.baseUrl}/${dataStr}/${pages.chapter.hash}/${id}`;
 
 					return (
@@ -769,7 +770,14 @@ class PageRenderer extends React.Component {
 							loading={loading}
 							page={idx}
 							refreshidx={this.refreshCounter}
-							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshidx.value))}
+							onError={(e) => {
+								const refreshidx = e.target.attributes.refreshidx.value;
+								this.fetchPages(parseInt(refreshidx))
+							}}
+							onLoad={(e) => {
+								const bar = Array.from(document.getElementsByClassName("trail")[0].childNodes);
+								bar[idx].classList.add("loaded");
+							}}
 						/>
 					)
 				})
@@ -803,14 +811,18 @@ class PageRenderer extends React.Component {
 						<div className="trail position-absolute h-100" style={{display: "flex"}}>
 							{Array.from(Array(dataTbl.length).keys()).map((idx) => {
 								const _class = idx == this.page ? "thumb" : "";
+								//notch for loading anim?
+
 								//TODO: Better aim?
 								return (
 									<div 
-										className={`${_class} h-100 w-100`}
+										className={`${_class} notch h-100 w-100`}
 										onClick={(e) => {
 											this.renderRef().pageSet(idx)
 										}}
-									></div>
+									>
+
+									</div>
 								)
 							})}
 						</div>
