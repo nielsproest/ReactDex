@@ -663,11 +663,11 @@ body {
 		position: fixed;
 		bottom: 0;
 		left: 0;
-		right: 20vw;
+		right: 22vw;
 		width: auto;
 	}
 	.reader.layout-horizontal.hide-sidebar .reader-page-bar {
-		right: 0;
+		right: 2vw;
 	}
 	.reader.layout-horizontal .reader-page-bar:hover .track {
 		height: 50px;

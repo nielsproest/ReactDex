@@ -234,10 +234,10 @@ class ChapterList extends React.Component {
 			<div className="chapter-container" style={{ padding: "0" }}>
 				<Row className="no-gutters">
 					{/*page != manga
-						<div class="col col-md-3 d-none d-md-flex no-gutters flex-nowrap align-items-center p-2 border-bottom">
+						<div className="col col-md-3 d-none d-md-flex no-gutters flex-nowrap align-items-center p-2 border-bottom">
 							{display_fa_icon('book', 'Title')}
 						</div>
-						<div class="w-100 d-md-none"></div>
+						<div className="w-100 d-md-none"></div>
 					*/}
 					<Col>
 						<Row className="chapter-row d-flex no-gutters p-2 align-items-center border-bottom odd-row">
@@ -294,7 +294,7 @@ class ChapterList extends React.Component {
 										{false && display_fa_icon('file', '', '', 'far')}
 										{c.getTitle()}
 									</Link>
-									{false && <span class="badge badge-primary mx-1">END</span>}
+									{false && <span className="badge badge-primary mx-1">END</span>}
 									{!available && display_fa_icon('file-excel', 'Unavailable', 'mx-1 iconfix', 'fas')}
 								</Col>
 
@@ -321,8 +321,8 @@ class ChapterList extends React.Component {
 								</Col>
 
 								<Col lg={{span: 1, order: 7}} className="col-2 text-right text-info">
-									<span class="d-none d-md-inline d-lg-none d-xl-inline">N/A</span>
-									<span class="d-inline d-md-none d-lg-inline d-xl-none" title="Views N/A">N/A</span>
+									<span className="d-none d-md-inline d-lg-none d-xl-inline">N/A</span>
+									<span className="d-inline d-md-none d-lg-inline d-xl-none" title="Views N/A">N/A</span>
 								</Col>
 							</Row>
 						</Col>
@@ -453,11 +453,11 @@ class FollowButton extends React.Component {
 					</button>
 				)}
 
-				{/*i dont know what this does, except that its a dropdown <div class='dropdown-menu dropdown-menu-right'>
-				{!this.state.isFollowed ? <a class='dropdown-item manga_unfollow_button' id='$manga_id' data-manga-id='$manga_id' href='#'>" . display_fa_icon('bookmark', 'Unfollow') . " Unfollow</a>" : '');
+				{/*i dont know what this does, except that its a dropdown <div className='dropdown-menu dropdown-menu-right'>
+				{!this.state.isFollowed ? <a className='dropdown-item manga_unfollow_button' id='$manga_id' data-manga-id='$manga_id' href='#'>" . display_fa_icon('bookmark', 'Unfollow') . " Unfollow</a>" : '');
 					foreach ($follow_types as $type) {
 						$disabled = (isset($array_of_manga_ids[$manga_id]) && $array_of_manga_ids[$manga_id]['follow_type'] == $type->type_id) ? "disabled" : "";
-						$return .= "<a class='$disabled dropdown-item manga_follow_button' data-manga-id='$manga_id' id='$type->type_id' href='#'>" . display_fa_icon($type->type_glyph, 'Follow') . " $type->type_name</a>";
+						$return .= "<a className='$disabled dropdown-item manga_follow_button' data-manga-id='$manga_id' id='$type->type_id' href='#'>" . display_fa_icon($type->type_glyph, 'Follow') . " $type->type_name</a>";
 					}
 				}
 				</div>*/}

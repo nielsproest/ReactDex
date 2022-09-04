@@ -478,6 +478,14 @@ class SinglePageRender extends React.Component {
 		getElementByXpath("//div[contains(@class,'reader-images')]").setAttribute("page", i);
 		Array.from(document.getElementsByClassName("current-page")).forEach((e) => e.innerHTML = i+1);
 		document.getElementById("jump-page").value = i;
+
+		Array.from(document.getElementsByClassName("trail")[0].childNodes).forEach((n,idx) => {
+			n.classList.remove("thumb");
+			if (idx == i) {
+				n.classList.add("thumb");
+			}
+		})
+
 		if ((i+1) >= Math.round(pages.length * 0.75)) {
 			if (!this.onReadCalled) {
 				console.log("pageCurrent", "onRead");
@@ -625,6 +633,7 @@ class PageRenderer extends React.Component {
 		this.child = React.createRef();
 		this.page = 0;
 		this.refreshCounter = 0;
+		this.timer = null;
 	}
 
 	fetchPages(idx) {
@@ -635,7 +644,7 @@ class PageRenderer extends React.Component {
 			console.log("fetchPages: ", counter, waiter);
 
 			this.refreshCounter += 1;
-			setTimeout(() => {
+			this.timer = setTimeout(() => {
 				//TODO: Detect failure
 				API.chapterPages(this.props.id).then((c) => {
 					if (c == null) {
@@ -653,24 +662,31 @@ class PageRenderer extends React.Component {
 	renderRef() {
 		return this.child.current;
 	}
+	scrollEvent(e) {
+		if (this.state.renderer == "long-strip") {
+			var visible = null;
+			Array.from(this.renderRef().pageAll()).forEach((e) => {
+				if (checkVisible(e)) { //TODO: Check middle
+					visible = e.getAttribute("page");
+				}
+			});
+			if (visible) {
+				visible = parseInt(visible)
+				this.renderRef().pageCurrentSet(visible);
+			}
+		}
+	}
 	componentDidMount() {
 		this.fetchPages(0);
 		
 		const render_window = document.getElementsByClassName("reader-images")[0];
-		render_window.addEventListener("scroll", (e) => {
-			if (this.state.renderer == "long-strip") {
-				var visible = null;
-				Array.from(this.renderRef().pageAll()).forEach((e) => {
-					if (checkVisible(e)) { //TODO: Check middle
-						visible = e.getAttribute("page");
-					}
-				});
-				if (visible) {
-					visible = parseInt(visible)
-					this.renderRef().pageCurrentSet(visible);
-				}
-			}
-		}, false);
+		render_window.addEventListener("scroll", this.scrollEvent, false);
+	}
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		render_window.removeEventListener("scroll", this.scrollEvent, false);
 	}
 	componentDidUpdate(prevProps) {
 		if (prevProps.id != this.props.id) {
@@ -752,8 +768,8 @@ class PageRenderer extends React.Component {
 							src={img_url}
 							loading={loading}
 							page={idx}
-							refreshIdx={this.refreshCounter}
-							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshIdx.value))}
+							refreshidx={this.refreshCounter}
+							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshidx.value))}
 						/>
 					)
 				})
@@ -784,8 +800,19 @@ class PageRenderer extends React.Component {
 				</div>
 				<div className="reader-page-bar col-auto d-none d-lg-flex directional">
 					<div className="track cursor-pointer row no-gutters">
-						<div className="trail position-absolute h-100 noevents">
-							<div className="thumb h-100"></div>
+						<div className="trail position-absolute h-100" style={{display: "flex"}}>
+							{Array.from(Array(dataTbl.length).keys()).map((idx) => {
+								const _class = idx == this.page ? "thumb" : "";
+								//TODO: Better aim?
+								return (
+									<div 
+										className={`${_class} h-100 w-100`}
+										onClick={(e) => {
+											this.renderRef().pageSet(idx)
+										}}
+									></div>
+								)
+							})}
 						</div>
 						<div className="notches row no-gutters h-100 w-100 directional"></div>
 						<div className="notch-display col-auto m-auto px-3 py-1 noevents"></div>
@@ -1177,7 +1204,7 @@ export class ChapterDisplay extends React.Component {
 			f.style.display = "unset";
 		});
 
-		window.removeEventListener("resize", (e) => this.resizeFunc(e), false);
+		window.removeEventListener("resize", this.resizeFunc, false);
 	}
 	componentDidMount() {
 		const { user, setUser } = this.context;
@@ -1186,7 +1213,7 @@ export class ChapterDisplay extends React.Component {
 			f.style.display = "none";
 		});
 
-		window.addEventListener("resize", (e) => this.resizeFunc(e), false);
+		window.addEventListener("resize", this.resizeFunc, false);
 
 		//TODO: Use feed endpoint instead?
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {

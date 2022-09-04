@@ -77,7 +77,7 @@ export class MangaCard extends React.Component {
 					<div>{display_fa_icon('book', '', 'mr-1')}</div>
 					{display_manga_link_v2(manga)}
 				</div>
-				{manga.GetRelationship("chapter").map((chap) => {
+				{manga.GetRelationship("chapter", []).map((chap) => {
 					return (
 						<div key={chap.getId()} className="text-truncate py-0 mb-1 no-gutters align-items-center flex-nowrap">
 							{display_fa_icon('file', '', 'mr-1 right5', 'far')}
