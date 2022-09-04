@@ -140,8 +140,7 @@ export class MangaCards extends React.Component {
 		super(props);
 		this.state = {
 			mangas: [],
-			followMangas: null,
-			followRendered: false
+			followMangas: null
 		};
 	}
 

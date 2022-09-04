@@ -683,7 +683,6 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Actions:</div>
 									<div className="col-lg-9 col-xl-10">
 										{/*display_upload_button($templateVar["user"])*/}
-										{/*display_follow_button($templateVar["user"], $followed_manga_ids_array, $templateVar["manga"]->manga_id)*/}
 										<FollowButton id={manga.getId()}/>
 										{/*display_manga_rating_button($templateVar["user"]->user_id, $templateVar["manga"]->get_user_rating($templateVar["user"]->user_id), $templateVar["manga"]->manga_id)*/}
 										{/*display_edit_manga($templateVar["user"], $templateVar["manga"])*/}
