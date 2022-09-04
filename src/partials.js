@@ -11,13 +11,13 @@ export function display_fa_icon(name, title="", _class="", set="fas") {
 	return (<span className={`${set} fa-${name} fa-fw ${_class}`} aria-hidden='true' title={title} />)
 }
 
-export function display_alert(type, strong, text) {
+export function display_alert(type, _class, strong, text) {
 	{/* TODO: Use builtin alert */}
 	return (
-		<div className={`alert alert-${type} text-center`} role='alert' style={{width: "-webkit-fill-available"}}>
+		<Alert variant={type} className={`${_class} text-center`}>
 			<strong>{strong}:</strong> {text}
-		</div>
-	);
+		</Alert>
+	)
 }
 
 export function display_count_comments(count, type = '', chapter) {
@@ -218,14 +218,14 @@ export function display_reading_history(user) {
 
 	//TODO: This function
 	if (user) {
-		return display_alert('info m-2', 'Notice', 
+		return display_alert('warning', 'm-2', 'Warning', 
 			[
 				"Not Implemented",
 			]
 		);
 	}
 
-	return display_alert('info m-2', 'Notice', 
+	return display_alert('info', 'm-2', 'Notice', 
 		[
 			"Please ",
 			display_fa_icon('sign-in-alt'),

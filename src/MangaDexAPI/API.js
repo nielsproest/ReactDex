@@ -70,9 +70,9 @@ class MdData {
 		}
 		this.relationships[type].push(data);
 	}
-	GetRelationship(type) {
+	GetRelationship(type, def=null) {
 		if (!(type in this.relationships)) {
-			return null;
+			return def;
 		}
 		return this.relationships[type];
 	}
@@ -122,9 +122,6 @@ class Chapter extends MdData {
 	}
 	getLang() {
 		return this.attributes.translatedLanguage;
-	}
-	getId() {
-		return this.id;
 	}
 }
 

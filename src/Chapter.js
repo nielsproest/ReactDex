@@ -1036,6 +1036,10 @@ export class ChapterDisplay extends React.Component {
 	jumpChapter(e) {
 		return this._jumpChapter(e.target.value);
 	}
+	backToManga() {
+		console.log(this.state.chapter);
+		return this.props.nav(this.state.chapter.data[0].GetRelationship("manga")[0].getUrl());
+	}
 	nextChapter(e) {
 		const chaps = Array.from(document.getElementById("jump-chapter").childNodes);
 		const chap = chaps.filter((c) => c.value == this.props.id)[0];
@@ -1043,6 +1047,8 @@ export class ChapterDisplay extends React.Component {
 		const chap_nextidx = chap_idx + 1;
 		if (chap_nextidx < chaps.length) {
 			return this._jumpChapter(chaps[chap_nextidx].value);
+		} else {
+			this.backToManga();
 		}
 	}
 	prevChapter(e) {
@@ -1052,13 +1058,22 @@ export class ChapterDisplay extends React.Component {
 		const chap_nextidx = chap_idx - 1;
 		if (chap_nextidx >= 0) {
 			return this._jumpChapter(chaps[chap_nextidx].value);
+		} else {
+			this.backToManga();
 		}
 	}
 
+	resizeFunc(e) {
+		this.setState({
+			isMobile: this.isMobile()
+		});
+	};
 	componentWillUnmount() {
 		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
 			f.style.display = "unset";
 		});
+
+		window.removeEventListener("resize", (e) => this.resizeFunc(e), false);
 	}
 	componentDidMount() {
 		const { user, setUser } = this.context;
@@ -1072,11 +1087,7 @@ export class ChapterDisplay extends React.Component {
 		this.renderer.onBegin = () => this.prevChapter(null);
 		this.renderer.onEnd = () => this.nextChapter(null);
 
-		window.addEventListener('resize', (e) => {
-			this.setState({
-				isMobile: this.isMobile()
-			});
-		}, false);
+		window.addEventListener("resize", (e) => this.resizeFunc(e), false);
 
 		const render_window = document.getElementsByClassName("reader-images")[0];
 		render_window.addEventListener("scroll", (e) => {

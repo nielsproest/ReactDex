@@ -1,4 +1,5 @@
 //utility.js
+import React from "react";
 
 export const TIME_MS = 0.001;
 export const TIME_SECOND = 1;
@@ -65,4 +66,47 @@ export function checkVisible(elm) {
 	var rect = elm.getBoundingClientRect();
 	var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
 	return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+}
+
+export function getUUID(data) {
+	var key = data.getId();
+	Object.values(data.relationships).forEach((_r) => _r.forEach((r) => {
+		key += `-${r.getId()}`;
+	}));
+	return key;
+}
+
+export class ElementUpdater extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			elem: this.fetch()
+		}
+		this.timer = null;
+	}
+
+	fetch() {
+		return this.props.func();
+	}
+
+	componentDidMount() {
+		this.timer = setTimeout(() => {
+			this.setState({
+				elem: this.fetch()
+			});
+			this.componentDidMount();
+		}, this.props.delay);
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+
+	render() {
+		return (
+			<React.Fragment>
+				{this.state.elem}
+			</React.Fragment>
+		)
+	}
 }

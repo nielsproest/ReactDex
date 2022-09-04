@@ -23,6 +23,7 @@ import {
 	display_reading_history
 } from "./partials"
 import { UserContext } from "./user-context";
+import { ElementUpdater, getUUID } from "./utility";
 import API from "./MangaDexAPI/API";
 
 export class MangaCard extends React.Component {
@@ -55,7 +56,8 @@ export class MangaCard extends React.Component {
 	}
 
 	render() {
-		var manga = this.state.manga;
+		const manga = this.state.manga;
+		const chapter = manga.GetRelationship("chapter")[0];
 		var has_end_tag = false;
 
 		//TODO: Group by both manga and group
@@ -87,8 +89,13 @@ export class MangaCard extends React.Component {
 					)
 				})}
 				{/*TODO: Dont rely on a chapter existing*/}
-				{this.uploaderDisplay(manga.GetRelationship("chapter")[0])}
-				<div className='text-truncate ml-1 py-0 mb-1'>{[display_fa_icon('clock', '', '', 'far'), ' ', manga.GetRelationship("chapter")[0].getUpdateDiff(), " ago"]}</div>
+				{this.uploaderDisplay(chapter)}
+				<div className='text-truncate ml-1 py-0 mb-1'>{[
+					display_fa_icon('clock', '', '', 'far'), 
+					' ', 
+					<ElementUpdater delay={1000} func={() => chapter.getUpdateDiff()} />, 
+					" ago"
+				]}</div>
 			</Col>
 		)
 	}
@@ -108,7 +115,7 @@ class Announcement {
 
 export class Announcements extends React.Component {
 	render() {
-		/*display_alert("warning", "Warning", "Your account is currently unactivated. Please enter your activation code <a href='/activation'>here</a> for access to all of " . TITLE . "'s features.");*/
+		/*display_alert("warning", '', "Warning", "Your account is currently unactivated. Please enter your activation code <a href='/activation'>here</a> for access to all of " . TITLE . "'s features.");*/
 
 		/* <?= $templateVar['user']->user_id ? 'alert-dismissible ' : '' ?> */
 		return (
@@ -179,7 +186,7 @@ export class MangaCards extends React.Component {
 		const follows_render = () => {
 			//TODO: This should use ApiContext consumer for login update
 			if (this.state.followMangas == null) { //not logged in
-				return display_alert("info m-2 widthfix", "Notice", [
+				return display_alert("info" ,"m-2 widthfix", "Notice", [
 					"Please ",
 					display_fa_icon("sign-in-alt"),
 					" ",
@@ -190,23 +197,26 @@ export class MangaCards extends React.Component {
 
 			if (this.state.followMangas.length > 0) {
 				return this.state.followMangas.map((i) => {
-					return (<MangaCard manga={i} key={i.getId()}/>)
+					//TODO: Why is this a key violation?
+					return (<MangaCard manga={i} key={getUUID(i)}/>)
 				})
 			} else {
-				return display_alert("info m-2 widthfix", "Notice", "You haven't followed any manga!")
+				return display_alert("info", "m-2 widthfix", "Notice", "You haven't followed any manga!")
 			}
 		}
+
 		const renderMangas = () => {
 			const mangas = this.state.mangas;
 			return mangas.map((i) => {
-				//TODO: key should be: manga id, chapter and uploader
-				return (<MangaCard manga={i} key={i.getId()} />)
+				//TODO: Why is this a key violation?
+				return (<MangaCard manga={i} key={getUUID(i)} />)
 			})
 		}
 
 		return (
 			<Col lg={8}>
 				{/*mobile_app_ad*/}
+				<ElementUpdater delay={1000 * 60 * 10} func={() => this.componentDidMount()} />
 				<Card className="card mb-3">
 					<Card.Header className="text-center bg-custom">{display_fa_icon("external-link-alt")} <Link to="/updates">Latest updates</Link></Card.Header>
 					<Tabs
@@ -237,14 +247,12 @@ export class TopList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			mangas: [],
-			type: props.type,
-			subtype: props.subtype
+			mangas: []
 		}
 	}
 
 	componentDidMount() {
-		if (this.state.type == "top_chapters_6h") {
+		if (this.props.type == "top_chapters_6h") {
 			//TODO: This is top chapters, not top manga
 			//TODO: Show chapter support
 			/*API.manga({}, true, 10, 0).then(res => {
@@ -258,15 +266,15 @@ export class TopList extends React.Component {
 			})*/
 		}
 		//top_chapters_24h
-		if (this.state.type == "top_chapters_24h") {
+		if (this.props.type == "top_chapters_24h") {
 		}
 		//top_chapters_7d
-		if (this.state.type == "top_chapters_7d") {
+		if (this.props.type == "top_chapters_7d") {
 		}
 
 		//There is no API for this, i can scrape for it, but for now its fixed
 		//top_follows
-		if (this.state.type == "top_follows") {
+		if (this.props.type == "top_follows") {
 			API.manga({"ids": [
 				"32d76d19-8a05-4db0-9fc2-e0b0648fe9d0",
 				"4a76bf77-f757-46bd-9d82-f2a579bb1c63",
@@ -291,7 +299,7 @@ export class TopList extends React.Component {
 			})
 		}
 		//top_rating
-		if (this.state.type == "top_rating") {
+		if (this.props.type == "top_rating") {
 			API.manga({"ids": [
 				"0c697908-bafd-44ec-ae29-b8515becd506",
 				"129c90ca-b997-4789-a748-e8765bc67a65",
@@ -364,10 +372,10 @@ export class TopList extends React.Component {
 		}
 
 		return (
-			<ListGroup variant="flush">
+			<ListGroup variant="flush" key={`${this.props.type}-${this.props.subtype}`}>
 				{mangas.map((manga) => {
 					return (
-						<ListGroup.Item className="px-2 py-1">
+						<ListGroup.Item className="px-2 py-1" key={getUUID(manga)}>
 							<div className='hover tiny_logo rounded float-left mr-2'>
 								<a href={manga.getUrl()}>
 									<img className='rounded max-width' src={manga.getCover256()} loading="lazy" />
@@ -375,7 +383,7 @@ export class TopList extends React.Component {
 							</div>
 							<div className='text-truncate pt-0 pb-1 mb-1 border-bottom'>{display_fa_icon('book', '', 'mr-1')} {display_manga_link_v2(manga)}</div>
 							<p className='text-truncate py-0 mb-1'>
-								{this._renderManga(manga,this.state.subtype)}
+								{this._renderManga(manga,this.props.subtype)}
 							</p>
 						</ListGroup.Item>
 					)
@@ -432,13 +440,13 @@ export class Sidebars extends React.Component {
 					>
 						<Tab eventKey="top_chapters_6h" title="6h">
 							{/*TODO: Render on display, pass state on if displayed maybe*/}
-							<TopList type="top_chapters_6h" subtype="top_rating"/>
+							<TopList type="top_chapters_6h" subtype="top_rating" key={0}/>
 						</Tab>
 						<Tab eventKey="top_chapters_24h" title="24h">
-							<TopList type="top_chapters_24h" subtype="top_rating"/>
+							<TopList type="top_chapters_24h" subtype="top_rating" key={1}/>
 						</Tab>
 						<Tab eventKey="top_chapters_7d" title="7d">
-							<TopList type="top_chapters_7d" subtype="top_rating"/>
+							<TopList type="top_chapters_7d" subtype="top_rating" key={2}/>
 						</Tab>
 					</Tabs>
 				</Card>
@@ -479,10 +487,11 @@ export class Sidebars extends React.Component {
 						className="mb-2 border-bottom bg-custom"
 					>
 						<Tab eventKey="top_follows" title="Follows">
-							<TopList type="top_follows" subtype="top_follows"></TopList>
+							<TopList type="top_follows" subtype="top_follows" key={3} />
 						</Tab>
 						<Tab eventKey="top_rating" title="Rating">
-							<TopList type="top_rating" subtype="top_rating"></TopList>
+							{/* Someone who understands ReactJS better must explain why this is a key violation */}
+							<TopList type="top_rating" subtype="top_rating" key={4} />
 						</Tab>
 					</Tabs>
 				</Card>

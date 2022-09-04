@@ -222,8 +222,7 @@ export function SiteThemeSet(TYPE) {
 	Array.from(document.getElementsByClassName("navbar-custom")).forEach((e) => {
 		e.classList.remove("navbar-light");
 		e.classList.remove("navbar-dark");
-		console.log(e);
-		
+
 		if (TYPE.includes("dark") || TYPE.includes("abyss")) {
 			e.classList.add("navbar-dark");
 		} else {
@@ -286,7 +285,7 @@ export class DConfig extends React.Component {
 
 	loginWarning() {
 		if (false) {
-			return display_alert('info mx-auto', 'Info', [
+			return display_alert('info', 'mx-auto', 'Info', [
 				"These settings are temporary. Please ",
 				display_fa_icon('pencil-alt'),
 				" ",
