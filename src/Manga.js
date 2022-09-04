@@ -274,13 +274,8 @@ class ChapterList extends React.Component {
 
 					var avail_class = ""
 					const available = c.isAvailable();
-					if (!available) {
-						if (c.isExternal()) {
-							//TODO: Mark as read?
-							chapter_link = `/outside/${c.getExternalUrl()}`;
-						} else {
-							avail_class = "disabled";
-						}
+					if (!available && !c.isExternal()) {
+						avail_class = "disabled";
 					}
 
 					//TODO: Group by volume-chapter-group etc.

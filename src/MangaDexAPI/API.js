@@ -118,6 +118,10 @@ class Chapter extends MdData {
 		return title.trim();
 	}
 	getUrl() {
+		if (this.isExternal()) {
+			return `/outside/${this.getExternalUrl()}`;
+		}
+
 		return `/chapter/${this.id}`;
 	}
 	getLang() {

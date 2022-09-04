@@ -236,7 +236,8 @@ function Top() {
 function Outside() {
 	let { params } = useMatch("/outside/*");
 	const linkUrl = params["*"];
-	window.location.href = linkUrl;
+
+	window.location.replace(linkUrl);
 
 	return (
 		<Row>

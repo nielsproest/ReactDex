@@ -94,7 +94,7 @@ export class MangaCard extends React.Component {
 					display_fa_icon('clock', '', '', 'far'), 
 					' ', 
 					<ElementUpdater delay={1000} func={() => chapter.getUpdateDiff()} />, 
-					" ago"
+					" ago" 
 				]}</div>
 			</Col>
 		)
