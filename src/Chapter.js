@@ -1248,7 +1248,12 @@ export class ChapterDisplay extends React.Component {
 				var chs = [];
 
 				Object.values(cs.volumes).forEach((v) => {
-					{Object.values(v.chapters).forEach((c) => {
+					var chaps = Object.values(v.chapters);
+					//TODO: Gather all then sort to avoid mixed volume-chapter issues
+
+					chaps.sort((a,b) => parseFloat(a.chapter) - parseFloat(b.chapter));
+
+					{chaps.forEach((c) => {
 						chs.push(<option value={c.id}>{this.cvTitle(v.volume,c.chapter)}</option>)
 					})}
 				})
