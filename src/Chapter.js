@@ -1206,7 +1206,7 @@ export class ChapterDisplay extends React.Component {
 		}
 	}
 
-	resizeFunc(e) {
+	resizeFunc() {
 		this.setState({
 			isMobile: this.isMobile()
 		});
@@ -1216,7 +1216,7 @@ export class ChapterDisplay extends React.Component {
 			f.style.display = "unset";
 		});
 
-		window.removeEventListener("resize", this.resizeFunc, false);
+		window.removeEventListener("resize", () => this.resizeFunc(), false);
 	}
 	componentDidMount() {
 		const { user, setUser } = this.context;
@@ -1225,7 +1225,7 @@ export class ChapterDisplay extends React.Component {
 			f.style.display = "none";
 		});
 
-		window.addEventListener("resize", this.resizeFunc, false);
+		window.addEventListener("resize", () => this.resizeFunc(), false);
 
 		//TODO: Use feed endpoint instead?
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {
