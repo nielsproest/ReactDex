@@ -138,7 +138,7 @@ class ChapterList extends React.Component {
 		this.state = {
 			manga: props.manga,
 			chapters: null,
-			climit: 15,
+			climit: 40,
 			cpage: 0,
 			chapterRead: null
 		};
