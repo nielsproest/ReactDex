@@ -1037,8 +1037,7 @@ export class ChapterDisplay extends React.Component {
 		return this._jumpChapter(e.target.value);
 	}
 	backToManga() {
-		console.log(this.state.chapter);
-		return this.props.nav(this.state.chapter.data[0].GetRelationship("manga")[0].getUrl());
+		return this.props.nav(this.hasChapter().GetRelationship("manga")[0].getUrl());
 	}
 	nextChapter(e) {
 		const chaps = Array.from(document.getElementById("jump-chapter").childNodes);

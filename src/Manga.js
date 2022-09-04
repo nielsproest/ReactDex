@@ -560,7 +560,7 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Author:</div>
 									<div className="col-lg-9 col-xl-10">
-										{manga.GetRelationship("author") != null && manga.GetRelationship("author").map((a) => {
+										{manga.GetRelationship("author", []).map((a) => {
 											return (<a href={a.getUrl()} title="Other manga by this author">{display_fa_icon("external-link-alt")} {a.attributes.name}</a>)
 										})}
 									</div>
@@ -569,7 +569,7 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Artist:</div>
 									<div className="col-lg-9 col-xl-10">
-										{manga.GetRelationship("artist") != null && manga.GetRelationship("artist").map((a) => {
+										{manga.GetRelationship("artist", []).map((a) => {
 											return (<a href={a.getUrl()} title="Other manga by this artist">{display_fa_icon("external-link-alt")} {a.attributes.name}</a>)
 										})}
 									</div>
