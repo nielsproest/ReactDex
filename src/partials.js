@@ -218,7 +218,7 @@ export function display_reading_history(user) {
 
 	//TODO: This function
 	if (user) {
-		return display_alert('warning', 'm-2', 'Warning', 
+		return display_alert('info', 'm-2', 'Warning', 
 			[
 				"Not Implemented",
 			]

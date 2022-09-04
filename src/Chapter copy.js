@@ -439,20 +439,19 @@ class MenuConfig {
 const ERIGHT = 0;
 const ELEFT = 1;
 
-class SinglePageRender extends React.Component {
+class SinglePageRender {
 	//TODO: Should this be a React.Component
 	//So it learns the onBegin, onEnd and onRead itself?
-	constructor(props) {
-		super(props);
-
-		this.page = props.page;
-		this.direction = props.dir != null ? props.dir : ERIGHT;
-		this.distance = props.distance != null ? props.distance : 2;
+	constructor(page, dir=ERIGHT, distance=2) {
+		this.page = page;
+		this.direction = dir;
+		this.distance = distance;
+		this.onBegin = () => {};
+		this.onEnd = () => {};
+		this.onRead = () => {};
 		this.onReadCalled = false;
-	}
-	componentDidMount() {
 		this._setRenderer("single-page");
-		this.pageCurrentSet(this.page);
+		this.pageCurrentSet(page);
 		this.load();
 	}
 	_getReader() {
@@ -482,7 +481,7 @@ class SinglePageRender extends React.Component {
 			if (!this.onReadCalled) {
 				console.log("pageCurrent", "onRead");
 				this.onReadCalled = true;
-				this.props.onRead();
+				this.onRead();
 			}
 		}
 	}
@@ -541,7 +540,7 @@ class SinglePageRender extends React.Component {
 			pages[page+1].classList.remove("d-none");
 			this.pageCurrentSet(page+1);
 		} else {
-			this.props.onEnd();
+			this.onEnd();
 		}
 		this.load();
 	}
@@ -555,12 +554,9 @@ class SinglePageRender extends React.Component {
 			pages[page-1].classList.remove("d-none");
 			this.pageCurrentSet(page-1);
 		} else {
-			this.props.onBegin();
+			this.onBegin();
 		}
 		this.load();
-	}
-	render() {
-		return (<React.Fragment></React.Fragment>)
 	}
 }
 class LongStripRender extends SinglePageRender {
@@ -610,189 +606,34 @@ class LongStripRender extends SinglePageRender {
 class PageRenderer extends React.Component {
 	constructor(props) {
 		super(props);
-		/*
-			id={this.state.chapter.getId()}
-			settings={this.changeChild}
-			onBegin={() => this.prevChapter(null)}
-			onEnd={() => this.nextChapter(null)}
-			onRead={() => {user != null && API.readChapter(ch.getId())}}
-		*/
-
+		//props should contain 
+		//imgs={} onerror={() => {}}
 		this.state = {
-			renderer: "single-page",
-			pages: null
+			renderer: "single-page"
 		}
-		this.child = React.createRef();
 		this.page = 0;
-		this.refreshCounter = 0;
 	}
 
-	fetchPages(idx) {
-		const counter = this.refreshCounter;
-
-		if (idx == counter) {
-			const waiter = idx == 0 ? 0 : Math.min(200*Math.pow(1.7, counter), 2000);
-			console.log("fetchPages: ", counter, waiter);
-
-			this.refreshCounter += 1;
-			setTimeout(() => {
-				//TODO: Detect failure
-				API.chapterPages(this.props.id).then((c) => {
-					if (c == null) {
-						this.fetchPages(counter+1);
-					} else {
-						this.setState({
-							pages: c
-						});
-					}
-				});
-			}, waiter); //Exponential backoff
-		}
-	}
-
-	renderRef() {
-		return this.child.current;
-	}
 	componentDidMount() {
-		this.fetchPages(0);
-		
-		const render_window = document.getElementsByClassName("reader-images")[0];
-		render_window.addEventListener("scroll", (e) => {
-			if (this.state.renderer == "long-strip") {
-				var visible = null;
-				Array.from(this.renderRef().pageAll()).forEach((e) => {
-					if (checkVisible(e)) { //TODO: Check middle
-						visible = e.getAttribute("page");
-					}
-				});
-				if (visible) {
-					visible = parseInt(visible)
-					this.renderRef().pageCurrentSet(visible);
-				}
-			}
-		}, false);
-	}
-	componentDidUpdate(prevProps) {
-		if (prevProps.id != this.props.id) {
-			this.fetchPages(this.refreshCounter);
-		}
+		//TODO: Fetch images here
 	}
 
-	getRenderer() {
+	render() {
 		if (this.state.renderer == "single-page") {
-			//TODO: Mod renderers
 			return (
-				<SinglePageRender 
-					ref={this.child} 
-					page={this.page} 
-					onBegin={this.props.onBegin}
-					onEnd={this.props.onEnd}
-					onRead={this.props.onRead}
-				/>
+				<SinglePageRender />
 			)
 		}
 		/*if (this.state.renderer == "double-page") {
 			return (
-				<DoublePageRender page={this.page} />
+				<DoublePageRender />
 			)
 		}*/
 		if (this.state.renderer == "long-strip") {
 			return (
-				<LongStripRender 
-					ref={this.child} 
-					page={this.page} 
-				/>
+				<LongStripRender />
 			)
 		}
-	}
-
-	render() {
-		const pages = this.state.pages;
-		const dataSaver = false;
-	
-		var dataStr = "";
-		var dataTbl = [];
-
-		if (pages) {
-			if (true) {
-				dataStr = "data-saver";
-				dataTbl = pages.chapter.dataSaver;
-			} else {
-				dataStr = "data";
-				dataTbl = pages.chapter.data;
-			}
-		}
-
-		/*
-		document.getElementsByClassName("reader")[0].setAttribute("data-renderer", "fit-both");
-		document.getElementsByClassName("reader")[0].setAttribute("data-direction", "ltr");
-		document.getElementsByClassName("reader")[0].setAttribute("renderer", "single-page");
-		*/
-
-		const renderPages = () => {
-			if (dataTbl.length == 0) {
-				return (
-					<div className="m-5 d-flex align-items-center justify-content-center" style={{color: "#fff", textShadow: "0 0 7px rgba(0,0,0,0.5)"}}>
-						<span className="fas fa-circle-notch fa-spin position-absolute" style={{opacity: "0.5", fontSize: "7em"}} />
-						<span className="loading-page-number" style={{fontSize: "2em"}}></span>
-					</div>
-				)
-			}
-
-			//TODO: onerror
-			return (
-				dataTbl.map((id, idx) => {
-					const displayed = idx != 0 ? "d-none" : "";
-					const loading = idx < 2 ? "eager" : "lazy";
-					const img_url = `${pages.baseUrl}/${dataStr}/${pages.chapter.hash}/${id}`;
-
-					return (
-						<img
-							className={`noselect nodrag cursor-pointer reader-image ${displayed}`}
-							src={img_url}
-							loading={loading}
-							page={idx}
-							refreshIdx={this.refreshCounter}
-							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshIdx.value))}
-						/>
-					)
-				})
-			)
-		}
-
-		return (
-			{/* reader main */},
-			<Container className="reader-main col row no-gutters flex-column flex-nowrap noselect" style={{"flex":"1"}}>
-				<noscript>
-					<div className="alert alert-danger text-center">
-						JavaScript is required for this reader to work.
-					</div>
-				</noscript>
-				<div className="reader-goto-top d-flex d-lg-none justify-content-center align-items-center fade cursor-pointer">
-					<span className="fas fa-angle-up"></span>
-				</div>
-				{this.getRenderer()}
-				<div 
-					className="reader-images row no-gutters flex-nowrap text-center cursor-pointer directional"
-					onClick={(e) => this.renderRef().pageClick(e)}
-					page={this.page}
-				>
-					{renderPages()}
-				</div>
-				<div className="reader-load-icon">
-					<span className="fas fa-circle-notch fa-spin" aria-hidden="true"></span>
-				</div>
-				<div className="reader-page-bar col-auto d-none d-lg-flex directional">
-					<div className="track cursor-pointer row no-gutters">
-						<div className="trail position-absolute h-100 noevents">
-							<div className="thumb h-100"></div>
-						</div>
-						<div className="notches row no-gutters h-100 w-100 directional"></div>
-						<div className="notch-display col-auto m-auto px-3 py-1 noevents"></div>
-					</div>
-				</div>
-			</Container>
-		)
 	}
 }
 
@@ -802,9 +643,12 @@ export class ChapterDisplay extends React.Component {
 		this.state = {
 			isMobile: this.isMobile(),
 			chapter: null,
-			chapters: []
+			chapters: [],
+			pages: null
 		};
+		this.renderer = null;
 		this.changeChild=React.createRef();
+		this.refreshCounter = 0;
 	}
 
 	static contextType = UserContext;
@@ -868,7 +712,6 @@ export class ChapterDisplay extends React.Component {
 		var c_title = "";
 		var m_title = "";
 		var m_href = "";
-		const reader = document.getElementsByClassName("reader")[0];
 
 		if (chapter != null) {
 			const manga = chapter.GetRelationship("manga")[0];
@@ -883,6 +726,7 @@ export class ChapterDisplay extends React.Component {
 			<Container className="reader-controls-container p-0">
 				<Row className="reader-controls-wrapper bg-reader-controls no-gutters flex-nowrap" style={{"zIndex": "1"}}>
 					<div id="reader-controls-collapser-bar" className="reader-controls-collapser col-auto align-items-center justify-content-center cursor-pointer" onClick={(e) => {
+						const reader = document.getElementsByClassName("reader")[0];
 						if (reader.classList.contains("hide-sidebar")) {
 							reader.classList.remove("hide-sidebar");
 						} else {
@@ -1029,6 +873,95 @@ export class ChapterDisplay extends React.Component {
 		)
 	}
 
+	readerMain() {
+		const pages = this.state.pages;
+		const dataSaver = false;
+	
+		var dataStr = "";
+		var dataTbl = [];
+
+		if (pages) {
+			if (true) {
+				dataStr = "data-saver";
+				dataTbl = pages.chapter.dataSaver;
+			} else {
+				dataStr = "data";
+				dataTbl = pages.chapter.data;
+			}
+		}
+
+		/*
+		document.getElementsByClassName("reader")[0].setAttribute("data-renderer", "fit-both");
+		document.getElementsByClassName("reader")[0].setAttribute("data-direction", "ltr");
+		document.getElementsByClassName("reader")[0].setAttribute("renderer", "single-page");
+		*/
+
+		const renderPages = () => {
+			if (dataTbl.length == 0) {
+				return (
+					<div className="m-5 d-flex align-items-center justify-content-center" style={{color: "#fff", textShadow: "0 0 7px rgba(0,0,0,0.5)"}}>
+						<span className="fas fa-circle-notch fa-spin position-absolute" style={{opacity: "0.5", fontSize: "7em"}} />
+						<span className="loading-page-number" style={{fontSize: "2em"}}></span>
+					</div>
+				)
+			}
+
+			//TODO: onerror
+			return (
+				dataTbl.map((id, idx) => {
+					const displayed = idx != 0 ? "d-none" : "";
+					const loading = idx < 2 ? "eager" : "lazy";
+					const img_url = `${pages.baseUrl}/${dataStr}/${pages.chapter.hash}/${id}`;
+
+					return (
+						<img
+							className={`noselect nodrag cursor-pointer reader-image ${displayed}`}
+							src={img_url}
+							loading={loading}
+							page={idx}
+							refreshIdx={this.refreshCounter}
+							onError={(e) => this.fetchPages(parseInt(e.target.attributes.refreshIdx.value))}
+						/>
+					)
+				})
+			)
+		}
+
+		return (
+			{/* reader main */},
+			<Container className="reader-main col row no-gutters flex-column flex-nowrap noselect" style={{"flex":"1"}}>
+				<noscript>
+					<div className="alert alert-danger text-center">
+						JavaScript is required for this reader to work.
+					</div>
+				</noscript>
+				<div className="reader-goto-top d-flex d-lg-none justify-content-center align-items-center fade cursor-pointer">
+					<span className="fas fa-angle-up"></span>
+				</div>
+				{/* TODO: This should be in a renderer */}
+				<div 
+					className="reader-images row no-gutters flex-nowrap text-center cursor-pointer directional"
+					onClick={(e) => this.renderer.pageClick(e)}
+					page={0}
+				>
+					{renderPages()}
+				</div>
+				<div className="reader-load-icon">
+					<span className="fas fa-circle-notch fa-spin" aria-hidden="true"></span>
+				</div>
+				{/*<div className="reader-page-bar col-auto d-none d-lg-flex directional">
+					<div className="track cursor-pointer row no-gutters">
+						<div className="trail position-absolute h-100 noevents">
+							<div className="thumb h-100"></div>
+						</div>
+						<div className="notches row no-gutters h-100 w-100 directional"></div>
+						<div className="notch-display col-auto m-auto px-3 py-1 noevents"></div>
+					</div>
+				</div>*/}
+			</Container>
+		)
+	}
+
 	//TODO: Better config style, for the menu
 	imgStyle = {
 		"scroll": (e) => {
@@ -1163,7 +1096,7 @@ export class ChapterDisplay extends React.Component {
 		if (chap_nextidx >= 0) {
 			return this._jumpChapter(chaps[chap_nextidx].value);
 		} else {
-			//this.backToManga();
+			this.backToManga();
 		}
 	}
 
@@ -1186,7 +1119,28 @@ export class ChapterDisplay extends React.Component {
 			f.style.display = "none";
 		});
 
+		//TODO: Right-to-left
+		this.renderer = new SinglePageRender(0);
+		this.renderer.onBegin = () => this.prevChapter(null);
+		this.renderer.onEnd = () => this.nextChapter(null);
+
 		window.addEventListener("resize", (e) => this.resizeFunc(e), false);
+
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		render_window.addEventListener("scroll", (e) => {
+			if (this.renderer.getRenderer() == "long-strip") {
+				var visible = null;
+				Array.from(this.renderer.pageAll()).forEach((e) => {
+					if (checkVisible(e)) { //TODO: Check middle
+						visible = e.getAttribute("page");
+					}
+				});
+				if (visible) {
+					visible = parseInt(visible)
+					this.renderer.pageCurrentSet(visible);
+				}
+			}
+		}, false);
 
 		//TODO: Use feed endpoint instead?
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {
@@ -1201,13 +1155,16 @@ export class ChapterDisplay extends React.Component {
 			this.setState({
 				chapter: c
 			});
+			//If user logged in
+			if (user != null) {
+				this.renderer.onRead = () => API.readChapter(ch.getId());
+			}
 
 			API.aggregate(
 				manga.getId(), 
 				(group != null && group.length > 0) ? {"groups": [group[0].getId()]} : {}
 			).then((cs) => {
 				var chs = [];
-
 				Object.values(cs.volumes).forEach((v) => {
 					{Object.values(v.chapters).forEach((c) => {
 						chs.push(<option value={c.id}>{this.cvTitle(v.volume,c.chapter)}</option>)
@@ -1219,6 +1176,31 @@ export class ChapterDisplay extends React.Component {
 				});
 			});
 		});
+
+		this.fetchPages(this.refreshCounter);
+	}
+
+	fetchPages(idx) {
+		const counter = this.refreshCounter;
+
+		if (idx == counter) {
+			const waiter = idx == 0 ? 0 : Math.min(200*Math.pow(1.7, counter), 2000);
+			console.log("fetchPages: ", counter, waiter);
+
+			this.refreshCounter += 1;
+			setTimeout(() => {
+				//TODO: Detect failure
+				API.chapterPages(this.props.id).then((c) => {
+					if (c == null) {
+						this.fetchPages(counter+1);
+					} else {
+						this.setState({
+							pages: c
+						});
+					}
+				});
+			}, waiter); //Exponential backoff
+		}
 	}
 
 	//Done when changing chapter
@@ -1226,16 +1208,15 @@ export class ChapterDisplay extends React.Component {
 		if (prevProps.id != this.props.id) {
 			this.setState({
 				chapter: null,
-				chapters: []
+				chapters: [],
+				pages: null
 			});
+			this.refreshCounter = 0;
 			this.componentDidMount();
 		}
 	}
 
 	render() {
-		const { user, setUser } = this.context;
-		const chapter = this.hasChapter();
-
 		var mobile_class = this.state.isMobile ? 'layout-vertical' : 'layout-horizontal';
 
 		//TODO: Dont remove fit-vertical and fit-horizontal
@@ -1251,15 +1232,7 @@ export class ChapterDisplay extends React.Component {
 				data-renderer="single-page"
 			>
 				{this.readerControls()}
-				{chapter != null && 
-					<PageRenderer 
-						id={chapter.getId()}
-						settings={this.changeChild}
-						onBegin={() => this.prevChapter(null)}
-						onEnd={() => this.nextChapter(null)}
-						onRead={() => {user != null && chapter != null && API.readChapter(chapter.getId())}}
-					/>
-				}
+				{this.readerMain()}
 				<SettingsModal ref={this.changeChild}/>
 			</Container>
 

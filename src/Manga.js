@@ -29,7 +29,7 @@ import {
 } from "./partials"
 
 import API from "./MangaDexAPI/API";
-import { slugify, capitalizeFirstLetter } from "./utility";
+import { slugify, capitalizeFirstLetter, ElementUpdater } from "./utility";
 
 //TODO: Move direct access (.attribute) functions to API classes
 
@@ -308,7 +308,7 @@ class ChapterList extends React.Component {
 								</Col>
 
 								<Col lg={{span: 1, order: 8}} className="col-2 ml-1 text-right text-truncate">
-									{c.getUpdateDiff()} ago
+									<ElementUpdater delay={1000} func={() => {return `${c.getUpdateDiff()} ago`}} />
 								</Col>
 
 								<div className="w-100 d-lg-none"></div>
