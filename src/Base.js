@@ -180,7 +180,12 @@ export class DNavbar extends React.Component {
 						</Form>
 
 						<Nav>
-							<Nav.Link as={Link} to="#" style={{display: "flex", "alignItems": "center"}} onClick={() => this.changeChild.current.openModal()}>{display_fa_icon('cog', "Settings")}</Nav.Link>
+							<Nav.Link as={Link} to="#" style={{display: "flex", "alignItems": "center"}} onClick={() => this.changeChild.current.openModal()}>
+								{display_fa_icon('cog', "Settings")} 
+								<div className="d-lg-none">
+									&nbsp;Settings
+								</div>
+							</Nav.Link>
 							<LoginNote user={user}/>
 						</Nav>
 					</Navbar.Collapse>
