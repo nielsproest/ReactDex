@@ -53,7 +53,6 @@ function setDataSaver(val) {
 		val = CFG != null ? CFG == "true" : true;
 	}
 	localStorage.setItem("READER_DATASAVER", val);
-	//TODO: Rerender imgs
 	return val;
 }
 
@@ -133,6 +132,79 @@ class SettingsModal extends React.Component {
 	componentDidMount() {
 	}
 
+	_setDisplayType(val) {
+		if (val == null) {
+			const CFG = localStorage.getItem("READER_DISPLAYTYPE");
+			val = CFG != null ? CFG : "single-page";
+		}
+		localStorage.setItem("READER_DISPLAYTYPE", val);
+		if (this.props.renderer != null && this.props.renderer.current != null) {
+			this.props.renderer.current.setRenderer(val);
+		}
+		return val;
+	}
+	setDisplayType(val) {
+		const reader_ref = document.getElementsByClassName("reader")[0];
+	
+		const single_page = document.getElementsByClassName("show-single-page")[0];
+		const double_page = document.getElementsByClassName("show-double-page")[0];
+		const long_strip  = document.getElementsByClassName("show-long-strip")[0];
+	
+		const r_single_page = getElementByXpath("//button[@data-setting='renderingMode' and @data-value='1']");
+		const r_double_page = getElementByXpath("//button[@data-setting='renderingMode' and @data-value='2']");
+		const r_long_strip  = getElementByXpath("//button[@data-setting='renderingMode' and @data-value='3']");
+
+		if (val == "double-page") {
+			return;
+		}
+
+		single_page.classList.add("d-none");
+		double_page.classList.add("d-none");
+		long_strip.classList.add("d-none");
+	
+		r_single_page.classList.remove("active");
+		r_double_page.classList.remove("active");
+		r_long_strip.classList.remove("active");
+	
+		if (val == "single-page") {
+			r_single_page.classList.add("active");
+			single_page.classList.remove("d-none");
+			this._setDisplayType(val);
+		}
+		/*if (val == "double-page") {
+			r_double_page.classList.add("active");
+			double_page.classList.remove("d-none");
+			this._setDisplayType(val);
+		}*/
+		if (val == "long-strip") {
+			r_long_strip.classList.add("active");
+			long_strip.classList.remove("d-none");
+			this._setDisplayType(val);
+		}
+	}
+	scrollDisplayType() {
+		const reader_ref = document.getElementsByClassName("reader")[0];
+
+		const single_page = document.getElementsByClassName("show-single-page")[0];
+		const double_page = document.getElementsByClassName("show-double-page")[0];
+		const long_strip = document.getElementsByClassName("show-long-strip")[0];
+
+		if (!single_page.classList.contains("d-none")) {
+			long_strip.classList.remove("d-none");
+			single_page.classList.add("d-none");
+
+			this.setDisplayType("long-strip");
+		}
+		/*if (!double_page.classList.contains("d-none")) {
+		}*/
+		else if (!long_strip.classList.contains("d-none")) {
+			long_strip.classList.add("d-none");
+			single_page.classList.remove("d-none");
+
+			this.setDisplayType("single-page");
+		}
+	}
+
 	render() {
 		return (
 			{/* settings modal */},
@@ -184,9 +256,36 @@ class SettingsModal extends React.Component {
 							<label className="col-sm-4 col-form-label">Page rendering</label>
 							<div className="col">
 								<div className="row">
-									<button type="button" data-value="1" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Single</button>
-									<button type="button" data-value="2" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Double</button>
-									<button type="button" data-value="3" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Long strip</button>
+									<Button 
+										type="button" 
+										variant="secondary" 
+										data-value="1" 
+										data-setting="renderingMode" 
+										className="col px-2" 
+										active={this._setDisplayType(null) == "single-page"} 
+										onClick={(e) => this.setDisplayType("single-page")}>
+											Single
+									</Button>
+									<Button 
+										type="button" 
+										variant="secondary" 
+										data-value="2" 
+										data-setting="renderingMode" 
+										className="col px-2" 
+										active={this._setDisplayType(null) == "double-page"} 
+										onClick={(e) => this.setDisplayType("double-page")}>
+											Double
+									</Button>
+									<Button 
+										type="button" 
+										variant="secondary" 
+										data-value="3" 
+										data-setting="renderingMode" 
+										className="col px-2" 
+										active={this._setDisplayType(null) == "long-strip"} 
+										onClick={(e) => this.setDisplayType("long-strip" )}>
+											Long strip
+									</Button>
 								</div>
 							</div>
 						</div>
@@ -1076,7 +1175,7 @@ export class ChapterDisplay extends React.Component {
 								<span className="show-fit-height d-none">Fit height</span>
 								<span className="show-fit-width d-none">Fit width</span>
 							</div>
-							<div className="reader-controls-mode-rendering w-100 cursor-pointer px-2"  onClick={(e) => this.imgStyle["scroll"]()}>
+							<div className="reader-controls-mode-rendering w-100 cursor-pointer px-2"  onClick={(e) => this.changeChild.current.scrollDisplayType()}>
 								<kbd>&nbsp;g</kbd>
 								<span className="fas fa-book fa-fw" aria-hidden="true" title="Reader mode"></span>
 								<span className="show-single-page">Single page</span>
@@ -1122,32 +1221,6 @@ export class ChapterDisplay extends React.Component {
 				</Row>
 			</Container>
 		)
-	}
-
-	//TODO: Better config style, for the menu
-	imgStyle = {
-		"scroll": (e) => {
-			const reader_ref = document.getElementsByClassName("reader")[0];
-
-			const single_page = document.getElementsByClassName("show-single-page")[0];
-			const double_page = document.getElementsByClassName("show-double-page")[0];
-			const long_strip = document.getElementsByClassName("show-long-strip")[0];
-
-			if (!single_page.classList.contains("d-none")) {
-				long_strip.classList.remove("d-none");
-				single_page.classList.add("d-none");
-
-				this.changeRender.current.setRenderer("long-strip");
-			}
-			/*if (!double_page.classList.contains("d-none")) {
-			}*/
-			else if (!long_strip.classList.contains("d-none")) {
-				long_strip.classList.add("d-none");
-				single_page.classList.remove("d-none");
-
-				this.changeRender.current.setRenderer("single-page");
-			}
-		}
 	}
 
 	imgFit = {
@@ -1353,7 +1426,7 @@ export class ChapterDisplay extends React.Component {
 						onRead={() => {user != null && chapter != null && API.readChapter(chapter.getId())}}
 					/>
 				}
-				<SettingsModal ref={this.changeChild}/>
+				<SettingsModal ref={this.changeChild} renderer={this.changeRender}/>
 			</Container>
 
 		)
