@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "axios";
 import axiosRetry from 'axios-retry';
 import React from "react";
 import { isDevBuild, slugify, getTimeDiff } from "../utility";
@@ -515,8 +515,7 @@ class DexFS {
 			const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/follows/manga/${mangaId}`);
 			return req.data.result == "ok";
 		} catch (e) {
-			console.log(e);
-			return false;
+			return e.response.status == 404 ? false : null;
 		}
 	}
 	async followManga(mangaId) {
