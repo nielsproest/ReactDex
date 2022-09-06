@@ -1,4 +1,5 @@
 import axios from "axios"
+import axiosRetry from 'axios-retry';
 import React from "react";
 import { isDevBuild, slugify, getTimeDiff } from "../utility";
 
@@ -8,6 +9,14 @@ import { isDevBuild, slugify, getTimeDiff } from "../utility";
  */
 
 export const CORS_BYPASS = isDevBuild() ? "" : "https://corsheaderproxy.corry.workers.dev/corsproxy/";
+
+axiosRetry(axios, { 
+	retries: 3,
+	retryCondition: e => {
+		return e.response.status >= 500 || e.response.status === 401
+	},
+	retryDelay: axiosRetry.exponentialDelay
+});
 
 //TODO: Checkout scripts\reader\api.js
 class MdData {
@@ -506,6 +515,7 @@ class DexFS {
 			const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/follows/manga/${mangaId}`);
 			return req.data.result == "ok";
 		} catch (e) {
+			console.log(e);
 			return false;
 		}
 	}

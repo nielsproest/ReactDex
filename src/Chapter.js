@@ -5,6 +5,9 @@ import Col from "react-bootstrap/Col";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 import './css/Chapter.css';
 
@@ -30,6 +33,91 @@ import { UserContext } from "./user-context";
 import API, {slugify} from "./MangaDexAPI/API";
 import { getElementByXpath, checkVisible } from "./utility";
 
+function setAdvancedSettings(val) {
+	if (val == null) {
+		val = false;
+	}
+
+	if (val) {
+		document.getElementById("modal-settings").classList.add("show-advanced");
+	} else {
+		document.getElementById("modal-settings").classList.remove("show-advanced");
+	}
+
+	return val;
+}
+function setDataSaver(val) {
+	if (val == null) {
+		const CFG = localStorage.getItem("READER_DATASAVER");
+		val = CFG != null ? CFG == "true" : false;
+	}
+	localStorage.setItem("READER_DATASAVER", val);
+	//TODO: Rerender imgs
+	return val;
+}
+
+class DataSaverSetting extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			dataSaver: setDataSaver(null)
+		};
+	}
+
+	change(val) {
+		setDataSaver(val);
+		Array.from(document.getElementsByClassName("reader-image")).forEach((e) => {
+			const source = val ? e.getAttribute("datasaver-src") : e.getAttribute("data-src");
+			const loaded = e.complete;
+			if (!loaded) {
+				e.setAttribute("src", source);
+			}
+		})
+		this.setState({
+			dataSaver: val
+		});
+	}
+
+	render() {
+		return (
+			<Row className="form-group">
+				<label className="col-sm-4 col-form-label">
+					Data saver <a href="/thread/252554"><span className="fas fa-info-circle fa-fw" title="More information" /></a>
+				</label>
+				<Col>
+					<Row>
+						<ToggleButtonGroup 
+							type="radio" 
+							name="datasaver-option"
+							defaultValue={this.state.dataSaver}
+						>
+							{/*TODO: Standardize this and try radio buttons */}
+							<Button 
+								variant="secondary" 
+								className="col px-2"
+								value={false}
+								active={this.state.dataSaver == false}
+								onClick={(e) => this.change(false)}
+							>
+								Original images
+							</Button>
+							<Button 
+								variant="secondary" 
+								className="col px-2"
+								value={true}
+								active={this.state.dataSaver == true}
+								onClick={(e) => this.change(true)}
+							>
+								Compressed images
+							</Button>
+						</ToggleButtonGroup>
+					</Row>
+				</Col>
+			</Row>
+		)
+	}
+}
+
 class SettingsModal extends React.Component {
 	constructor(props) {
 		super(props);
@@ -41,10 +129,14 @@ class SettingsModal extends React.Component {
 	openModal = () => this.setState({ isOpen: true });
 	closeModal = () => this.setState({ isOpen: false });
 
+	componentDidMount() {
+	}
+
 	render() {
 		return (
 			{/* settings modal */},
 			<Modal 
+				id="modal-settings"
 				show={this.state.isOpen} 
 				onHide={this.closeModal} 
 				animation={true}
@@ -57,15 +149,14 @@ class SettingsModal extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 					<Container>
-						<div className="form-group row">
-							<div className="col">
-								<div className="custom-control custom-checkbox form-check">
-									<input type="checkbox" id="showAdvanced" data-setting="showAdvancedSettings" data-value="0" className="custom-control-input" />
-									<label htmlFor="showAdvanced" className="custom-control-label"> Display advanced (*) settings
-									</label>
-								</div>
-							</div>
-						</div>
+						<Row className="form-group">
+							<Col>
+								<Form.Check
+									label="Display advanced (*) settings"
+									onChange={(e) => setAdvancedSettings(e.target.checked)}
+								/>
+							</Col>
+						</Row>
 						<hr />
 						<h5><span className='fas fa-book-open fa-fw' aria-hidden='true' title=''></span> Display settings</h5>
 						<div className="form-group row">
@@ -282,29 +373,8 @@ class SettingsModal extends React.Component {
 								</div>
 							</div>
 						</div>*/}
-						<div className="row form-group">
-							<label className="col-sm-4 col-form-label">Image server</label>
-							<div className="col my-auto">
-								<select className="form-control" data-setting="imageServer">
-									<option value="0">Automatic</option>
-									<option value="na">NA/EU 1</option>
-									<option value="na2">NA/EU 2</option>
-									{/*<option value="eu">Europe</option>
-									<option value="eu2">Europe 2</option>*/}
-									{/*<option value="row">Rest of the world</option>*/}
-								</select>
-							</div>
-						</div>
-						<div className="row form-group">
-							<label className="col-sm-4 col-form-label">Data saver <a href="/thread/252554"><span className="fas fa-info-circle fa-fw" title="More information"></span></a></label>
-							<div className="col">
-								<div className="row">
-									<button type="button" data-value="0" data-setting="dataSaverV2" className="btn btn-default btn-secondary col px-2">Original images</button>
-									<button type="button" data-value="1" data-setting="dataSaverV2" className="btn btn-default btn-secondary col px-2">Compressed images</button>
-								</div>
-							</div>
-						</div>
-						<div className="row form-group advanced">
+						<DataSaverSetting />
+						{/*<div className="row form-group advanced">
 							<label className="col-sm-4 col-form-label">[BETA] Recommendations</label>
 							<div className="col">
 								<div className="row">
@@ -312,7 +382,7 @@ class SettingsModal extends React.Component {
 									<button type="button" data-value="0" data-setting="betaRecommendations" className="btn btn-default btn-secondary col px-2">Disabled</button>
 								</div>
 							</div>
-						</div>
+						</div>*/}
 						<hr />
 						<div>
 							<h4><span className='fas fa-keyboard fa-fw' aria-hidden='true' title=''></span> Keyboard shortcuts</h4>
@@ -421,18 +491,6 @@ class SettingsModal extends React.Component {
 				</Modal.Footer>
 			</Modal>
 		)
-	}
-}
-class MenuConfig {
-	constructor() {
-		//TODO: localStorage load
-		//Maybe let SettingsModal handle it?
-	}
-	displayType() {
-		
-	}
-	displayType(type) {
-
 	}
 }
 
@@ -725,20 +783,6 @@ class PageRenderer extends React.Component {
 
 	render() {
 		const pages = this.state.pages;
-		const dataSaver = false;
-	
-		var dataStr = "";
-		var dataTbl = [];
-
-		if (pages) {
-			if (true) {
-				dataStr = "data-saver";
-				dataTbl = pages.chapter.dataSaver;
-			} else {
-				dataStr = "data";
-				dataTbl = pages.chapter.data;
-			}
-		}
 
 		/*
 		document.getElementsByClassName("reader")[0].setAttribute("data-renderer", "fit-both");
@@ -747,7 +791,7 @@ class PageRenderer extends React.Component {
 		*/
 
 		const renderPages = () => {
-			if (dataTbl.length == 0) {
+			if (pages == null) {
 				return (
 					<div className="m-5 d-flex align-items-center justify-content-center" style={{color: "#fff", textShadow: "0 0 7px rgba(0,0,0,0.5)"}}>
 						<span className="fas fa-circle-notch fa-spin position-absolute" style={{opacity: "0.5", fontSize: "7em"}} />
@@ -756,24 +800,27 @@ class PageRenderer extends React.Component {
 				)
 			}
 
-			//TODO: onerror
+			var dataTbl = pages.chapter.data;
+			var dataSaverTbl = pages.chapter.dataSaver;
+
 			return (
-				dataTbl.map((id, idx) => {
+				dataTbl.map((_, idx) => {
 					const displayed = idx != 0 ? "d-none" : "";
 					const loading = idx < 5 ? "eager" : "lazy";
-					const img_url = `${pages.baseUrl}/${dataStr}/${pages.chapter.hash}/${id}`;
+					const full_img = `${pages.baseUrl}/data/${pages.chapter.hash}/${dataTbl[idx]}`;
+					const saver_img = `${pages.baseUrl}/data-saver/${pages.chapter.hash}/${dataSaverTbl[idx]}`;
+					const img_url = setDataSaver(null) ? saver_img : full_img;
+					const refreshidx = this.refreshCounter;
 
 					return (
 						<img
 							className={`noselect nodrag cursor-pointer reader-image ${displayed}`}
+							data-src={full_img}
+							datasaver-src={saver_img}
 							src={img_url}
 							loading={loading}
 							page={idx}
-							refreshidx={this.refreshCounter}
-							onError={(e) => {
-								const refreshidx = e.target.attributes.refreshidx.value;
-								this.fetchPages(parseInt(refreshidx))
-							}}
+							onError={(e) => this.fetchPages(parseInt(refreshidx)) }
 							onLoad={(e) => {
 								const bar = Array.from(document.getElementsByClassName("trail")[0].childNodes);
 								bar[idx].classList.add("loaded");
@@ -809,7 +856,7 @@ class PageRenderer extends React.Component {
 				<div className="reader-page-bar col-auto d-none d-lg-flex directional">
 					<div className="track cursor-pointer row no-gutters">
 						<div className="trail position-absolute h-100" style={{display: "flex"}}>
-							{Array.from(Array(dataTbl.length).keys()).map((idx) => {
+							{Array.from(Array(pages != null ? pages.chapter.data.length : 0).keys()).map((idx) => {
 								const _class = idx == this.page ? "thumb" : "";
 								//notch for loading anim?
 

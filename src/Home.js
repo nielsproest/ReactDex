@@ -149,6 +149,9 @@ export class MangaCards extends React.Component {
 	followsGet() {
 		const { user, setUser } = this.context;
 
+		//TODO: API Call fails due to race condition when app has been asleep
+		//We must wait for login to be successful
+		//Or just retry
 		if (user != null) {
 			API.getFollowedManga(30, 0).then(res => {
 				this.setState({
