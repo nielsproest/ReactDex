@@ -277,18 +277,10 @@ export class TopList extends React.Component {
 		//There is no API for this, i can scrape for it, but for now its fixed
 		//top_follows
 		if (this.props.type == "top_follows") {
-			API.manga({"ids": [
-				"32d76d19-8a05-4db0-9fc2-e0b0648fe9d0",
-				"4a76bf77-f757-46bd-9d82-f2a579bb1c63",
-				"769a5e79-0670-4188-8582-035f0a3cc051",
-				"879af0bb-ce30-47e4-a74e-cd1ce874c6e3",
-				"a77742b1-befd-49a4-bff5-1ad4e6b0ef7b",
-				"a96676e5-8ae2-425e-b549-7f15dd34a6d8",
-				"bd6d0982-0091-4945-ad70-c028ed3c0917",
-				"c099c678-8e69-4940-9d26-6effee70205b",
-				"d8a959f7-648e-4c8d-8f23-f1f3f8e129f3",
-				"eb2d1a45-d4e7-4e32-a171-b5b029c5b0cb"
-			]}, true).then(res => {
+			API.manga({
+				"order[followedCount]": "desc",
+				"limit": 10
+			}, true).then(res => {
 				console.log("Retrieve succeded!");
 				const mangas = res.data;
 				mangas.sort((m1,m2) => m2.statistics.follows - m1.statistics.follows);
@@ -302,18 +294,10 @@ export class TopList extends React.Component {
 		}
 		//top_rating
 		if (this.props.type == "top_rating") {
-			API.manga({"ids": [
-				"0c697908-bafd-44ec-ae29-b8515becd506",
-				"129c90ca-b997-4789-a748-e8765bc67a65",
-				"12e28a8a-cbfe-4e12-bab8-b6fb0b9a59b4",
-				"2e3ec8e6-cee0-4779-8f4e-c42ab683ef75",
-				"473a1d69-0ef5-4882-a45b-ca55c181ce86",
-				"73962987-7e02-4126-8405-4d75c2188d7f",
-				"96471a2c-59f3-4a08-be7d-640bc0c022a4",
-				"c8dcfca4-874f-45e2-ba01-959ea0b6f141",
-				"d36b802a-7d1e-4153-80ee-b6ee509555ff",
-				"feff4eaf-01df-4a05-83f4-68bb5cdf4fad"
-			]}, true).then(res => {
+			API.manga({
+				"order[rating]": "desc",
+				"limit": 10
+			}, true).then(res => {
 				console.log("Retrieve succeded!");
 				const mangas = res.data;
 				mangas.sort((m1,m2) => m2.statistics.rating.bayesian - m1.statistics.rating.bayesian);

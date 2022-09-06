@@ -381,7 +381,6 @@ class DexFS {
 		var params = {
 			limit: limit,
 			offset: offset,
-			"order[updatedAt]": "desc",
 			"includes": ["cover_art"]
 			//"includes": Object.keys(RELATION_MAP)
 		};
@@ -430,9 +429,6 @@ class DexFS {
 		chaps.data = await this.resolveByManga(chaps.data, getGroup);
 		return chaps;
 	}
-
-	//TODO: Top manga by follows
-	//TODO: Top manga by rating
 
 	async _chapter(url, custom={}, limit=30, offset=0) {
 		var params = {

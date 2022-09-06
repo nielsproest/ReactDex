@@ -529,7 +529,7 @@ export class MangaDisplay extends React.Component {
 						<div className="row edit">
 							<div className="col-xl-3 col-lg-4 col-md-5">
 								<Link to={"#"} title="See covers">
-									<img className="rounded" width="100%" src={manga.getCover512()} />
+									<img className="rounded" width="100%" src={manga.getCover()} />
 								</Link>
 							</div>
 							<div className="col-xl-9 col-lg-8 col-md-7">

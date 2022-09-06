@@ -57,7 +57,7 @@ function setDataSaver(val) {
 	return val;
 }
 
-class DataSaverSetting extends React.Component {
+export class DataSaverSetting extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -1130,6 +1130,7 @@ export class ChapterDisplay extends React.Component {
 				long_strip.classList.remove("d-none");
 				single_page.classList.add("d-none");
 
+				//TODO: FIX THIS
 				const new_renderer = new LongStripRender(this.renderer.pageCurrent());
 				new_renderer.onBegin = this.renderer.onBegin;
 				new_renderer.onEnd = this.renderer.onEnd;
