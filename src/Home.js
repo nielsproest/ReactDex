@@ -23,7 +23,7 @@ import {
 	display_reading_history
 } from "./partials"
 import { UserContext } from "./user-context";
-import { ElementUpdater, getUUID } from "./utility";
+import { ElementUpdater } from "./utility";
 import API from "./MangaDexAPI/API";
 
 export class MangaCard extends React.Component {
@@ -200,7 +200,7 @@ export class MangaCards extends React.Component {
 			if (this.state.followMangas.length > 0) {
 				return this.state.followMangas.map((i) => {
 					//TODO: Why is this a key violation?
-					return (<MangaCard manga={i} key={getUUID(i)}/>)
+					return (<MangaCard manga={i} key={i.getUUID()}/>)
 				})
 			} else {
 				return display_alert("info", "m-2 widthfix", "Notice", "You haven't followed any manga!")
@@ -211,7 +211,7 @@ export class MangaCards extends React.Component {
 			const mangas = this.state.mangas;
 			return mangas.map((i) => {
 				//TODO: Why is this a key violation?
-				return (<MangaCard manga={i} key={getUUID(i)} />)
+				return (<MangaCard manga={i} key={i.getUUID()} />)
 			})
 		}
 
@@ -361,7 +361,7 @@ export class TopList extends React.Component {
 			<ListGroup variant="flush" key={`${this.props.type}-${this.props.subtype}`}>
 				{mangas.map((manga) => {
 					return (
-						<ListGroup.Item className="px-2 py-1" key={getUUID(manga)}>
+						<ListGroup.Item className="px-2 py-1" key={manga.getUUID()}>
 							<div className='hover tiny_logo rounded float-left mr-2'>
 								<a href={manga.getUrl()}>
 									<img className='rounded max-width' src={manga.getCover256()} loading="lazy" />

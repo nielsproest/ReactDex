@@ -68,14 +68,6 @@ export function checkVisible(elm) {
 	return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
 }
 
-export function getUUID(data) {
-	var key = data.getId();
-	Object.values(data.relationships).forEach((_r) => _r.forEach((r) => {
-		key += `-${r.getId()}`;
-	}));
-	return key;
-}
-
 export class ElementUpdater extends React.Component {
 	constructor(props) {
 		super(props);

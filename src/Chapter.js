@@ -498,32 +498,29 @@ class SettingsModal extends React.Component {
 const ERIGHT = 0;
 const ELEFT = 1;
 
-class SinglePageRender extends React.Component {
-	//TODO: Should this be a React.Component
-	//So it learns the onBegin, onEnd and onRead itself?
+class SinglePageRender {
 	constructor(props) {
-		super(props);
-
-		this.page = props.page;
+		this.props = props;
+		this.page = this.pageCurrent();
 		this.direction = props.dir != null ? props.dir : ERIGHT;
 		this.distance = props.distance != null ? props.distance : 4;
 		this.onReadCalled = false;
 	}
-	componentDidMount() {
+	init() {
 		this._setRenderer("single-page");
 		this.pageCurrentSet(this.page);
-		this.load();
 	}
+	exit() {}
 	_getReader() {
 		return document.getElementsByClassName("reader")[0];
 	}
 	_setRenderer(data) {
+		console.log("_setRenderer", data);
 		this._getReader().setAttribute("data-renderer", data);
 	}
 	getRenderer() {
 		return this._getReader().getAttribute("data-renderer");
 	}
-	//TODO: CSS?
 	pageCurrent() {
 		const element = getElementByXpath("//div[contains(@class,'reader-images')]");
 		if (element) {
@@ -559,6 +556,7 @@ class SinglePageRender extends React.Component {
 		return document.getElementsByClassName("reader-image");
 	}
 	load() {
+		console.log("load");
 		const page = this.pageCurrent();
 		const pages = this.pageAll();
 		const preload = this.distance+1;
@@ -631,16 +629,39 @@ class SinglePageRender extends React.Component {
 	}
 }
 class LongStripRender extends SinglePageRender {
-	constructor(page) {
-		super(page);
+	init() {
 		this._setRenderer("long-strip");
+		this.pageCurrentSet(this.page);
 		this.load();
 		this.pageScroll(false);
+
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		this.funnyfunc = (e) => this.scrollEvent(e);
+		render_window.addEventListener("scroll", this.funnyfunc, false);
 	}
+	exit() {
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		render_window.removeEventListener("scroll", this.funnyfunc, false);
+	}
+
+	scrollEvent(e) {
+		var visible = null;
+		Array.from(this.pageAll()).forEach((e) => {
+			if (checkVisible(e)) { //TODO: Check middle
+				visible = e.getAttribute("page");
+			}
+		});
+		if (visible) {
+			visible = parseInt(visible)
+			this.pageCurrentSet(visible);
+			//TODO: Load when near
+		}
+	}
+
 	load() {
 		const pages = this.pageAll();
 		Array.from(pages).forEach((e,idx) => {
-			e.setAttribute("loading", "eager");
+			e.setAttribute("loading", "lazy");
 			e.classList.remove("d-none");
 		});
 	}
@@ -687,13 +708,12 @@ class PageRenderer extends React.Component {
 		*/
 
 		this.state = {
-			renderer: "single-page",
 			pages: null
 		}
 		this.child = React.createRef();
-		this.page = 0;
 		this.refreshCounter = 0;
 		this.timer = null;
+		this.renderer = null;
 	}
 
 	fetchPages(idx) {
@@ -714,40 +734,26 @@ class PageRenderer extends React.Component {
 						this.setState({
 							pages: c
 						});
+						this.setRenderer("single-page");
 					}
 				});
 			}, waiter); //Exponential backoff
 		}
 	}
 
-	renderRef() {
-		return this.child.current;
-	}
-	scrollEvent(e) {
-		if (this.state.renderer == "long-strip") {
-			var visible = null;
-			Array.from(this.renderRef().pageAll()).forEach((e) => {
-				if (checkVisible(e)) { //TODO: Check middle
-					visible = e.getAttribute("page");
-				}
-			});
-			if (visible) {
-				visible = parseInt(visible)
-				this.renderRef().pageCurrentSet(visible);
-			}
-		}
-	}
 	componentDidMount() {
 		this.fetchPages(0);
-		
-		const render_window = document.getElementsByClassName("reader-images")[0];
-		render_window.addEventListener("scroll", this.scrollEvent, false);
 	}
-	componentWillUnmount() {
-		clearTimeout(this.timer);
 
-		const render_window = document.getElementsByClassName("reader-images")[0];
-		render_window.removeEventListener("scroll", this.scrollEvent, false);
+	componentWillUnmount() {
+		if (this.renderer != null) {
+			this.renderer.exit();
+		}
+		clearTimeout(this.timer);
+	}
+
+	renderRef() {
+		return this.renderer;
 	}
 	componentDidUpdate(prevProps) {
 		if (prevProps.id != this.props.id) {
@@ -755,31 +761,32 @@ class PageRenderer extends React.Component {
 		}
 	}
 
-	getRenderer() {
-		if (this.state.renderer == "single-page") {
-			//TODO: Mod renderers
-			return (
-				<SinglePageRender 
-					ref={this.child} 
-					page={this.page} 
-					onBegin={this.props.onBegin}
-					onEnd={this.props.onEnd}
-					onRead={this.props.onRead}
-				/>
-			)
+	//TODO: I hate this design, construct a proper architecture
+	setRenderer(val) {
+		const config = {
+			onBegin: this.props.onBegin,
+			onEnd: this.props.onEnd,
+			onRead: this.props.onRead
 		}
-		/*if (this.state.renderer == "double-page") {
-			return (
-				<DoublePageRender page={this.page} />
-			)
-		}*/
-		if (this.state.renderer == "long-strip") {
-			return (
-				<LongStripRender 
-					ref={this.child} 
-					page={this.page} 
-				/>
-			)
+
+		if (val == "single-page") {
+			if (this.renderer != null) {
+				this.renderer.exit();
+			}
+			const rend = new SinglePageRender(config);
+			rend.init();
+			this.renderer = rend;
+		}
+		if (val == "double-page") {
+
+		}
+		if (val == "long-strip") {
+			if (this.renderer != null) {
+				this.renderer.exit();
+			}
+			const rend = new LongStripRender(config);
+			rend.init();
+			this.renderer = rend;
 		}
 	}
 
@@ -807,7 +814,7 @@ class PageRenderer extends React.Component {
 
 			return (
 				dataTbl.map((_, idx) => {
-					const displayed = idx != 0 ? "d-none" : "";
+					const displayed = (idx != (this.renderer != null ? this.renderer.pageCurrent() : 0)) ? "d-none" : "";
 					const loading = idx < 5 ? "eager" : "lazy";
 					const full_img = `${pages.baseUrl}/data/${pages.chapter.hash}/${dataTbl[idx]}`;
 					const saver_img = `${pages.baseUrl}/data-saver/${pages.chapter.hash}/${dataSaverTbl[idx]}`;
@@ -844,11 +851,10 @@ class PageRenderer extends React.Component {
 				<div className="reader-goto-top d-flex d-lg-none justify-content-center align-items-center fade cursor-pointer">
 					<span className="fas fa-angle-up"></span>
 				</div>
-				{this.getRenderer()}
 				<div 
 					className="reader-images row no-gutters flex-nowrap text-center cursor-pointer directional"
 					onClick={(e) => this.renderRef().pageClick(e)}
-					page={this.page}
+					page={0}
 				>
 					{renderPages()}
 				</div>
@@ -859,7 +865,7 @@ class PageRenderer extends React.Component {
 					<div className="track cursor-pointer row no-gutters">
 						<div className="trail position-absolute h-100" style={{display: "flex"}}>
 							{Array.from(Array(pages != null ? pages.chapter.data.length : 0).keys()).map((idx) => {
-								const _class = idx == this.page ? "thumb" : "";
+								const _class = idx == 0 ? "thumb" : "";
 								//notch for loading anim?
 
 								//TODO: Better aim?
@@ -893,6 +899,7 @@ export class ChapterDisplay extends React.Component {
 			chapters: []
 		};
 		this.changeChild=React.createRef();
+		this.changeRender=React.createRef();
 	}
 
 	static contextType = UserContext;
@@ -1130,12 +1137,7 @@ export class ChapterDisplay extends React.Component {
 				long_strip.classList.remove("d-none");
 				single_page.classList.add("d-none");
 
-				//TODO: FIX THIS
-				const new_renderer = new LongStripRender(this.renderer.pageCurrent());
-				new_renderer.onBegin = this.renderer.onBegin;
-				new_renderer.onEnd = this.renderer.onEnd;
-				new_renderer.onRead = this.renderer.onRead;
-				this.renderer = new_renderer;
+				this.changeRender.current.setRenderer("long-strip");
 			}
 			/*if (!double_page.classList.contains("d-none")) {
 			}*/
@@ -1143,11 +1145,7 @@ export class ChapterDisplay extends React.Component {
 				long_strip.classList.add("d-none");
 				single_page.classList.remove("d-none");
 
-				const new_renderer = new SinglePageRender(this.renderer.pageCurrent());
-				new_renderer.onBegin = this.renderer.onBegin;
-				new_renderer.onEnd = this.renderer.onEnd;
-				new_renderer.onRead = this.renderer.onRead;
-				this.renderer = new_renderer;
+				this.changeRender.current.setRenderer("single-page");
 			}
 		}
 	}
@@ -1348,6 +1346,7 @@ export class ChapterDisplay extends React.Component {
 				{chapter != null && 
 					<PageRenderer 
 						id={chapter.getId()}
+						ref={this.changeRender}
 						settings={this.changeChild}
 						onBegin={() => this.prevChapter(null)}
 						onEnd={() => this.nextChapter(null)}

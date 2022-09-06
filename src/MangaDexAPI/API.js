@@ -89,6 +89,13 @@ class MdData {
 		const ms = (Date.now() - Date.parse(this.attributes.updatedAt));
 		return getTimeDiff(ms);
 	}
+	getUUID() {
+		var key = this.getId();
+		Object.values(this.relationships).forEach((_r) => _r.forEach((r) => {
+			key += `-${r.getId()}`;
+		}));
+		return key;
+	}
 	getId() {
 		return this.id;
 	}
