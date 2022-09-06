@@ -316,7 +316,7 @@ class ChapterList extends React.Component {
 									{display_group_link_v2(c.GetRelationship("scanlation_group"))}
 								</Col>
 
-								<Col lg={{span: 1, order: 6}} className="col-auto text-right mx-1 text-truncate">
+								<Col lg={{span: 2, order: 6}} className="col-auto text-right mx-1 text-truncate">
 									{display_user_link_v2(c.GetRelationship("user")[0])}
 								</Col>
 
