@@ -122,6 +122,26 @@ class SinglePageReader extends React.Component {
 			})
 		)
 	}
+	/*scrollEvent(e) {
+		var visible = null;
+		Array.from(this.pageAll()).forEach((e) => {
+			if (checkVisible(e)) { //TODO: Check middle
+				visible = e.getAttribute("page");
+			}
+		});
+		if (visible) {
+			visible = parseInt(visible)
+			this.pageCurrentSet(visible);
+			//TODO: Load when near
+		}
+	}
+	pageScroll(smooth=true) {
+		if (smooth) {
+			pages[page].scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+		} else {
+			pages[page].scrollIntoView();
+		}
+	}*/
 	pageNext(e) {
 		const page = parseInt(e.target.attributes.page.value);
 		this.props.setPage(page+1);
