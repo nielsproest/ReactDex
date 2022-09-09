@@ -98,6 +98,15 @@ class SinglePageReader extends React.Component {
 						onError={(e) => {
 							//this.fetchPages(parseInt(refreshidx));
 							//TODO: Report
+							/*
+							{
+								"url": "https://foo.bar:5678/abcdef/1a2b3c4d/data/3303dd03ac8d27452cce3f2a882e94b2/2-2a5e95dfec7f15cd01f9a63835be18a22fb77a10fd2d62858c7dcbb6e6c622f9.png",
+								"success": true,
+								"bytes": 674687,
+								"duration": time for response,
+								"cached": if X-Hit in response headers
+							}
+							*/
 						}}
 						onLoad={(e) => {
 							this.props.setLoaded(idx);
