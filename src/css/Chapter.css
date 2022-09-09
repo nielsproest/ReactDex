@@ -200,7 +200,7 @@ nav.navbar {
 	/*background: linear-gradient(to right, rgba(64, 64, 64, 0), rgba(64, 64, 64, 0.4));
 	opacity: 0;*/
 	display: block;
-	border-left: 3.5px solid rgba(128, 128, 128, 0.5);
+	border-left: 1px solid rgba(128, 128, 128, 0.5);
 }
 #reader-controls-collapser-bar:hover {
 	opacity: 1;
@@ -685,10 +685,12 @@ body {
 		height: 100%;
 	}
 	.reader.layout-horizontal .reader-images {
-		padding-right: 20vw !important;
+		/*padding-right: 20vw !important;*/
+		padding-right: calc(20vw + 40px) !important;
 	}
 	.reader.layout-horizontal.hide-sidebar .reader-images {
-		padding-right: 0 !important;
+		/*padding-right: 0 !important;*/
+		padding-right: 40px !important;
 	}
 
 

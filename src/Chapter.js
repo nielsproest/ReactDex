@@ -285,7 +285,7 @@ class ReaderMain extends React.Component {
 
 		return (
 			{/* reader main */},
-			<Container className="reader-main col row no-gutters flex-column flex-nowrap noselect" style={{"flex":"1"}}>
+			<Container className="reader-main col row no-gutters flex-column flex-nowrap noselect p-0" style={{"flex":"1"}}>
 				<noscript>
 					<div className="alert alert-danger text-center">
 						JavaScript is required for this reader to work.
