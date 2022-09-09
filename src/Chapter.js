@@ -610,6 +610,7 @@ export class ChapterDisplay extends React.Component {
 
 		const mobile_class = this.state.isMobile ? 'layout-vertical' : 'layout-horizontal';
 
+		//TODO: Use bootstrap placeholder for missing stuff
 		return (
 			<Container 
 				className={`reader row flex-column no-gutters ${mobile_class} ${fit_class}`} 

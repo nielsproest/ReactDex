@@ -493,6 +493,7 @@ export class MangaDisplay extends React.Component {
 		const manga = this.state.manga;
 		const user = this.context;
 
+		//TODO: Use bootstrap placeholder for missing stuff
 		if (manga == null) {
 			return (
 				<React.Fragment>

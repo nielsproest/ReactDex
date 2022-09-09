@@ -254,6 +254,8 @@ export class TopList extends React.Component {
 	}
 
 	componentDidMount() {
+		//TODO: Use bootstrap placeholder for missing stuff
+		
 		if (this.props.type == "top_chapters_6h") {
 			//TODO: This is top chapters, not top manga
 			//TODO: Show chapter support
