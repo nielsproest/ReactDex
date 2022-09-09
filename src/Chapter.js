@@ -149,8 +149,7 @@ class ReaderMain extends React.Component {
 		super(props);
 		this.state = {
 			pages: null,
-			lpages: null,
-			page: 0
+			lpages: null
 		};
 		this.onReadCalled = false;
 		this.changeChild=React.createRef();
@@ -168,29 +167,6 @@ class ReaderMain extends React.Component {
 	renderRef() {
 		return this.changeChild.current;
 	}
-
-	setPage(idx) {
-		const chapter = this.props.chapter;
-		const num = this.state.pages.chapter.data.length;
-		if (0 <= idx && idx < num) {
-			this.setState({
-				page: idx
-			});
-		}
-		
-		if ((idx+1) >= Math.round(num * 0.75)) {
-			if (!this.onReadCalled) {
-				console.log("pageCurrent", "onRead");
-				this.onReadCalled = true;
-
-				//TODO: Only if user
-				//API.readChapter(chapter.getId())
-			}
-		}
-	}
-	getPage() {
-		return this.state.page;
-	}
 	setLoaded(idx) {
 		var lpages = this.state.lpages;
 		lpages[idx] = true;
@@ -204,7 +180,7 @@ class ReaderMain extends React.Component {
 
 	render() {
 		const pages = this.state.pages;
-		const page = this.state.page;
+		const page = this.props.page;
 		const cfg = this.props.cfg;
 
 		const renderPages = () => {
@@ -221,7 +197,7 @@ class ReaderMain extends React.Component {
 				return <DoublePageReader 
 					ref={this.changeChild} 
 					page={page} 
-					setPage={(i) => this.setPage(i)} 
+					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
 					pages={pages} 
@@ -231,7 +207,7 @@ class ReaderMain extends React.Component {
 				return <LongStripReader 
 					ref={this.changeChild} 
 					page={page} 
-					setPage={(i) => this.setPage(i)} 
+					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
 					pages={pages} 
@@ -241,7 +217,7 @@ class ReaderMain extends React.Component {
 				return <SinglePageReader 
 					ref={this.changeChild} 
 					page={page} 
-					setPage={(i) => this.setPage(i)} 
+					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
 					pages={pages} 
@@ -399,7 +375,7 @@ class ReaderSidebar extends React.Component {
 	render() {
 		const cfg = this.props.cfg;
 		const chapter = this.props.chapter;
-		const page = this.props.reader.current != null ? this.props.reader.current.getPage() : 0;
+		const page = this.props.reader.current != null ? this.props.page : 0;
 		var c_title = "";
 		var m_title = "";
 		var m_href = "";
@@ -1039,8 +1015,10 @@ export class ChapterDisplay extends React.Component {
 		this.state = {
 			isMobile: this.isMobile(),
 			chapter: null,
-			config: this.c_cfg.default()
+			config: this.c_cfg.default(),
+			page: 0
 		};
+		this.onReadCalled = false;
 	}
 
 	isMobile() {
@@ -1053,6 +1031,14 @@ export class ChapterDisplay extends React.Component {
 		});
 
 		window.removeEventListener("resize", this.resizeAnon, false);
+	}
+
+	componentDidMount() {
+		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
+			f.style.display = "none";
+		});
+
+		window.addEventListener("resize", this.resizeAnon, false);
 
 		API.chapter({"ids": [this.props.id], "includes": ["manga", "scanlation_group", "user"]}).then((c) => {
 			const ch = c.data[0];
@@ -1068,22 +1054,37 @@ export class ChapterDisplay extends React.Component {
 		});
 	}
 
-	componentDidMount() {
-
-		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
-			f.style.display = "none";
-		});
-
-		window.addEventListener("resize", this.resizeAnon, false);
-	}
-
 	componentDidUpdate(prevProps) {
 		if (prevProps.id != this.props.id) {
 			this.setState({
-				chapter: null
+				chapter: null,
+				page: 0
 			});
+			this.onReadCalled = true;
 			this.componentDidMount();
 		}
+	}
+
+	setPage(idx) {
+		const num = this.state.chapter.attributes.pages;
+		if (0 <= idx && idx < num) {
+			this.setState({
+				page: idx
+			});
+		}
+
+		if ((idx+1) >= Math.round(num * 0.75)) {
+			if (!this.onReadCalled) {
+				console.log("pageCurrent", "onRead");
+				this.onReadCalled = true;
+
+				//TODO: Only if user
+				//API.readChapter(chapter.getId())
+			}
+		}
+	}
+	getPage() {
+		return this.state.page;
 	}
 
 	render() {
@@ -1117,9 +1118,26 @@ export class ChapterDisplay extends React.Component {
 			>
 				{this.state.chapter != null ? (
 					<React.Fragment>
-						<ReaderSidebar ref={this.changeChild} reader={this.changeReader} panel={this.changeSettings} chapter={this.state.chapter} cfg={this.c_cfg}/>
-						<ReaderMain ref={this.changeReader} chapter={this.state.chapter} cfg={this.c_cfg}/>
-						<ReaderSettingsMenu ref={this.changeSettings} cfg={this.c_cfg}/>
+						<ReaderSidebar 
+							ref={this.changeChild} 
+							page={this.getPage()} 
+							setPage={(i) => this.setPage(i)} 
+							reader={this.changeReader} 
+							panel={this.changeSettings} 
+							chapter={this.state.chapter} 
+							cfg={this.c_cfg}
+						/>
+						<ReaderMain 
+							ref={this.changeReader} 
+							page={this.getPage()} 
+							setPage={(i) => this.setPage(i)} 
+							chapter={this.state.chapter} 
+							cfg={this.c_cfg}
+						/>
+						<ReaderSettingsMenu 
+							ref={this.changeSettings} 
+							cfg={this.c_cfg}
+						/>
 					</React.Fragment>
 				) : (<div>Loading...</div>)}
 			</Container>
