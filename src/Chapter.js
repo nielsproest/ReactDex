@@ -188,6 +188,9 @@ class ReaderMain extends React.Component {
 			}
 		}
 	}
+	getPage() {
+		return this.state.page;
+	}
 	setLoaded(idx) {
 		var lpages = this.state.lpages;
 		lpages[idx] = true;
@@ -261,7 +264,6 @@ class ReaderMain extends React.Component {
 				<div 
 					className="reader-images row no-gutters flex-nowrap text-center cursor-pointer directional"
 					onClick={(e) => this.renderRef().pageClick(e)}
-					page={0}
 				>
 					{renderPages()}
 				</div>
@@ -397,6 +399,7 @@ class ReaderSidebar extends React.Component {
 	render() {
 		const cfg = this.props.cfg;
 		const chapter = this.props.chapter;
+		const page = this.props.reader.current != null ? this.props.reader.current.getPage() : 0;
 		var c_title = "";
 		var m_title = "";
 		var m_href = "";
@@ -468,7 +471,7 @@ class ReaderSidebar extends React.Component {
 									//this.renderer.pageSet(e.target.value);
 								}}>
 									{Array.from(Array(chapter != null ? chapter.attributes.pages : 0).keys()).map((idx) => {
-										return (<option value={idx}>Page {idx+1}</option>)
+										return (<option value={idx} selected={page == idx ? true : false}>Page {idx+1}</option>)
 									})}
 								</select>
 							</div>
@@ -576,7 +579,7 @@ class ReaderSidebar extends React.Component {
 								<span className="fas fa-angle-left fa-fw" aria-hidden="true" title="Turn page left"></span>
 							</a>
 							<div className="col text-center reader-controls-page-text cursor-pointer">
-								Page <span className="current-page">1</span> / <span className="total-pages">{chapter != null ? chapter.attributes.pages : 0}</span>
+								Page <span className="current-page">{page + 1}</span> / <span className="total-pages">{chapter != null ? chapter.attributes.pages : 0}</span>
 							</div>
 							<div className="col text-center reader-controls-page-recommendations">
 								Recommendations
@@ -985,6 +988,7 @@ export class ChapterDisplay extends React.Component {
 		//props: id
 		this.changeChild=React.createRef();
 		this.changeSettings=React.createRef();
+		this.changeReader=React.createRef();
 
 		this.resizeAnon = () => {
 			this.setState({
@@ -1113,8 +1117,8 @@ export class ChapterDisplay extends React.Component {
 			>
 				{this.state.chapter != null ? (
 					<React.Fragment>
-						<ReaderSidebar ref={this.changeChild} panel={this.changeSettings} chapter={this.state.chapter} cfg={this.c_cfg}/>
-						<ReaderMain chapter={this.state.chapter} cfg={this.c_cfg}/>
+						<ReaderSidebar ref={this.changeChild} reader={this.changeReader} panel={this.changeSettings} chapter={this.state.chapter} cfg={this.c_cfg}/>
+						<ReaderMain ref={this.changeReader} chapter={this.state.chapter} cfg={this.c_cfg}/>
 						<ReaderSettingsMenu ref={this.changeSettings} cfg={this.c_cfg}/>
 					</React.Fragment>
 				) : (<div>Loading...</div>)}
