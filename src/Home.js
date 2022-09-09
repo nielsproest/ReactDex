@@ -144,10 +144,8 @@ export class MangaCards extends React.Component {
 		};
 	}
 
-	static contextType = UserContext;
-
 	followsGet() {
-		const { user, setUser } = this.context;
+		const user = this.props.user;
 
 		//TODO: API Call fails due to race condition when app has been asleep
 		//We must wait for login to be successful
@@ -386,10 +384,8 @@ export class Sidebars extends React.Component {
 		super(props);
 	}
 
-	static contextType = UserContext;
-
 	render() { 
-		const { user, setUser } = this.context;
+		const user = this.props.user;
 
 		return (
 			<Col lg={4}>

@@ -75,7 +75,7 @@ Settings page
 */
 
 //TODO: Move these to their seperate files
-function MangaPage() {
+function MangaPage(props) {
 	let { mangaId, mangaTitle } = useParams();
 
 	return (
@@ -85,29 +85,29 @@ function MangaPage() {
 	);
 }
 
-function Home() {
+function Home(props) {
 	document.title = "Home - ReactDex";
 
 	return (
 		<Row>
 			<Announcements/>
-			<MangaCards/>
-			<Sidebars/>
+			<MangaCards user={props.user}/>
+			<Sidebars user={props.user}/>
 			<MangaTitles/>
 		</Row>
 	);
 }
 
-function Chapter() {
+function Chapter(props) {
 	let { chapterId } = useParams();
 	const navigation = useNavigate();
 
 	return (
-		<ChapterDisplay id={chapterId} nav={navigation}/>
+		<ChapterDisplay user={props.user} id={chapterId} nav={navigation}/>
 	);
 }
 
-function Group() {
+function Group(props) {
 	let { groupId, groupTitle } = useParams();
 
 	return (
@@ -117,7 +117,7 @@ function Group() {
 	);
 }
 
-function UserPage() {
+function UserPage(props) {
 	let { userId, userTitle } = useParams();
 
 	return (
@@ -127,7 +127,7 @@ function UserPage() {
 	);
 }
 
-function Search() {
+function Search(props) {
 	document.title = `Search ${search_query} - ReactDex`;
 
 	const useQuery = new URLSearchParams(useLocation().search);
@@ -143,7 +143,7 @@ function Search() {
 	);
 }
 
-function PLogin() {
+function PLogin(props) {
 	document.title = "Login - ReactDex";
 
 	return (
@@ -153,7 +153,18 @@ function PLogin() {
 	);
 }
 
-function Signup() {
+function PLogout(props) {
+	document.title = "Logout - ReactDex";
+
+	return (
+		<Row>
+			Hey
+		</Row>
+	);
+}
+
+
+function Signup(props) {
 	document.title = "Signup - ReactDex";
 
 	return (
@@ -163,7 +174,7 @@ function Signup() {
 	);
 }
 
-function Follows() {
+function Follows(props) {
 	document.title = "Follows - ReactDex";
 
 	return (
@@ -173,7 +184,7 @@ function Follows() {
 	);
 }
 
-function Updates() {
+function Updates(props) {
 	document.title = "Updates - ReactDex";
 
 	return (
@@ -183,7 +194,7 @@ function Updates() {
 	);
 }
 
-function Titles() {
+function Titles(props) {
 	document.title = "Titles - ReactDex";
 
 	return (
@@ -193,7 +204,7 @@ function Titles() {
 	);
 }
 
-function Featured() {
+function Featured(props) {
 	document.title = "Featured - ReactDex";
 
 	return (
@@ -203,7 +214,7 @@ function Featured() {
 	);
 }
 
-function Random() {
+function Random(props) {
 	document.title = "Random - ReactDex";
 
 	return (
@@ -213,7 +224,7 @@ function Random() {
 	);
 }
 
-function History() {
+function History(props) {
 	document.title = "History - ReactDex";
 
 	return (
@@ -223,7 +234,7 @@ function History() {
 	);
 }
 
-function Top() {
+function Top(props) {
 	document.title = "Top - ReactDex";
 
 	return (
@@ -233,7 +244,7 @@ function Top() {
 	);
 }
 
-function Outside() {
+function Outside(props) {
 	let { params } = useMatch("/outside/*");
 	const linkUrl = params["*"];
 
@@ -246,7 +257,7 @@ function Outside() {
 	);
 }
 
-function PageNotFound() {
+function PageNotFound(props) {
 	document.title = "Page not found - ReactDex";
 
 	return (
@@ -329,25 +340,26 @@ function App() {
 					marginTop: "20px"
 				}}>
 					<Routes>
-						<Route path="/" element={<Home/>}></Route>
-						<Route path="/manga/:mangaId" element={<MangaPage/>}></Route>
-						<Route path="/manga/:mangaId/:mangaTitle" element={<MangaPage/>}></Route>
-						<Route path="/group/:groupId" element={<Group/>}></Route>
-						<Route path="/group/:groupId/:groupTitle" element={<Group/>}></Route>
-						<Route path="/user/:userId" element={<UserPage/>}></Route>
-						<Route path="/user/:userId/:userTitle" element={<UserPage/>}></Route>
-						<Route path="/chapter/:chapterId" element={<Chapter/>}></Route>
-						<Route path="/outside/*" element={<Outside/>}></Route>
-						<Route path="/titles" element={<Titles/>}></Route>
-						<Route path="/history" element={<History/>}></Route>
-						<Route path="/top" element={<Top/>}></Route>
-						<Route path="/featured" element={<Featured/>}></Route>
-						<Route path="/random" element={<Random/>}></Route>
-						<Route path="/search" element={<Search/>}></Route>
-						<Route path="/follows" element={<Follows/>}></Route>
-						<Route path="/updates" element={<Updates/>}></Route>
-						<Route path="/login" element={<PLogin/>}></Route>
-						<Route path="/signup" element={<Signup/>}></Route>
+						<Route path="/" element={<Home user={user} />}></Route>
+						<Route path="/manga/:mangaId" element={<MangaPage user={user} />}></Route>
+						<Route path="/manga/:mangaId/:mangaTitle" element={<MangaPage user={user} />}></Route>
+						<Route path="/group/:groupId" element={<Group user={user} />}></Route>
+						<Route path="/group/:groupId/:groupTitle" element={<Group user={user} />}></Route>
+						<Route path="/user/:userId" element={<UserPage user={user} />}></Route>
+						<Route path="/user/:userId/:userTitle" element={<UserPage user={user} />}></Route>
+						<Route path="/chapter/:chapterId" element={<Chapter user={user} />}></Route>
+						<Route path="/outside/*" element={<Outside user={user} />}></Route>
+						<Route path="/titles" element={<Titles user={user} />}></Route>
+						<Route path="/history" element={<History user={user} />}></Route>
+						<Route path="/top" element={<Top user={user} />}></Route>
+						<Route path="/featured" element={<Featured user={user} />}></Route>
+						<Route path="/random" element={<Random user={user} />}></Route>
+						<Route path="/search" element={<Search user={user} />}></Route>
+						<Route path="/follows" element={<Follows user={user} />}></Route>
+						<Route path="/updates" element={<Updates user={user} />}></Route>
+						<Route path="/login" element={<PLogin user={user} setUser={setUser} />}></Route>
+						<Route path="/logout" element={<PLogout user={user} setUser={setUser} />}></Route>
+						<Route path="/signup" element={<Signup user={user} setUser={setUser} />}></Route>
 
 						<Route path="*" element={<PageNotFound />}></Route>
 					</Routes>

@@ -70,6 +70,7 @@ class SinglePageReader extends React.Component {
 		const cfg = this.props.cfg;
 		const page = this.props.page;
 		const pages = this.props.pages;
+		const refreshidx = this.props.refreshidx;
 
 		if (pages == null) {
 			return (
@@ -87,8 +88,6 @@ class SinglePageReader extends React.Component {
 
 				const full_img = `${pages.baseUrl}/data/${pages.chapter.hash}/${file}`;
 
-				const refreshidx = this.refreshCounter;
-
 				return (
 					<img
 						className={`noselect nodrag cursor-pointer reader-image ${displayed}`}
@@ -96,7 +95,8 @@ class SinglePageReader extends React.Component {
 						loading={loading}
 						page={idx}
 						onError={(e) => {
-							//this.fetchPages(parseInt(refreshidx));
+							this.props.onError(refreshidx);
+							console.log("onerror", e);
 							//TODO: Report
 							/*
 							{
@@ -110,6 +110,7 @@ class SinglePageReader extends React.Component {
 						}}
 						onLoad={(e) => {
 							this.props.setLoaded(idx);
+							console.log("onload", e);
 							//TODO: Report
 						}}
 					/>
@@ -142,7 +143,15 @@ class SinglePageReader extends React.Component {
 	}
 }
 class DoublePageReader extends SinglePageReader {}
-class LongStripReader extends SinglePageReader {}
+class LongStripReader extends SinglePageReader {
+	/*render() {
+		var result = super.render();
+		return result.map((e) => {
+			e.props.className = e.props.className.replace("d-none", "");
+			return e;
+		});
+	}*/
+}
 
 class ReaderMain extends React.Component {
 	constructor(props) {
@@ -151,17 +160,39 @@ class ReaderMain extends React.Component {
 			pages: null,
 			lpages: null
 		};
+		this.refreshCounter = 0;
 		this.onReadCalled = false;
 		this.changeChild=React.createRef();
 	}
 
+	fetchPages(idx) {
+		const chapter = this.props.chapter;
+		const counter = this.refreshCounter;
+
+		if (idx == counter) {
+			const waiter = idx == 0 ? 0 : Math.min(200*Math.pow(1.7, counter), 5000);
+			//const waiter = idx > 0 ? axios.exponentialDelay(idx) : 0;
+			console.log("fetchPages: ", counter, waiter);
+
+			this.refreshCounter += 1;
+			this.timer = setTimeout(() => {
+				//TODO: Detect http failure
+				API.chapterPages(chapter.getId()).then((c) => {
+					if (c == null) {
+						this.fetchPages(counter+1);
+					} else {
+						this.setState({
+							pages: c,
+							lpages: Array.from(Array(c.chapter.data.length).keys()).map((_) => false)
+						});
+					}
+				});
+			}, waiter); //Exponential backoff
+		}
+	}
+
 	componentDidMount() {
-		API.chapterPages(this.props.chapter.getId()).then((c) => {
-			this.setState({
-				pages: c,
-				lpages: Array.from(Array(c.chapter.data.length).keys()).map((v) => false)
-			});
-		});
+		this.fetchPages(0);
 	}
 
 	renderRef() {
@@ -174,8 +205,8 @@ class ReaderMain extends React.Component {
 			lpages: lpages
 		});
 	}
-	onError(_) {
-
+	onError(refreshidx) {
+		this.fetchPages(parseInt(refreshidx));
 	}
 
 	render() {
@@ -314,6 +345,38 @@ class ReaderSidebar extends React.Component {
 
 	//TODO: componentDidUpdate
 
+	_jumpChapter(id) {
+		console.log("jump", id);
+		return this.props.nav(`/chapter/${id}`);
+	}
+	jumpChapter(e) {
+		return this._jumpChapter(e.target.value);
+	}
+	backToManga() {
+		return this.props.nav(this.props.chapter.GetRelationship("manga")[0].getUrl());
+	}
+	nextChapter(e) {
+		const chaps = Array.from(document.getElementById("jump-chapter").childNodes);
+		const chap = chaps.filter((c) => c.value == this.props.chapter.getId())[0];
+		const chap_idx = chaps.indexOf(chap);
+		const chap_nextidx = chap_idx + 1;
+		if (chap_nextidx < chaps.length) {
+			return this._jumpChapter(chaps[chap_nextidx].value);
+		} else {
+			this.backToManga();
+		}
+	}
+	prevChapter(e) {
+		const chaps = Array.from(document.getElementById("jump-chapter").childNodes);
+		const chap = chaps.filter((c) => c.value == this.props.chapter.getId())[0];
+		const chap_idx = chaps.indexOf(chap);
+		const chap_nextidx = chap_idx - 1;
+		if (chap_nextidx >= 0) {
+			return this._jumpChapter(chaps[chap_nextidx].value);
+		} else {
+			//this.backToManga();
+		}
+	}
 
 	cvTitle(volume, chapter) {
 		var str = "";
@@ -436,7 +499,12 @@ class ReaderSidebar extends React.Component {
 								<span className="fas fa-angle-left fa-fw" aria-hidden="true"></span>
 							</a>
 							<div className="col py-2">
-								<select value={chapter != null && chapter.getId()} className="form-control col" id="jump-chapter" onChange={(e) => { e.preventDefault(); this.jumpChapter(e); }}>
+								<select 
+									value={chapter != null && chapter.getId()} 
+									className="form-control col" 
+									id="jump-chapter" 
+									onChange={(e) => { e.preventDefault(); this.jumpChapter(e); }}
+								>
 									{this.state.chapters}
 								</select>
 							</div>
@@ -490,44 +558,35 @@ class ReaderSidebar extends React.Component {
 								<span className="fas fa-compress fa-fw" aria-hidden="true" title="Display fit"></span>
 								<span 
 									className={`show-no-resize ${cfg.getValue("DISPLAY_TYPE") != "none" && "d-none"}`}
-									onClick={(e) => {
-										console.log("setValue", "both");
-										cfg.setValue("DISPLAY_TYPE", "fit-both");
-									}}
+									onClick={(e) => cfg.setValue("DISPLAY_TYPE", "fit-both")}
 									>No resize</span>
 								<span 
 									className={`show-fit-both ${cfg.getValue("DISPLAY_TYPE") != "fit-both" && "d-none"}`}
-									onClick={(e) => {
-										console.log("setValue", "vertical");
-										cfg.setValue("DISPLAY_TYPE", "fit-vertical");
-									}}
+									onClick={(e) => cfg.setValue("DISPLAY_TYPE", "fit-vertical")}
 									>Fit to container</span>
 								<span 
 									className={`show-fit-height ${cfg.getValue("DISPLAY_TYPE") != "fit-vertical" && "d-none"}`}
-									onClick={(e) => {
-										console.log("setValue", "horizontal");
-										cfg.setValue("DISPLAY_TYPE", "fit-horizontal");
-									}}
+									onClick={(e) => cfg.setValue("DISPLAY_TYPE", "fit-horizontal")}
 									>Fit height</span>
 								<span 
 									className={`show-fit-width ${cfg.getValue("DISPLAY_TYPE") != "fit-horizontal" && "d-none"}`}
-									onClick={(e) => {
-										console.log("setValue", "none");
-										cfg.setValue("DISPLAY_TYPE", "none");
-									}}
+									onClick={(e) => cfg.setValue("DISPLAY_TYPE", "none")}
 									>Fit width</span>
 							</div>
 							<div className="reader-controls-mode-rendering w-100 cursor-pointer px-2">
 								<kbd>&nbsp;g</kbd>
 								<span className="fas fa-book fa-fw" aria-hidden="true" title="Reader mode"></span>
 								<span 
-									className={`show-single-page`}
+									className={`show-single-page ${cfg.getValue("READER_TYPE") != "single-page" && "d-none"}`}
+									onClick={(e) => cfg.setValue("READER_TYPE", "double-page")}
 									>Single page</span>
 								<span 
-									className={`show-double-page d-none`}
+									className={`show-double-page ${cfg.getValue("READER_TYPE") != "double-page" && "d-none"}`}
+									onClick={(e) => cfg.setValue("READER_TYPE", "long-strip")}
 									>Double page</span>
 								<span 
-									className={`show-long-strip d-none`}
+									className={`show-long-strip ${cfg.getValue("READER_TYPE") != "long-strip" && "d-none"}`}
+									onClick={(e) => cfg.setValue("READER_TYPE", "single-page")}
 									>Long strip</span>
 								{/*<span className="show-recommendations">Recommendations</span>
 								<span className="show-alert">Alert</span>*/}
@@ -552,7 +611,7 @@ class ReaderSidebar extends React.Component {
 							</div>
 						</Col>
 						<Col className="reader-controls-pages col-auto d-none d-lg-flex row no-gutters align-items-center">
-							<a className="page-link-left col-auto arrow-link" href="" data-action="page" data-direction="left" data-by="1" onClick={(e) => { e.preventDefault(); /*this.renderer.pagePrev(e);*/ }}>
+							<a className="page-link-left col-auto arrow-link" href="" data-action="page" data-direction="left" data-by="1" onClick={(e) => { e.preventDefault(); this.props.setPage(this.props.page-1); }}>
 								<span className="fas fa-angle-left fa-fw" aria-hidden="true" title="Turn page left"></span>
 							</a>
 							<div className="col text-center reader-controls-page-text cursor-pointer">
@@ -561,7 +620,7 @@ class ReaderSidebar extends React.Component {
 							<div className="col text-center reader-controls-page-recommendations">
 								Recommendations
 							</div>
-							<a className="page-link-right col-auto arrow-link" href="" data-action="page" data-direction="right" data-by="1" onClick={(e) => { e.preventDefault(); /*this.renderer.pageNext(e);*/ }}>
+							<a className="page-link-right col-auto arrow-link" href="" data-action="page" data-direction="right" data-by="1" onClick={(e) => { e.preventDefault(); this.props.setPage(this.props.page+1); }}>
 								<span className="fas fa-angle-right fa-fw" aria-hidden="true" title="Turn page right"></span>
 							</a>
 						</Col>
@@ -598,6 +657,8 @@ class ReaderSettingsMenu extends React.Component {
 	}
 
 	render() {
+		const cfg = this.props.cfg;
+
 		return (
 			{/* settings modal */},
 			<Modal 
@@ -626,14 +687,41 @@ class ReaderSettingsMenu extends React.Component {
 						<h5><span className='fas fa-book-open fa-fw' aria-hidden='true' title=''></span> Display settings</h5>
 						<div className="form-group row">
 							<label className="col-sm-4 col-form-label">Fit display to</label>
-							<div className="col">
-								<div className="row">
-									<button type="button" data-value="1" data-setting="displayFit" className="btn btn-default btn-secondary col px-2">Container</button>
-									<button type="button" data-value="2" data-setting="displayFit" className="btn btn-default btn-secondary col px-2">Width</button>
-									<button type="button" data-value="3" data-setting="displayFit" className="btn btn-default btn-secondary col px-2">Height</button>
-									<button type="button" data-value="4" data-setting="displayFit" className="btn btn-default btn-secondary col px-2">No resize</button>
-								</div>
-							</div>
+							<Col>
+								<Row>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DISPLAY_TYPE") == "fit-both"}
+										onClick={(_) => cfg.setValue("DISPLAY_TYPE", "fit-both")}
+									>
+										Container
+									</Button>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DISPLAY_TYPE") == "fit-horizontal"}
+										onClick={(_) => cfg.setValue("DISPLAY_TYPE", "fit-horizontal")}
+									>
+										Width</Button>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DISPLAY_TYPE") == "fit-vertical"}
+										onClick={(_) => cfg.setValue("DISPLAY_TYPE", "fit-vertical")}
+									>
+										Height
+									</Button>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DISPLAY_TYPE") == "none"}
+										onClick={(_) => cfg.setValue("DISPLAY_TYPE", "none")}
+									>
+										No resize
+									</Button>
+								</Row>
+							</Col>
 						</div>
 						<div className="form-group row advanced">
 							<label className="col-sm-4 col-form-label">Maximum container width</label>
@@ -648,9 +736,24 @@ class ReaderSettingsMenu extends React.Component {
 							<label className="col-sm-4 col-form-label">Page rendering</label>
 							<div className="col">
 								<div className="row">
-									<button type="button" data-value="1" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Single</button>
-									<button type="button" data-value="2" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Double</button>
-									<button type="button" data-value="3" data-setting="renderingMode" className="btn btn-default btn-secondary col px-2">Long strip</button>
+									<Button 
+										variant="secondary"
+										className="col px-2"
+										active={cfg.getValue("READER_TYPE") == "single-page"}
+										onClick={(_) => cfg.setValue("READER_TYPE", "single-page")}
+									>Single</Button>
+									<Button 
+										variant="secondary"
+										className="col px-2"
+										active={cfg.getValue("READER_TYPE") == "double-page"}
+										onClick={(_) => cfg.setValue("READER_TYPE", "double-page")}
+									>Double</Button>
+									<Button 
+										variant="secondary"
+										className="col px-2"
+										active={cfg.getValue("READER_TYPE") == "long-strip"}
+										onClick={(_) => cfg.setValue("READER_TYPE", "long-strip")}
+									>Long strip</Button>
 								</div>
 							</div>
 						</div>
@@ -838,7 +941,31 @@ class ReaderSettingsMenu extends React.Component {
 								</div>
 							</div>
 						</div>*/}
-						{/*<DataSaverSetting />*/}
+						<Row className="form-group">
+							<label className="col-sm-4 col-form-label">
+								Data saver <a href="/thread/252554"><span className="fas fa-info-circle fa-fw" title="More information" /></a>
+							</label>
+							<Col>
+								<Row>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DATASAVER") == false}
+										onClick={(_) => cfg.setValue("DATASAVER", false)}
+									>
+										Original images
+									</Button>
+									<Button 
+										variant="secondary" 
+										className="col px-2"
+										active={cfg.getValue("DATASAVER") == true}
+										onClick={(_) => cfg.setValue("DATASAVER", true)}
+									>
+										Compressed images
+									</Button>
+								</Row>
+							</Col>
+						</Row>
 						{/*<div className="row form-group advanced">
 							<label className="col-sm-4 col-form-label">[BETA] Recommendations</label>
 							<div className="col">
@@ -1072,15 +1199,20 @@ export class ChapterDisplay extends React.Component {
 			this.setState({
 				page: idx
 			});
+		} else if (0 > idx) {
+			this.changeChild.current.prevChapter(null);
+		} else if (idx >= num) {
+			this.changeChild.current.nextChapter(null);
 		}
 
 		if ((idx+1) >= Math.round(num * 0.75)) {
 			if (!this.onReadCalled) {
-				console.log("pageCurrent", "onRead");
 				this.onReadCalled = true;
 
-				//TODO: Only if user
-				//API.readChapter(chapter.getId())
+				if (this.props.user != null) {
+					console.log("onread");
+					//API.readChapter(chapter.getId())
+				}
 			}
 		}
 	}
@@ -1126,18 +1258,19 @@ export class ChapterDisplay extends React.Component {
 							reader={this.changeReader} 
 							panel={this.changeSettings} 
 							chapter={this.state.chapter} 
-							cfg={this.c_cfg}
+							cfg={this.c_cfg} 
+							nav={this.props.nav} 
 						/>
 						<ReaderMain 
 							ref={this.changeReader} 
 							page={this.getPage()} 
 							setPage={(i) => this.setPage(i)} 
 							chapter={this.state.chapter} 
-							cfg={this.c_cfg}
+							cfg={this.c_cfg} 
 						/>
 						<ReaderSettingsMenu 
 							ref={this.changeSettings} 
-							cfg={this.c_cfg}
+							cfg={this.c_cfg} 
 						/>
 					</React.Fragment>
 				) : (<div>Loading...</div>)}

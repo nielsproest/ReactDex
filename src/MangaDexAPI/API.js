@@ -394,7 +394,7 @@ class DexFS {
 
 		Object.assign(params, custom);
 
-		const req = await axios.get(`${CORS_BYPASS}${url}`, { params: params, headers: { "Origin": "localhost:3000" } });
+		const req = await axios.get(`${CORS_BYPASS}${url}`, { params: params });
 		const mangas = req.data.data.map((m) => new Manga(m));
 
 		//TODO: Move to Manga class
