@@ -267,7 +267,7 @@ function PageNotFound() {
 	);
 }
 
-//TODO: Move into login file
+//TODO: Move into login react component
 function LoginCheck() {
 	const {user,setUser} = useContext(UserContext);
 
@@ -309,6 +309,7 @@ function LoginCheck() {
 
 function App() {
 	const [ user, setUser ] = useState(null);
+	//TODO: Remove static contextType = UserContext; and just pass user down, almost everything needs it
 
 	return (
 		<Router>

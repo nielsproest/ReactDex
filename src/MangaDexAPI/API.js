@@ -249,7 +249,7 @@ class Manga extends MdData {
 	}
 }
 
-//TODO: Move into login file
+//TODO: Move into login react component
 export class UserToken {
 	constructor(props, boot=false) {
 		this.state = {
