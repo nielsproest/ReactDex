@@ -1220,7 +1220,8 @@ export class ChapterDisplay extends React.Component {
 	}
 
 	setPage(idx) {
-		const num = this.state.chapter.attributes.pages;
+		const chapter = this.state.chapter;
+		const num = chapter.attributes.pages;
 		if (0 <= idx && idx < num) {
 			this.setState({
 				page: idx
@@ -1237,7 +1238,7 @@ export class ChapterDisplay extends React.Component {
 
 				if (this.props.user != null) {
 					console.log("onread");
-					//API.readChapter(chapter.getId())
+					API.readChapter(chapter.getId())
 				}
 			}
 		}
