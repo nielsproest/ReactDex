@@ -66,11 +66,15 @@ class SinglePageReader extends React.Component {
 		this.state = {};
 	}
 
+	isLongStrip() {
+		return false;
+	}
+
 	render() {
 		const cfg = this.props.cfg;
 		const page = this.props.page;
 		const pages = this.props.pages;
-		const refreshidx = this.props.refreshidx;
+		const refreshidx = this.props.refreshCounter;
 
 		if (pages == null) {
 			return (
@@ -83,7 +87,7 @@ class SinglePageReader extends React.Component {
 		
 		return (
 			dataTbl.map((file, idx) => {
-				const displayed = (idx != page) ? "d-none" : "";
+				const displayed = (idx != page && !this.isLongStrip()) ? "d-none" : "";
 				const loading = (Math.abs(page-idx) < cfg.getValue("PRELOAD") || cfg.getValue("PRELOAD_ALL")) ? "eager" : "lazy";
 
 				const full_img = `${pages.baseUrl}/data/${pages.chapter.hash}/${file}`;
@@ -144,13 +148,9 @@ class SinglePageReader extends React.Component {
 }
 class DoublePageReader extends SinglePageReader {}
 class LongStripReader extends SinglePageReader {
-	/*render() {
-		var result = super.render();
-		return result.map((e) => {
-			e.props.className = e.props.className.replace("d-none", "");
-			return e;
-		});
-	}*/
+	isLongStrip() {
+		return true;
+	}
 }
 
 class ReaderMain extends React.Component {
