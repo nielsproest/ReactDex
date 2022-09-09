@@ -84,7 +84,7 @@ class SinglePageReader extends React.Component {
 
 		//TODO: Retain loaded images?
 		var dataTbl = cfg.getValue("DATASAVER") ? pages.chapter.dataSaver : pages.chapter.data;
-		
+
 		return (
 			dataTbl.map((file, idx) => {
 				const displayed = (idx != page && !this.isLongStrip()) ? "d-none" : "";
@@ -123,10 +123,12 @@ class SinglePageReader extends React.Component {
 		)
 	}
 	pageNext(e) {
-		this.props.setPage(this.props.page+1);
+		const page = parseInt(e.target.attributes.page.value);
+		this.props.setPage(page+1);
 	}
 	pagePrev(e) {
-		this.props.setPage(this.props.page-1);
+		const page = parseInt(e.target.attributes.page.value);
+		this.props.setPage(page-1);
 	}
 	pageClick(e) {
 		const element = e.target;
