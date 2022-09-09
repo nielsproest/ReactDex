@@ -169,6 +169,7 @@ class ReaderMain extends React.Component {
 		const chapter = this.props.chapter;
 		const counter = this.refreshCounter;
 
+		console.log(idx,counter);
 		if (idx == counter) {
 			const waiter = idx == 0 ? 0 : Math.min(200*Math.pow(1.7, counter), 5000);
 			//const waiter = idx > 0 ? axios.exponentialDelay(idx) : 0;
@@ -231,6 +232,7 @@ class ReaderMain extends React.Component {
 					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
+					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
@@ -241,6 +243,7 @@ class ReaderMain extends React.Component {
 					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
+					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
@@ -251,6 +254,7 @@ class ReaderMain extends React.Component {
 					setPage={(i) => this.props.setPage(i)} 
 					setLoaded={(i) => this.setLoaded(i)} 
 					onError={(i) => this.onError(i)} 
+					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
