@@ -607,6 +607,10 @@ class DexFS {
 		return chaps;
 	}
 
+	async reportImgProc(data) {
+		return axios.post("https://api.mangadex.network/report", { params: data });
+	}
+
 	async login(username, password) {
 		try {
 			const req = await axios.post(`${CORS_BYPASS}https://api.mangadex.org/auth/login`, { 
