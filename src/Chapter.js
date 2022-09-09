@@ -375,6 +375,7 @@ class ReaderSidebar extends React.Component {
 	render() {
 		const cfg = this.props.cfg;
 		const chapter = this.props.chapter;
+		const pages = chapter != null ? chapter.attributes.pages : 0;
 		const page = this.props.reader.current != null ? this.props.page : 0;
 		var c_title = "";
 		var m_title = "";
@@ -444,9 +445,9 @@ class ReaderSidebar extends React.Component {
 							</a>
 							<div className="col-auto py-2 pr-2 d-lg-none">
 								<select className="form-control" id="jump-page" onChange={(e) => {
-									//this.renderer.pageSet(e.target.value);
+									this.props.setPage(e.target.value);
 								}}>
-									{Array.from(Array(chapter != null ? chapter.attributes.pages : 0).keys()).map((idx) => {
+									{Array.from(Array(pages).keys()).map((idx) => {
 										return (<option value={idx} selected={page == idx ? true : false}>Page {idx+1}</option>)
 									})}
 								</select>

@@ -307,6 +307,13 @@ function LoginCheck() {
 	return (<React.Fragment />)
 }
 
+//TODO: Move login components here
+class LoginForm extends React.Component {
+	render() {
+		return (<React.Fragment/>)
+	}
+}
+
 function App() {
 	const [ user, setUser ] = useState(null);
 	//TODO: Remove static contextType = UserContext; and just pass user down, almost everything needs it
@@ -315,6 +322,7 @@ function App() {
 		<Router>
 			<UserContext.Provider value={{ user, setUser }}>
 				<LoginCheck />
+				<LoginForm />
 				<DNavbar/>
 				<Container fluid="xxl" role="main" id="content" style={{
 					marginBottom: "50px", 
