@@ -575,7 +575,7 @@ export class MangaDisplay extends React.Component {
 									<div className="row m-0 py-1 px-0 border-top">
 										<div className="col-lg-3 col-xl-2 strong">Demographic:</div>
 										<div className="col-lg-9 col-xl-10">
-											<Link to={`/search?demo_id=${manga.attributes.publicationDemographic}`}>
+											<Link to={`/titles?demos=${manga.attributes.publicationDemographic}`}>
 												<Badge bg="secondary" title={`Search for ${manga.attributes.publicationDemographic} titles`}>
 													{manga.attributes.publicationDemographic}
 												</Badge>
@@ -591,7 +591,7 @@ export class MangaDisplay extends React.Component {
 											<div className="col-lg-9 col-xl-10">
 												{manga.attributes.tags.filter((k,v) => k.attributes.group == t).map((k,v) => {
 													const genreName = Object.values(k.attributes.name)[0];
-													const genreLink = "/genre/" + k.id + "/" + slugify(genreName);
+													const genreLink = "/tag/" + k.id + "/" + slugify(genreName);
 													return (
 														<Link to={genreLink}>
 															<Badge bg="secondary">{genreName}</Badge>
@@ -674,7 +674,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-9 col-xl-10" style="color: orangered"><?php $templateVar["parser"]->parse($templateVar["manga"]->manga_mod_notes); print nl2br($templateVar["parser"]->getAsHtml());</div>
 								</div>
 								<?php */}
-				
+
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Actions:</div>
 									<div className="col-lg-9 col-xl-10">

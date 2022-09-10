@@ -47,6 +47,10 @@ import {
 } from "./Login"
 
 import {
+	LastUpdated
+} from "./LastUpdated"
+
+import {
 	UserToken
 } from "./MangaDexAPI/API"
 
@@ -189,7 +193,7 @@ function Updates(props) {
 
 	return (
 		<Row>
-			Updates page goes here
+			<LastUpdated />
 		</Row>
 	);
 }

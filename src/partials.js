@@ -42,6 +42,17 @@ export function display_count_comments(count, type = '', chapter) {
 	}
 }
 
+export function display_chapter_title(chapter, icon = false, truncate=true) {
+	return (
+		<React.Fragment>
+			{icon && display_fa_icon('file', '', '', 'far')}
+			<Link to={chapter.getUrl()} className={`${truncate && "text-truncate"}`}>
+				{chapter.getTitle()}
+			</Link>
+		</React.Fragment>
+	)
+}
+
 export function display_labels(hentai) {
 	if (hentai)
 		return (<span className='badge badge-danger ml-1'>H</span>);
@@ -50,10 +61,11 @@ export function display_labels(hentai) {
 export function display_manga_link_v2(manga, white = '', hide_labels=false, truncate=true) {
 	return [(
 		<Link 
-		className={`manga_title clickable ${truncate ? 'text-truncate' : ''} ${white ? 'white' : ''}`}
-		title='htmlentities($manga->manga_name, ENT_QUOTES)'
-		to={manga.getUrl()}>
-			{manga.getTitle()}
+			className={`manga_title clickable ${truncate ? 'text-truncate' : ''} ${white ? 'white' : ''}`}
+			title='htmlentities($manga->manga_name, ENT_QUOTES)'
+			to={manga.getUrl()}
+		>
+				{manga.getTitle()}
 		</Link>),
 		(hide_labels ? '' : display_labels(manga.isHentai()))
 	];
@@ -97,13 +109,13 @@ export function display_group_link_v2(group) {
 	return data;
 }
 
-export function display_user_link(user, $show_badge = 0, $show_mah_badge = 0) {
+export function display_user_link(user, show_badge = 0, show_mah_badge = 0) {
 	//$string = $show_badge ? " <a href='/support'>" . display_fa_icon('gem', 'Supporter', '', 'far') . "</a>" : '';
 	//$string2 = $show_mah_badge ? " <a href='/md_at_home'>" . display_fa_icon('network-wired', 'MD@H Host', '', 'fas' . ($show_mah_badge == 2 ? ' text-warning' : '')) . "</a>" : '';
 	return (
 		<span>
 			<Link 
-				id={user.id}
+				id={user.getId()}
 				to={user.getUrl()}>
 					{user.getName()}
 			</Link>
