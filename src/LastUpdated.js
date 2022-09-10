@@ -56,7 +56,7 @@ export class LastUpdated extends React.Component {
 								return (
 									<React.Fragment>
 										<tr>
-											<td rowSpan={this.state.mangas.length >= 4 ? 5 : this.state.mangas.length+1}>
+											<td rowSpan={this.state.mangas.length >= 1 ? 3 : this.state.mangas.length+1}>
 												<div className="medium_logo rounded">
 													<Link to={manga.getUrl()}>
 														<img className="rounded" src={manga.getCover256()} alt="Thumb" />
