@@ -91,8 +91,9 @@ export class LastUpdated extends React.Component {
 									return (
 										<React.Fragment>
 											<tr>
+												{/* Should be 4 ? 5 */}
 												<td rowSpan={this.state.mangas.length >= 1 ? 2 : this.state.mangas.length+1}>
-													<div className="large_logo rounded" style={{
+													<div className="medium_logo rounded" style={{
 														display: "flex",
 														justifyContent: "center"
 													}}>
@@ -111,7 +112,9 @@ export class LastUpdated extends React.Component {
 												</td>
 												<td className="text-right"></td>
 												<td colSpan="6" height="31px" className="position-relative">
-													<span className="ellipsis">{display_fa_icon('book', 'Title')} {display_manga_link_v2(manga)}</span>
+													<span className="ellipsis">
+														{display_fa_icon('book', 'Title')} {display_manga_link_v2(manga)}
+													</span>
 												</td>
 											</tr>
 											{manga.GetRelationship("chapter").map((chapter) => {
