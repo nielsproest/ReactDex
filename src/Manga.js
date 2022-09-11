@@ -73,8 +73,10 @@ export class DPagination extends React.Component {
 		let items = [
 			(
 				<React.Fragment>
-					<Pagination.First onClick={(e) => cclick(0)}/>
-					<Pagination.Prev onClick={(e) => cdown()}/>
+					<Pagination.First onClick={(e) => cclick(0)}>
+						{display_fa_icon('angle-double-left', 'Jump to first page')}
+					</Pagination.First>
+					<Pagination.Prev onClick={(e) => cdown()} />
 				</React.Fragment>
 			)
 		];
@@ -115,7 +117,9 @@ export class DPagination extends React.Component {
 				(
 					<React.Fragment>
 						<Pagination.Next onClick={(e) => cup()}/>
-						<Pagination.Last onClick={(e) => cclick(pages-1)}/>
+						<Pagination.Last onClick={(e) => cclick(pages-1)}>
+							{display_fa_icon('angle-double-right', 'Jump to last page')}
+						</Pagination.Last>
 					</React.Fragment>
 				)
 			]
@@ -329,7 +333,11 @@ class ChapterList extends React.Component {
 					</Row>
 					)
 				})}
-				<DPagination pages={Math.ceil(this.state.chapters.total / this.state.climit)} sizeof={this.state.climit} callback={page_switch}/>
+				<DPagination 
+					pages={Math.ceil(this.state.chapters.total / this.state.climit)} 
+					sizeof={this.state.climit} 
+					callback={page_switch}
+				/>
 			</div>) 
 	}
 }
@@ -374,7 +382,7 @@ class MangaDisplayCovers extends React.Component {
 	}
 }
 
-class FollowButton extends React.Component {
+export class FollowButton extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -401,22 +409,24 @@ class FollowButton extends React.Component {
 
 	render() {
 		const { user, setUser } = this.context;
+		const style = this.props.style != null;
+		const dropup = this.props.dropup != null;
 
 		if (user == null || this.state.isFollowed == null) {
 			return (
 				<button 
-					className='btn btn-secondary' 
+					className={`btn btn-secondary ${style && "btn-xs"}`}
 					disabled 
-					title='You need to log in to use this function.'
+					title="You need to log in to use this function."
 				>
 					{display_fa_icon('bookmark', 'Follow')} 
-					<span>Follow</span>
+					<span className={`${dropup && "d-none d-xl-inline"}`}>Follow</span>
 				</button>
 			)
 		}
 
 		return (
-			<div className='btn-group'>
+			<div className={`btn-group ${style && "btn-group-xs"}  ${dropup && "dropup"}`}>
 				{this.state.isFollowed ? (
 					<button 
 						type='button' 
@@ -449,7 +459,7 @@ class FollowButton extends React.Component {
 						}}
 					>
 						{display_fa_icon('bookmark')}
-						<span>Follow</span>
+						<span className={`${dropup && "d-none d-xl-inline"}`}>Follow</span>
 					</button>
 				)}
 
@@ -500,20 +510,6 @@ export class MangaDisplay extends React.Component {
 					Loading...
 				</React.Fragment>
 			)
-		}
-
-		//TODO: Move into api?
-		const getAverage = () => {
-			if (manga.statistics.rating.average == null) {
-				return "N/A"
-			}
-			return manga.statistics.rating.average.toFixed(2)
-		}
-		const getBayes = () => {
-			if (manga.statistics.rating.bayesian == null) {
-				return "N/A"
-			}
-			return manga.statistics.rating.bayesian.toFixed(2)
 		}
 
 		return (
@@ -607,8 +603,8 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Rating:</div>
 									<div className="col-lg-9 col-xl-10">
 										<ul className="list-inline m-0">
-											<li className="list-inline-item"><span className="text-primary">{display_fa_icon("star", "Bayesian rating")} {getBayes()}</span> </li>
-											<li className="list-inline-item small">{display_fa_icon("star", "Mean rating")} {getAverage()}</li>
+											<li className="list-inline-item"><span className="text-primary">{display_fa_icon("star", "Bayesian rating")} {manga.getBayes()}</span> </li>
+											<li className="list-inline-item small">{display_fa_icon("star", "Mean rating")} {manga.getAverage()}</li>
 											<li className="list-inline-item small">{display_fa_icon("user", "Users")} N/A</li>
 											<li className="list-inline-item"><button type="button" className="btn btn-secondary btn-xs" id="histogram_toggle">{display_fa_icon("chart-bar")}</button></li>
 										</ul>
@@ -626,7 +622,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-9 col-xl-10">
 										<ul className="list-inline m-0">
 											<li className="list-inline-item text-info">{display_fa_icon("eye", "Views")} N/A</li>
-											<li className="list-inline-item text-success">{display_fa_icon("bookmark", "Follows")} {manga.statistics.follows}</li>
+											<li className="list-inline-item text-success">{display_fa_icon("bookmark", "Follows")} {manga.getFollows()}</li>
 											<li className="list-inline-item">{display_fa_icon("file", "Total chapters", "", "far")} N/A</li>
 										</ul>
 									</div>

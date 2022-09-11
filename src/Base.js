@@ -164,6 +164,7 @@ export class DNavbar extends React.Component {
 								defaultValue="titles"
 								id="quick_search_type"
 								className="form-control"
+								disabled
 							>
 								<option value="all">All</option>
 								<option value="titles">Titles</option>

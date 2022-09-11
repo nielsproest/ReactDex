@@ -99,6 +99,21 @@ class MdData {
 	getId() {
 		return this.id;
 	}
+	getFollows() {
+		return this.statistics.follows;
+	}
+	getAverage() {
+		if (this.statistics.rating.average == null) {
+			return "N/A"
+		}
+		return this.statistics.rating.average.toFixed(2)
+	}
+	getBayes() {
+		if (this.statistics.rating.bayesian == null) {
+			return "N/A"
+		}
+		return this.statistics.rating.bayesian.toFixed(2)
+	}
 }
 
 class Chapter extends MdData {

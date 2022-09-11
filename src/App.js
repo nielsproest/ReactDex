@@ -51,6 +51,10 @@ import {
 } from "./LastUpdated"
 
 import {
+	SearchUI
+} from "./Search"
+
+import {
 	UserToken
 } from "./MangaDexAPI/API"
 
@@ -132,17 +136,18 @@ function UserPage(props) {
 }
 
 function Search(props) {
-	document.title = `Search ${search_query} - ReactDex`;
 
 	const useQuery = new URLSearchParams(useLocation().search);
 
 	const search_query = useQuery.get("query");
 	const type_query = useQuery.get("type");
 
+	document.title = `Search ${search_query} - ReactDex`;
+
 	//TODO: Learn about url parameters
 	return (
 		<Row>
-			Search page goes here |{search_query}| |{type_query}|
+			<SearchUI user={props.user} search={[search_query,type_query]} />
 		</Row>
 	);
 }
