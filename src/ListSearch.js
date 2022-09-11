@@ -786,11 +786,3 @@ export class SearchUI extends React.Component {
 		)
 	}
 }
-
-export class SearchUIUsers {
-	//user_list.tpl.php
-	//user_list_searchbox.tpl.php
-}
-export class SearchUIGroups {
-	//group_list.tpl.php
-}

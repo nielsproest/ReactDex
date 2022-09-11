@@ -34,6 +34,7 @@ import { slugify, capitalizeFirstLetter, ElementUpdater } from "./utility";
 //TODO: Move direct access (.attribute) functions to API classes
 
 //TODO: Move to util class maybe
+//TODO: Easier API
 export class DPagination extends React.Component {
 	constructor(props) {
 		super(props);
@@ -74,7 +75,7 @@ export class DPagination extends React.Component {
 			(
 				<React.Fragment>
 					<Pagination.First onClick={(e) => cclick(0)}>
-						{display_fa_icon('angle-double-left', 'Jump to first page')}
+						{/*display_fa_icon('angle-double-left', 'Jump to first page')*/}
 					</Pagination.First>
 					<Pagination.Prev onClick={(e) => cdown()} />
 				</React.Fragment>
@@ -118,7 +119,7 @@ export class DPagination extends React.Component {
 					<React.Fragment>
 						<Pagination.Next onClick={(e) => cup()}/>
 						<Pagination.Last onClick={(e) => cclick(pages-1)}>
-							{display_fa_icon('angle-double-right', 'Jump to last page')}
+							{/*display_fa_icon('angle-double-right', 'Jump to last page')*/}
 						</Pagination.Last>
 					</React.Fragment>
 				)

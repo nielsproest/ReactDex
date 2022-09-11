@@ -52,7 +52,7 @@ import {
 
 import {
 	SearchUI
-} from "./Search"
+} from "./ListSearch"
 
 import {
 	UserToken
@@ -64,16 +64,7 @@ import { UserContext } from "./user-context";
 
 /*
 TODO:
-MangaDex API
-	Read data
-	Login
-Manga page (manga/manga.tpl.php)
-Reader
-Frontpage
-	Fix remaining lists
-	Carousel (builtin bootstrap?) https://react-bootstrap.netlify.app/components/carousel/#rb-docs-content
 Browse
-	Search
 	Tags
 User
 	Local user settings
