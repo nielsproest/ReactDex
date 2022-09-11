@@ -438,7 +438,7 @@ class DexFS {
 		const chaps = await this._chapter("https://api.mangadex.org/user/follows/manga/feed", {
 			"order[readableAt]": "desc",
 			"includes": ["scanlation_group", "user"]
-		});
+		}, limit, offset);
 
 		function getGroup(chap) {
 			if (chap.GetRelationship("scanlation_group") != null) {

@@ -195,7 +195,7 @@ function Updates(props) {
 
 	return (
 		<Row>
-			<LastUpdated />
+			<LastUpdated user={props.user} />
 		</Row>
 	);
 }
