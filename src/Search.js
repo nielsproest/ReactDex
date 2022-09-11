@@ -174,7 +174,7 @@ class MangaUIExpandedList extends React.Component {
 										<img
 											style={{objectFit: "scale-down"}}
 											className="rounded"
-											src={manga.getCover512()}
+											src={manga.getCover256()}
 											width="100%" 
 											alt="image" 
 										/>
@@ -240,6 +240,7 @@ class MangaUIExpandedList extends React.Component {
 																print display_manga_rating_button($templateVar['user']->user_id, 0, $manga->manga_id, 1);
 														}
 													?>*/}
+													N/A
 												</div>
 												<div className="p-1 col text-center text-primary">
 													<span title="N/A votes">
@@ -250,7 +251,8 @@ class MangaUIExpandedList extends React.Component {
 												<div className="p-1 col text-center text-success">{manga.getFollows()}</div>
 												<div className="p-1 col text-right">
 													<time datetime="">
-														{/*manga.getTimeDiff()*/}
+														{/*manga_last_updated*/}
+														Jan-1
 													</time>
 												</div>
 											</div>
@@ -333,13 +335,13 @@ class MangaUISimpleList extends React.Component {
 									<div className="p-1 col text-truncate d-flex flex-nowrap align-items-center">
 										{/*<?php if ($templateVar['page'] == 'titles' && in_array($templateVar['sort'], [5, 7, 9, 11])) print "<span className='badge badge-info mr-1'>$rank</span>"; ?>*/}
 										{display_lang_flag_v3("en", true)}
-										<a 
+										<Link 
 											title={manga.getTitle()}
 											to={manga.getUrl()}
 											className="ml-1 manga_title text-truncate"
 										>
 											{manga.getTitle()}
-										</a>
+										</Link>
 										{manga.isHentai() && (
 											<Badge bg="danger" className="ml-1">H</Badge>
 										)}
@@ -387,6 +389,7 @@ class MangaUISimpleList extends React.Component {
 										}
 										?>
 										*/}
+										N/A
 									</div>
 									<div className="p-1 col text-center text-primary">
 										<span title="N/A votes">
@@ -398,6 +401,7 @@ class MangaUISimpleList extends React.Component {
 									<div className="p-1 col text-right">
 										<time datetime="">
 											{/*manga_last_updated*/}
+											Jan-1
 										</time>
 									</div>
 								</div>
@@ -434,13 +438,13 @@ class MangaUIGrid extends React.Component {
 							<div className={`${manga.isHentai() ? 'car-caption-h' : 'car-caption'} px-2 py-1`}>
 								<p className="text-truncate m-0">
 									{display_lang_flag_v3("en")}
-									<a 
+									<Link 
 										title={manga.getTitle()}
-										href={manga.getUrl()}
+										to={manga.getUrl()}
 										className="white ml-1 manga_title text-truncate"
 									>
 										{manga.getTitle()}
-									</a>
+									</Link>
 								</p>
 								{/*
 								<?php if (isset($templateVar['list_user_followed_manga_ids_array']) && $templateVar['list_user']->user_id != $templateVar['user']->user_id) { ?>
@@ -511,7 +515,7 @@ class MangaUIHeaders extends React.Component {
 					</Dropdown>
 				</Nav>
 
-				<div className="card my-3">
+				<div className="card my-3" style={{paddingRight: "0", paddingLeft: "0"}}>
 					<h6 className="card-header">{display_fa_icon('search-plus')} Search</h6>
 					<div className="card-body">
 						<form id="search_titles_form" method="get" action="/search">
@@ -683,13 +687,8 @@ export class SearchUI extends React.Component {
 			"includes": ["cover_art", "author", "artist"]
 		}
 
-		if (this.props.search != null) {
-			const title = this.props.search[0];
-			const type = this.props.search[1];
-
-			Object.assign(search_dict, {
-				"title": title
-			});
+		if (this.props.title != null) {
+			Object.assign(search_dict, {"title": this.props.title})
 		}
 
 		API.manga(
@@ -786,4 +785,12 @@ export class SearchUI extends React.Component {
 			</React.Fragment>
 		)
 	}
+}
+
+export class SearchUIUsers {
+	//user_list.tpl.php
+	//user_list_searchbox.tpl.php
+}
+export class SearchUIGroups {
+	//group_list.tpl.php
 }

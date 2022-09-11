@@ -93,7 +93,15 @@ export class DNavbar extends React.Component {
 			var type = document.getElementById("quick_search_type").value;
 
 			this.setState({search: null});
-			return (<Navigate to={`/search?query=${encodeURI(text)}&type=${type}`} replace={true} />);
+			if (type == "titles") {
+				return (<Navigate to={`/search?title=${encodeURI(text)}`} />);
+			}
+			if (type == "groups") {
+				return (<Navigate to={`/groups/${encodeURI(text)}`} />);
+			}
+			if (type == "users") {
+				return (<Navigate to={`/users/${encodeURI(text)}`} />);
+			}
 		}
 
 		const follows_link = () => {
@@ -164,9 +172,8 @@ export class DNavbar extends React.Component {
 								defaultValue="titles"
 								id="quick_search_type"
 								className="form-control"
-								disabled
 							>
-								<option value="all">All</option>
+								{/*<option value="all">All</option>*/}
 								<option value="titles">Titles</option>
 								<option value="groups">Groups</option>
 								<option value="users">Users</option>

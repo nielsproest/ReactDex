@@ -136,18 +136,15 @@ function UserPage(props) {
 }
 
 function Search(props) {
-
 	const useQuery = new URLSearchParams(useLocation().search);
 
-	const search_query = useQuery.get("query");
-	const type_query = useQuery.get("type");
+	const search_query = useQuery.get("title");
 
 	document.title = `Search ${search_query} - ReactDex`;
 
-	//TODO: Learn about url parameters
 	return (
 		<Row>
-			<SearchUI user={props.user} search={[search_query,type_query]} />
+			<SearchUI user={props.user} title={search_query} />
 		</Row>
 	);
 }
@@ -239,6 +236,28 @@ function History(props) {
 	return (
 		<Row>
 			History page goes here
+		</Row>
+	);
+}
+
+function Groups(props) {
+	let { groupTitle } = useParams();
+	document.title = "Groups - ReactDex";
+
+	return (
+		<Row>
+			Groups - {groupTitle}
+		</Row>
+	);
+}
+
+function Users(props) {
+	let { userTitle } = useParams();
+	document.title = "Users - ReactDex";
+
+	return (
+		<Row>
+			Users - {userTitle}
 		</Row>
 	);
 }
@@ -364,6 +383,8 @@ function App() {
 						<Route path="/featured" element={<Featured user={user} />}></Route>
 						<Route path="/random" element={<Random user={user} />}></Route>
 						<Route path="/search" element={<Search user={user} />}></Route>
+						<Route path="/groups/:groupTitle" element={<Groups user={user} />}></Route>
+						<Route path="/users/:userTitle" element={<Users user={user} />}></Route>
 						<Route path="/follows" element={<Follows user={user} />}></Route>
 						<Route path="/updates" element={<Updates user={user} />}></Route>
 						<Route path="/login" element={<PLogin user={user} setUser={setUser} />}></Route>
