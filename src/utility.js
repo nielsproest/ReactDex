@@ -42,6 +42,10 @@ export function getTimeDiff(ms) {
 	return "0";
 }
 
+export function userUUID(user) {
+	return user != null && user.getUser() != null && user.getUser().getId();
+}
+
 export function capitalizeFirstLetter(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }

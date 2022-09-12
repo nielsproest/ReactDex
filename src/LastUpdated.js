@@ -21,6 +21,7 @@ import {
 
 import API from "./MangaDexAPI/API";
 import { DPagination } from "./Manga";
+import { ElementUpdater } from "./utility";
 
 export class LastUpdated extends React.Component {
 	constructor(props) {
@@ -132,7 +133,9 @@ export class LastUpdated extends React.Component {
 														</td>
 														<td className="d-none d-lg-table-cell">{display_user_link_v2(chapter.GetRelationship("user")[0])}</td>
 														<td className="d-none d-lg-table-cell text-center text-info">N/A</td>
-														<td className="text-right text-truncate" title=""><time datetime="">{chapter.getUpdateDiff()}</time></td>
+														<td className="text-right text-truncate" title="">
+															<ElementUpdater delay={1000} func={() => chapter.getUpdateDiff()} />
+														</td>
 													</tr>
 												)
 											})}

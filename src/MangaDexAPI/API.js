@@ -276,17 +276,17 @@ export class UserToken {
 		}
 
 		this.setAuth();
-		if (!boot) {
+		/*if (!boot) {
 			this.refreshTimer();
 			this.getInfo();
-		}
+		}*/
 	}
 
 	setAuth() {
 		axios.defaults.headers.common['Authorization'] = this.state.session;
 		localStorage.setItem("USERTOKEN", JSON.stringify(this.state));
 	}
-	refreshTimer() {
+	/*refreshTimer() {
 		//Token expires after 15 minutes
 
 		//Time diff since token
@@ -308,16 +308,16 @@ export class UserToken {
 				}
 			})
 		}, time)
-	}
+	}*/
 
-	valid() {
+	/*valid() {
 		return axios.get(`${CORS_BYPASS}https://api.mangadex.org/auth/check`).then((req) => {
 			this.state.valid = req.data.isAuthenticated;
 			if (this.state.valid) {
 				this.refreshTimer();
 			}
 		})
-	}
+	}*/
 
 	getUser() {
 		return this.state.user;

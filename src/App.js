@@ -58,6 +58,10 @@ import {
 	UserToken
 } from "./MangaDexAPI/API"
 
+import {
+	userUUID
+} from "./utility"
+
 import { UserContext } from "./user-context";
 
 //Theme context
@@ -90,8 +94,8 @@ function Home(props) {
 	return (
 		<Row>
 			<Announcements/>
-			<MangaCards user={props.user}/>
-			<Sidebars user={props.user}/>
+			<MangaCards user={props.user} key={`MangaCards ${userUUID(props.user)}`}/>
+			<Sidebars user={props.user} key={`Sidebars ${userUUID(props.user)}`}/>
 			<MangaTitles/>
 		</Row>
 	);
@@ -193,7 +197,7 @@ function Updates(props) {
 
 	return (
 		<Row>
-			<LastUpdated user={props.user} />
+			<LastUpdated user={props.user} key={`LastUpdated ${userUUID(props.user)}`}/>
 		</Row>
 	);
 }
@@ -304,10 +308,8 @@ function PageNotFound(props) {
 	);
 }
 
-//TODO: Move into login react component
-//URGENT: This is a glaring race-condition ball of suck that needs to be purged from existence
 function LoginCheck() {
-	const {user,setUser} = useContext(UserContext);
+	const { user, setUser } = useContext(UserContext);
 
 	useEffect(() => {
 		const TYPE = localStorage.getItem("TYPE_OF_THEME");
@@ -317,7 +319,23 @@ function LoginCheck() {
 		}
 	});
 
-	useEffect(() => {
+	const loginRefresh = (UT) => {
+		UT.refresh().then((_) => {
+			if (UT.state != undefined && UT.state.valid) {
+				console.log("LoginCheck - Refresh succeeded");
+				UT.getInfo().then((_) => {
+					console.log("LoginCheck - getInfo succeeded");
+					setUser(UT);
+				});
+			} else {
+				console.log("LoginCheck - Refresh failed");
+				localStorage.removeItem("USERTOKEN");
+				setUser(null);
+			}
+		})
+	}
+
+	const loginCycle = () => {
 		console.log("LoginCheck - Check");
 		if (user == null || user.getUser() == null) {
 			console.log("LoginCheck - User was null");
@@ -325,23 +343,25 @@ function LoginCheck() {
 			if (cat) {
 				console.log("LoginCheck - Token exists");
 				const UT = new UserToken(JSON.parse(cat), true);
-				UT.refresh().then((_) => {
-					if (UT.state != undefined && UT.state.valid) {
-						console.log("LoginCheck - Refresh succeeded");
-						UT.getInfo().then((_) => {
-							console.log("LoginCheck - getInfo succeeded");
-							setUser(UT);
-							UT.refreshTimer();
-						});
-					} else {
-						console.log("LoginCheck - Refresh failed");
-						localStorage.removeItem("USERTOKEN");
-						setUser(null);
-					}
-				})
+				loginRefresh(UT);
 			}
-		}	
-	})
+		} else if (user != null) {
+			console.log("LoginCheck - User wasn't null");
+			loginRefresh(user);
+		}
+	}
+
+	const MINUTE_MS = 1000 * 60 * 10;
+	useEffect(() => {
+		loginCycle();
+
+		const interval = setInterval(() => {
+			loginCycle();
+		}, MINUTE_MS);
+
+		return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+	}, []);
+
 	return (<React.Fragment />)
 }
 
