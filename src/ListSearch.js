@@ -491,13 +491,13 @@ export class SearchUI extends React.Component {
 
 		console.log(this.props);
 		if (this.props.title != null) {
-			Object.assign(search_dict, {"title": this.props.title})
+			Object.assign(search_dict, {"title": this.props.title});
 		}
 		if (this.props.rating != null) {
-			Object.assign(search_dict, {"contentRating": this.props.rating})
+			Object.assign(search_dict, {"contentRating": this.props.rating});
 		}
 		if (this.props.tag != null) {
-			Object.assign(search_dict, {"includedTags": this.props.tag})
+			Object.assign(search_dict, {"includedTags": this.props.tag});
 		}
 		//TODO: Exclusion mode
 		//TODO: Sort mode
@@ -513,8 +513,15 @@ export class SearchUI extends React.Component {
 				mangas: ms.data,
 				mtotal: ms.total,
 				moffset: ms.offset
-			})
-		})
+			});
+		});
+		API.tags().then((t) => {
+			console.log(t);
+			//TODO: Sort by genre, theme, format, content?, 
+			this.setState({
+				tags: t
+			});
+		});
 	}
 
 	/*

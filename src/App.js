@@ -305,6 +305,7 @@ function PageNotFound(props) {
 }
 
 //TODO: Move into login react component
+//URGENT: This is a glaring race-condition ball of suck that needs to be purged from existence
 function LoginCheck() {
 	const {user,setUser} = useContext(UserContext);
 

@@ -516,6 +516,10 @@ class DexFS {
 		const ch = req.data.data.map((m) => new Cover(m, manga));
 		return APIResponseGen(req.data, ch);
 	}
+	async tags() {
+		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/manga/tag`);
+		return APIResponseGen(req.data);
+	}
 
 	async aggregate(mangaId, custom={}) {
 		var params = {
