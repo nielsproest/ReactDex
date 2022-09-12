@@ -14,7 +14,8 @@ import {
 import { 
 	display_lang_flag_v3, 
 	display_fa_icon, 
-	display_count_comments
+	display_count_comments, 
+	display_genres_checkboxes 
 } from "./partials"
 
 import { DPagination, FollowButton } from "./Manga";
@@ -516,10 +517,8 @@ export class SearchUI extends React.Component {
 			});
 		});
 		API.tags().then((t) => {
-			console.log(t);
-			//TODO: Sort by genre, theme, format, content?, 
 			this.setState({
-				tags: t
+				tags: t.data
 			});
 		});
 	}
@@ -566,6 +565,25 @@ export class SearchUI extends React.Component {
 	}
 
 	searchHeader() { 
+		const tags = this.state.tags != null ? this.state.tags : [];
+		const genre_tags = tags.filter((t) => t.attributes.group == "genre");
+		const theme_tags = tags.filter((t) => t.attributes.group == "theme");
+		const format_tags = tags.filter((t) => t.attributes.group == "format");
+		const content_tags = tags.filter((t) => t.attributes.group == "content");
+
+		const grouped_tags = {
+			"Genre": genre_tags,
+			"Theme": theme_tags,
+			"Format": format_tags,
+			"Content": content_tags
+		}
+
+		/*console.log("Genre", genre_tags);
+		console.log("Theme", theme_tags);
+		console.log("Format", format_tags);
+		console.log("Content", content_tags);*/
+		console.log(grouped_tags);
+
 		return (
 			<React.Fragment>
 				<Nav variant="tabs">
@@ -703,7 +721,7 @@ export class SearchUI extends React.Component {
 								<label for="status_id" className="col-md-3 col-form-label">Content rating</label>
 								<div className="col-md-9">
 									<div className="row px-3">
-										{["safe","suggestive","erotica","pornographic"].map((r) => {
+										{["safe","suggestive","erotica","pornographic"].map((r,idx) => {
 											return (
 												<div 
 													className='custom-control custom-checkbox form-check col-auto' 
@@ -721,7 +739,12 @@ export class SearchUI extends React.Component {
 														className='custom-control-label' 
 														for={`status_id_${r}`}
 													>
-															{capitalizeFirstLetter(r)}
+														<Badge 
+															bg={["success","info","warning","danger"][idx]} 
+															title={`Search for ${r} rating`} 
+														>
+															{capitalizeFirstLetter(r)} 
+														</Badge>
 													</label>
 												</div>
 											)
@@ -738,24 +761,45 @@ export class SearchUI extends React.Component {
 									</div>
 								</div>
 							</div>
+							{/*
 							<input type="submit" value="Search" className="d-none" />
 							<div className="form-group row mb-0 tag-display-mode-wrapper" data-tag-display="dropdowns">
 								<label for="tags_inc" className="col-md-3 col-form-label">Include tags</label>
 								<div className="col-md-9 genres-filter-wrapper">
-									{/*display_genres_dropdown($grouped_genres->toGroupedArray(), $templateVar['tags_inc'], 'tags_inc')*/}
+									display_genres_dropdown($grouped_genres->toGroupedArray(), $templateVar['tags_inc'], 'tags_inc')
 								</div>
 							</div>
 							<div className="form-group row mb-0 tag-display-mode-wrapper" data-tag-display="dropdowns">
 								<label for="tags_exc" className="col-md-3 col-form-label">Exclude tags</label>
 								<div className="col-md-9 genres-filter-wrapper">
-									{/*display_genres_dropdown($grouped_genres->toGroupedArray(), !empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), 'tags_exc')*/}
+									display_genres_dropdown($grouped_genres->toGroupedArray(), !empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), 'tags_exc')
 								</div>
 							</div>
-							<div className="form-group row tag-display-mode-wrapper d-none" data-tag-display="checkboxes">
+							*/}
+							<div className="form-group row tag-display-mode-wrapper" data-tag-display="checkboxes">
 								<label for="tags_both" className="col-md-3 col-form-label">Include/Exclude tags</label>
 								<div className="col-md-9 genres-filter-wrapper pl-4">
 									<div className="container">
-										{/*display_genres_checkboxes($grouped_genres->toGroupedArray(), $templateVar['tags_inc'], !empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), true, false, 'tags_both[]')*/}
+										{
+											display_genres_checkboxes(
+												grouped_tags,
+												this.props.tag,
+												[],
+												true,
+												true,
+												"tags_both[]"
+											)
+										}
+										{/*
+										display_genres_checkboxes(
+											$grouped_genres->toGroupedArray(), 
+											$templateVar['tags_inc'], 
+											!empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), 
+											true, 
+											false, 
+											'tags_both[]'
+										)
+										*/}
 									</div>
 								</div>
 							</div>

@@ -20,6 +20,52 @@ export function display_alert(type, _class, strong, text) {
 	)
 }
 
+export function display_genres_checkboxes(grouped_genres, selected_genres = [], excluded_genres = [], isTertiary = true, useIndeterminate = false, inputName = 'manga_genres[]') {
+	return (
+		<React.Fragment>
+			{Object.keys(grouped_genres).map((group) => {
+				return (
+					<div class='row mb-2'><span class='col-12 strong border-bottom mb-1'>{group}</span>
+					{grouped_genres[group].map((t) => {
+						const id = t.id;
+						const name = t.attributes.name["en"];
+						const classes = (isTertiary ? "tertiary " : "") + (useIndeterminate ? "indeterminate-mark" : "")
+						const chipClasses = group === "Content" ? "badge-warning" : "badge-secondary";
+						const state = excluded_genres.includes(id) ? 2 : (selected_genres.includes(id) ? 1 : 0);
+
+						//TODO: Use indeterminate checkboxes for include/exclude
+						return (
+							<div class='col-6 col-md-4 col-lg-3 col-xl-2'>
+								<div class='custom-control custom-checkbox form-check py-0' style={{display: "flex"}}>
+									<input 
+										type='checkbox' 
+										class={`custom-control-input ${classes}`} 
+										id={`checkbox-tag-${id}`} 
+										name={inputName} 
+										value={id} 
+										checked={state} 
+									/>
+									<label 
+										class='custom-control-label' 
+										for={`checkbox-tag-${id}`}
+									>
+										<span class={`badge ${chipClasses}`}>{name}</span>
+									</label>
+								</div>
+							</div>
+						)
+					})}
+					</div>
+				)
+			})}
+		</React.Fragment>
+	)
+}
+
+export function display_genres_dropdown(grouped_genres, selected_genres = [], field_name = 'manga_genres') {
+	//TODO: This
+}
+
 export function display_count_comments(count, type = '', chapter) {
 	//TODO: Pretty display number with number_format
 	if (count != null) {
