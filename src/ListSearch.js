@@ -485,6 +485,10 @@ export class SearchUI extends React.Component {
 		*/
 	}
 
+	componentDidUpdate(prevProps) {
+		//TODO: Search updated, call componentDidMount if diff props
+	}
+
 	componentDidMount() {
 		var search_dict = {
 			"includes": ["cover_art", "author", "artist"]
