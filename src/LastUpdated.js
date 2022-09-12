@@ -73,7 +73,7 @@ export class LastUpdated extends React.Component {
 					<h6 className="card-header">{display_fa_icon('sync')} Latest updates</h6>
 					{/* A comment */}
 					<div className="table-responsive">
-						<table className="table table-striped table-sm">
+						<table className="table table-striped table-sm" style={{color: "inherit"}}>
 							<thead>
 								<tr className="border-top-0">
 									<th width="110px"></th>
@@ -88,11 +88,12 @@ export class LastUpdated extends React.Component {
 							</thead>
 							<tbody>
 								{this.state.mangas.map((manga) => {
+									const rowspan = manga.GetRelationship("chapter").length >= 4 ? 5 : manga.GetRelationship("chapter").length+1;
+
 									return (
 										<React.Fragment>
-											<tr>
-												{/* Should be 4 ? 5 */}
-												<td rowSpan={this.state.mangas.length >= 1 ? 2 : this.state.mangas.length+1}>
+											<tr  style={{color: "inherit"}}>
+												<td rowSpan={rowspan}>
 													<div className="medium_logo rounded" style={{
 														display: "flex",
 														justifyContent: "center"
@@ -119,9 +120,9 @@ export class LastUpdated extends React.Component {
 											</tr>
 											{manga.GetRelationship("chapter").map((chapter) => {
 												return(
-													<tr>
+													<tr style={{color: "inherit"}}>
 														<td className="text-right"></td>
-														<td>{display_chapter_title(chapter, true)}{false && (<span className="badge badge-primary">END</span>)}</td>
+														<td style={{display: "flex", alignItems: "center"}}>{display_chapter_title(chapter, true)}{false && (<span className="badge badge-primary">END</span>)}</td>
 														<td className="text-center">{display_lang_flag_v3("en")}</td>
 														<td className="position-relative">
 															<span className="ellipsis">
@@ -131,7 +132,7 @@ export class LastUpdated extends React.Component {
 														</td>
 														<td className="d-none d-lg-table-cell">{display_user_link_v2(chapter.GetRelationship("user")[0])}</td>
 														<td className="d-none d-lg-table-cell text-center text-info">N/A</td>
-														<td className="text-right" title=""><time datetime="">{chapter.getUpdateDiff()}</time></td>
+														<td className="text-right text-truncate" title=""><time datetime="">{chapter.getUpdateDiff()}</time></td>
 													</tr>
 												)
 											})}
