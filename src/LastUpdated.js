@@ -92,7 +92,7 @@ export class LastUpdated extends React.Component {
 
 									return (
 										<React.Fragment>
-											<tr  style={{color: "inherit"}}>
+											<tr style={{color: "inherit"}}>
 												<td rowSpan={rowspan}>
 													<div className="medium_logo rounded" style={{
 														display: "flex",

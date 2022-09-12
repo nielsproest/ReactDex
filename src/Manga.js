@@ -574,7 +574,7 @@ export class MangaDisplay extends React.Component {
 										<div className="col-lg-9 col-xl-10">
 											<Link to={`/titles?demos=${manga.attributes.publicationDemographic}`}>
 												<Badge bg="secondary" title={`Search for ${manga.attributes.publicationDemographic} titles`}>
-													{manga.attributes.publicationDemographic}
+													{capitalizeFirstLetter(manga.attributes.publicationDemographic)}
 												</Badge>
 											</Link>
 										</div>
@@ -588,7 +588,8 @@ export class MangaDisplay extends React.Component {
 											<div className="col-lg-9 col-xl-10">
 												{manga.attributes.tags.filter((k,v) => k.attributes.group == t).map((k,v) => {
 													const genreName = Object.values(k.attributes.name)[0];
-													const genreLink = "/tag/" + k.id + "/" + slugify(genreName);
+													const genreLink = `/search?tag[]=${k.id}`;
+													//const genreLink = "/tag/" + k.id + "/" + slugify(genreName);
 													return (
 														<Link to={genreLink}>
 															<Badge bg="secondary">{genreName}</Badge>
@@ -599,6 +600,24 @@ export class MangaDisplay extends React.Component {
 										</div>
 									)
 								})}
+
+								<div className="row m-0 py-1 px-0 border-top">
+									<div className="col-lg-3 col-xl-2 strong">Content rating:</div>
+									<div className="col-lg-9 col-xl-10">
+										<Link to={`/search?rating[]=${manga.attributes.contentRating}`}>
+											<Badge 
+												bg={
+													["success","info","warning","danger"][
+														["safe","suggestive","erotica","pornographic"].indexOf(manga.attributes.contentRating)
+													]
+												} 
+												title={`Search for ${manga.attributes.contentRating} rating`} 
+											>
+												{capitalizeFirstLetter(manga.attributes.contentRating)} 
+											</Badge>
+										</Link>
+									</div>
+								</div>
 
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Rating:</div>

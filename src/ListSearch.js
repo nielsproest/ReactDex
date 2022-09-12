@@ -20,6 +20,7 @@ import {
 import { DPagination, FollowButton } from "./Manga";
 
 import API from "./MangaDexAPI/API";
+import { capitalizeFirstLetter } from "./utility";
 
 //See search_header.tpl.php
 //See manga_list.tpl.php
@@ -467,21 +468,97 @@ class MangaUIGrid extends React.Component {
 	}
 }
 
-class MangaUIHeaders extends React.Component {
+export class SearchUI extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {}
+		this.state = {
+			mangas: [],
+			mode: 0,
+			mtotal: 0,
+			mlimit: 32,
+			moffset: 0
+		}
+
+		/*
+		console.log("SearchUI", props.search);
+		*/
 	}
 
+	componentDidMount() {
+		var search_dict = {
+			"includes": ["cover_art", "author", "artist"]
+		}
+
+		console.log(this.props);
+		if (this.props.title != null) {
+			Object.assign(search_dict, {"title": this.props.title})
+		}
+		if (this.props.rating != null) {
+			Object.assign(search_dict, {"contentRating": this.props.rating})
+		}
+		if (this.props.tag != null) {
+			Object.assign(search_dict, {"includedTags": this.props.tag})
+		}
+		//TODO: Exclusion mode
+		//TODO: Sort mode
+
+		API.manga(
+			search_dict, 
+			true, 
+			this.state.mlimit, 
+			this.state.moffset 
+		).then((ms) => {
+			/*console.log(ms);*/
+			this.setState({
+				mangas: ms.data,
+				mtotal: ms.total,
+				moffset: ms.offset
+			})
+		})
+	}
+
+	/*
+	Title modes:
+	0: Detailed
+	1: Expanded list
+	2: Simple list
+	3: Grid
+	*/
+	getRenderer() {
+		if (this.state.mode == 1) {
+			return (
+				<MangaUIExpandedList user={this.props.user} mangas={this.state.mangas}/>
+			)
+		} else if (this.state.mode == 2) {
+			return (
+				<MangaUISimpleList user={this.props.user} mangas={this.state.mangas}/>
+			)
+		} else if (this.state.mode == 3) {
+			return (
+				<MangaUIGrid user={this.props.user} mangas={this.state.mangas}/>
+			)
+		} else {
+			return (
+				<MangaUIDetailed user={this.props.user} mangas={this.state.mangas}/>
+			)
+		}
+	}
+	setRenderer(idx) {
+		this.setState({
+			mode: idx
+		});
+	}
+
+
 	viewMode() {
-		const type = this.props.getRender();
+		const type = this.state.mode;
 		return ['th-large', 'th-list', 'bars', 'th'][type];
 	}
 	viewIsActive(idx) {
-		return this.props.getRender() == idx;
+		return this.state.mode == idx;
 	}
 
-	render() { 
+	searchHeader() { 
 		return (
 			<React.Fragment>
 				<Nav variant="tabs">
@@ -493,7 +570,7 @@ class MangaUIHeaders extends React.Component {
 					*/}
 
 					<Dropdown as={NavItem} onSelect={(i) => {
-						this.props.setRender(i);
+						this.setRenderer(i);
 					}}>
 						<Dropdown.Toggle as={NavLink}>
 							{display_fa_icon(this.viewMode())}
@@ -522,21 +599,41 @@ class MangaUIHeaders extends React.Component {
 							<div className="form-group row">
 								<label for="title" className="col-md-3 col-form-label">Manga title</label>
 								<div className="col-md-9">
-									<input type="text" className="form-control" id="title" name="title" value="{htmlentities($_GET['title'] ?? '', ENT_QUOTES)}" />
+									<input 
+										type="text" 
+										className="form-control" 
+										id="title" 
+										name="title" 
+										value={this.props.title != null ? this.props.title : ""}
+									/>
 								</div>
 							</div>
+							{/*
 							<div className="form-group row">
 								<label for="author" className="col-md-3 col-form-label">Author</label>
 								<div className="col-md-9">
-									<input type="text" className="form-control" id="author" name="author" value="{htmlentities($_GET['author'] ?? '', ENT_QUOTES)}" />
+									<input 
+										type="text" 
+										className="form-control" 
+										id="author" 
+										name="author" 
+										value={""}
+									/>
 								</div>
 							</div>
 							<div className="form-group row">
 								<label for="artist" className="col-md-3 col-form-label">Artist</label>
 								<div className="col-md-9">
-									<input type="text" className="form-control" id="artist" name="artist" value="{htmlentities($_GET['artist'] ?? '', ENT_QUOTES)}" />
+									<input 
+										type="text" 
+										className="form-control" 
+										id="artist" 
+										name="artist" 
+										value={""}
+									/>
 								</div>
 							</div>
+							*/}
 							<div className="form-group row">
 								<label for="lang_id" className="col-md-3 col-form-label">Original language</label>
 								<div className="col-md-9">
@@ -592,6 +689,36 @@ class MangaUIHeaders extends React.Component {
 										}
 										?>
 										*/}
+									</div>
+								</div>
+							</div>
+							<div className="form-group row">
+								<label for="status_id" className="col-md-3 col-form-label">Content rating</label>
+								<div className="col-md-9">
+									<div className="row px-3">
+										{["safe","suggestive","erotica","pornographic"].map((r) => {
+											return (
+												<div 
+													className='custom-control custom-checkbox form-check col-auto' 
+													style={{minWidth: "8rem"}}
+												>
+													<input 
+														type='checkbox' 
+														className='custom-control-input' 
+														name='rating[]' 
+														id={`status_id_${r}`}
+														checked={this.props.rating != null && this.props.rating.includes(r)}
+														value={r}
+													/>
+													<label 
+														className='custom-control-label' 
+														for={`status_id_${r}`}
+													>
+															{capitalizeFirstLetter(r)}
+													</label>
+												</div>
+											)
+										})}
 									</div>
 								</div>
 							</div>
@@ -664,79 +791,6 @@ class MangaUIHeaders extends React.Component {
 			</React.Fragment>
 		) 
 	}
-}
-
-export class SearchUI extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			mangas: [],
-			mode: 0,
-			mtotal: 0,
-			mlimit: 32,
-			moffset: 0
-		}
-
-		/*
-		console.log("SearchUI", props.search);
-		*/
-	}
-
-	componentDidMount() {
-		var search_dict = {
-			"includes": ["cover_art", "author", "artist"]
-		}
-
-		if (this.props.title != null) {
-			Object.assign(search_dict, {"title": this.props.title})
-		}
-
-		API.manga(
-			search_dict, 
-			true, 
-			this.state.mlimit, 
-			this.state.moffset 
-		).then((ms) => {
-			/*console.log(ms);*/
-			this.setState({
-				mangas: ms.data,
-				mtotal: ms.total,
-				moffset: ms.offset
-			})
-		})
-	}
-
-	/*
-	Title modes:
-	0: Detailed
-	1: Expanded list
-	2: Simple list
-	3: Grid
-	*/
-	getRenderer() {
-		if (this.state.mode == 1) {
-			return (
-				<MangaUIExpandedList user={this.props.user} mangas={this.state.mangas}/>
-			)
-		} else if (this.state.mode == 2) {
-			return (
-				<MangaUISimpleList user={this.props.user} mangas={this.state.mangas}/>
-			)
-		} else if (this.state.mode == 3) {
-			return (
-				<MangaUIGrid user={this.props.user} mangas={this.state.mangas}/>
-			)
-		} else {
-			return (
-				<MangaUIDetailed user={this.props.user} mangas={this.state.mangas}/>
-			)
-		}
-	}
-	setRenderer(idx) {
-		this.setState({
-			mode: idx
-		});
-	}
 
 	render() {
 		const page_switch = (value) => {
@@ -751,8 +805,9 @@ export class SearchUI extends React.Component {
 	
 		return (
 			<React.Fragment>
-				<MangaUIHeaders getRender={() => this.state.mode} setRender={(i) => this.setRenderer(i)} />
-				{/*<div id="listing" style={{height: "40px"}}>
+				{this.searchHeader()}
+				{/*<MangaUIHeaders getRender={() => this.state.mode} setRender={(i) => this.setRenderer(i)} />*/}
+				<div id="listing" style={{height: "40px", paddingBottom: "60px"}}>
 					<Row className="my-2">
 						<div className="col-auto ml-auto">
 							Sort by 
@@ -774,7 +829,7 @@ export class SearchUI extends React.Component {
 							</select>
 						</div>
 					</Row>
-				</div>*/}
+				</div>
 				{/* If mangas empty, display partials/alert */}
 				{this.getRenderer()}
 				<DPagination 
