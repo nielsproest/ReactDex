@@ -5,6 +5,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Alert from "react-bootstrap/Alert";
 import ListGroup from 'react-bootstrap/ListGroup';
+import Placeholder from 'react-bootstrap/Placeholder';
 
 import React from "react";
 import {
@@ -24,7 +25,45 @@ import {
 } from "./partials"
 import { UserContext } from "./user-context";
 import { ElementUpdater } from "./utility";
+import { DPagination } from "./Manga";
 import API from "./MangaDexAPI/API";
+
+export class MangaCardFake extends React.Component {
+	render() {
+		return (
+			<div className="col-md-6 border-bottom p-2 col-md-6">
+				<div className="hover sm_md_logo img-thumbnail rounded float-left mr-2" style={{opacity: 0.03}}>
+				</div>
+				<div className="pt-0 pb-1 mb-1 border-bottom d-flex align-items-center flex-nowrap">
+					<div>{display_fa_icon('book', '', 'mr-1')}</div>
+					<Placeholder as="a" xs={10} animation="glow" >
+						<Placeholder xs={10} />
+					</Placeholder>
+				</div>
+				<div className="text-truncate py-0 mb-1 no-gutters align-items-center flex-nowrap">
+					{display_fa_icon('file', '', 'mr-1 right5', 'far')}
+					<Placeholder as="a" xs={10} animation="glow" >
+						<Placeholder xs={10} />
+					</Placeholder>
+				</div>
+				<div className="text-truncate py-0 mb-1">
+					<div className="text-truncate ml-1 py-0 mb-1">
+						{display_fa_icon('users')}
+						<Placeholder as="a" xs={7} animation="glow" >
+							<Placeholder xs={7} />
+						</Placeholder>
+					</div>
+				</div>
+				<div className="text-truncate ml-1 py-0 mb-1">
+					{display_fa_icon('clock', '', '', 'far')}
+					<Placeholder as="a" xs={3} animation="glow" >
+						<Placeholder xs={3} />
+					</Placeholder>
+				</div>
+			</div>
+		)
+	}
+}
 
 export class MangaCard extends React.Component {
 	constructor(props) {
@@ -139,8 +178,12 @@ export class MangaCards extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			mangas: [],
-			followMangas: null
+			mangas: null,
+			mpage: 0,
+			mtotal: 0,
+			followMangas: null,
+			fpage: 0,
+			ftotal: 0
 		};
 	}
 
@@ -151,9 +194,10 @@ export class MangaCards extends React.Component {
 		//We must wait for login to be successful
 		//Or just retry
 		if (user != null) {
-			API.getFollowedManga(30, 0).then(res => {
+			API.getFollowedManga(30, this.state.fpage * 30).then(res => {
 				this.setState({
-					followMangas: res.data
+					followMangas: res,
+					ftotal: res.total
 				});
 			}).catch((e) => {
 				console.log("User not logged in!");
@@ -161,11 +205,12 @@ export class MangaCards extends React.Component {
 		}
 	}
 	componentDidMount() {
-		API.mangaByChapterUpload(30,0).then(res => {
+		API.mangaByChapterUpload(30, this.state.mpage * 30).then(res => {
 			console.log("Retrieve succeded!");
 			console.log(res);
 			this.setState({
-				mangas: res.data
+				mangas: res,
+				mtotal: res.total
 			});
 		}).catch((e) => {
 			console.log("Retrieve failed!");
@@ -182,10 +227,15 @@ export class MangaCards extends React.Component {
 	}
 
 	render() {
+		const user = this.props.user;
+
 		//TODO: Seperate function for UserContext
 		const follows_render = () => {
-			//TODO: This should use ApiContext consumer for login update
-			if (this.state.followMangas == null) { //not logged in
+			if (this.state.followMangas == null) {
+				if (user != null) {
+					return Array.from(Array(20).keys()).map((_) => <MangaCardFake />)
+				}
+
 				return display_alert("info" ,"m-2 widthfix", "Notice", [
 					"Please ",
 					display_fa_icon("sign-in-alt"),
@@ -195,8 +245,8 @@ export class MangaCards extends React.Component {
 				]);
 			}
 
-			if (this.state.followMangas.length > 0) {
-				return this.state.followMangas.map((i) => {
+			if (this.state.followMangas.data.length > 0) {
+				return this.state.followMangas.data.map((i) => {
 					//TODO: Why is this a key violation?
 					return (<MangaCard manga={i} key={i.getUUID()}/>)
 				})
@@ -206,11 +256,13 @@ export class MangaCards extends React.Component {
 		}
 
 		const renderMangas = () => {
-			const mangas = this.state.mangas;
-			return mangas.map((i) => {
-				//TODO: Why is this a key violation?
-				return (<MangaCard manga={i} key={i.getUUID()} />)
-			})
+			if (this.state.mangas != null) {
+				return this.state.mangas.data.map((i) => {
+					//TODO: Why is this a key violation?
+					return (<MangaCard manga={i} key={i.getUUID()} />)
+				})
+			}
+			return Array.from(Array(20).keys()).map((_) => <MangaCardFake />)
 		}
 
 		return (
@@ -230,11 +282,36 @@ export class MangaCards extends React.Component {
 							<Row className="m-0">
 								{renderMangas()}
 							</Row>
+							<DPagination 
+								pages={Math.ceil(this.state.mtotal / 30)} 
+								sizeof={30} 
+								callback={(p) => {
+									this.setState({
+										mpage: p,
+										mangas: null
+									}, () => {
+										this.componentDidMount();
+									});
+									//TODO: Better transition, facilitate with Suspense, or placeholder
+								}} 
+							/>
 						</Tab>
 						<Tab eventKey="follows_update" title="Follows updates">
 							<Row className="m-0">
 								{follows_render()}
 							</Row>
+							<DPagination 
+								pages={Math.ceil(this.state.ftotal / 30)} 
+								sizeof={30} 
+								callback={(p) => {
+									this.setState({
+										fpage: p,
+										followMangas: null
+									}, () => {
+										this.componentDidMount();
+									});
+								}} 
+							/>
 						</Tab>
 					</Tabs>
 				</Card>
