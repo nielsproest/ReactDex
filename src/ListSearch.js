@@ -504,8 +504,19 @@ export class SearchUI extends React.Component {
 		if (this.props.tag != null) {
 			Object.assign(search_dict, {"includedTags": this.props.tag});
 		}
-		//TODO: Exclusion mode
-		//TODO: Sort mode
+		//TODO: Use this
+		if (this.props.ex_tag != null) {
+			Object.assign(search_dict, {"excludedTags": this.props.ex_tag});
+		}
+		//TODO: Use this
+		if (this.props.sort != null) {
+			const type = this.props.sort[0];
+			const order = this.props.sort[1];
+
+			Object.assign(search_dict, {[`order[${type}]`]: order});
+		}
+		//TODO: By original language
+		//TODO: By translated language
 
 		API.manga(
 			search_dict, 
