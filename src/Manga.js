@@ -604,7 +604,7 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Content rating:</div>
 									<div className="col-lg-9 col-xl-10">
-										<Link to={`/search?rating[]=${manga.attributes.contentRating}`}>
+										<Link to={`/search?rating=${manga.attributes.contentRating}`}>
 											<Badge 
 												bg={
 													["success","info","warning","danger"][
