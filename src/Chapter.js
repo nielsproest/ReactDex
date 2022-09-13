@@ -98,6 +98,10 @@ class SinglePageReader extends React.Component {
 						src={full_img}
 						loading={loading}
 						page={idx}
+						style={{
+							minWidth: "360",
+							minHeight: "640"
+						}}
 						onError={(e) => {
 							this.props.onError(refreshidx);
 							console.log("onerror", e);
