@@ -132,10 +132,11 @@ function UserPage(props) {
 
 function Search(props) {
 	const useQuery = new URLSearchParams(useLocation().search);
+	const navigation = useNavigate();
 
 	const search_query = useQuery.get("title");
-	const rating_query = useQuery.getAll("rating[]");
-	const tag_query = useQuery.getAll("tag[]");
+	const rating_query = useQuery.getAll("rating");
+	const tag_query = useQuery.getAll("tag");
 
 	document.title = `Search ${search_query} - ReactDex`;
 
@@ -143,6 +144,7 @@ function Search(props) {
 		<Row>
 			<SearchUI 
 				user={props.user} 
+				nav={navigation} 
 				title={search_query} 
 				rating={rating_query} 
 				tag={tag_query} 

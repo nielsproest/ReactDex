@@ -43,11 +43,11 @@ export function display_genres_checkboxes(grouped_genres, selected_genres = [], 
 										id={`checkbox-tag-${id}`} 
 										name={inputName} 
 										value={id} 
-										checked={state} 
+										defaultChecked={state} 
 									/>
 									<label 
 										class='custom-control-label' 
-										for={`checkbox-tag-${id}`}
+										htmlFor={`checkbox-tag-${id}`}
 									>
 										<span class={`badge ${chipClasses}`}>{name}</span>
 									</label>

@@ -624,55 +624,59 @@ export class SearchUI extends React.Component {
 				<div className="card my-3" style={{paddingRight: "0", paddingLeft: "0"}}>
 					<h6 className="card-header">{display_fa_icon('search-plus')} Search</h6>
 					<div className="card-body">
-						<form id="search_titles_form" method="get" action="/search">
+						<form 
+							id="search_titles_form" 
+							method="get" 
+							action="/search"
+						>
 							<div className="form-group row">
-								<label for="title" className="col-md-3 col-form-label">Manga title</label>
+								<label htmlFor="title" className="col-md-3 col-form-label">Manga title</label>
 								<div className="col-md-9">
 									<input 
 										type="text" 
 										className="form-control" 
 										id="title" 
 										name="title" 
-										value={this.props.title != null ? this.props.title : ""}
+										defaultValue={this.props.title != null ? this.props.title : ""}
 									/>
 								</div>
 							</div>
 							{/*
 							<div className="form-group row">
-								<label for="author" className="col-md-3 col-form-label">Author</label>
+								<label htmlFor="author" className="col-md-3 col-form-label">Author</label>
 								<div className="col-md-9">
 									<input 
 										type="text" 
 										className="form-control" 
 										id="author" 
 										name="author" 
-										value={""}
+										defaultValue={""}
 									/>
 								</div>
 							</div>
 							<div className="form-group row">
-								<label for="artist" className="col-md-3 col-form-label">Artist</label>
+								<label htmlFor="artist" className="col-md-3 col-form-label">Artist</label>
 								<div className="col-md-9">
 									<input 
 										type="text" 
 										className="form-control" 
 										id="artist" 
 										name="artist" 
-										value={""}
+										defaultValue={""}
 									/>
 								</div>
 							</div>
 							*/}
 							<div className="form-group row">
-								<label for="lang_id" className="col-md-3 col-form-label">Original language</label>
+								<label htmlFor="lang_id" className="col-md-3 col-form-label">Original language</label>
 								<div className="col-md-9">
 									<select className="form-control" id="lang_id" name="lang_id">
 										{/*
-										<option {!isset($_GET['lang_id']) ? "selected" : ""} value="">All languages</option>
+										<option {!isset($_GET['lang_id']) ? "selected" : ""} defaultValue="">All languages</option>
 										<?php
 										foreach (ORIG_LANG_ARRAY as $key => $language) {
 											$selected = ($key == ($_GET['lang_id'] ?? '')) ? "selected" : "";
-											print "<option $selected value='$key'>$language</option>";
+											print "<option $selected defaultValue='$key'>$language</option>";
 										}
 										?>
 										*/}
@@ -680,7 +684,7 @@ export class SearchUI extends React.Component {
 								</div>
 							</div>
 							<div className="form-group row">
-								<label for="demo_id" className="col-md-3 col-form-label">Demographic</label>
+								<label htmlFor="demo_id" className="col-md-3 col-form-label">Demographic</label>
 								<div className="col-md-9">
 									<div className="row px-3">
 										{/*
@@ -690,8 +694,8 @@ export class SearchUI extends React.Component {
 										if ($key) {
 											print "
 												<div className='custom-control custom-checkbox form-check col-auto' style='min-width:8rem'>
-													<input type='checkbox' className='custom-control-input' name='demo_id[]' id='demo_id_$key' $checked value='$key'>
-													<label className='custom-control-label' for='demo_id_$key'>$demo</label>
+													<input type='checkbox' className='custom-control-input' name='demo_id[]' id='demo_id_$key' $checked defaultValue='$key'>
+													<label className='custom-control-label' htmlFor='demo_id_$key'>$demo</label>
 												</div>";
 											}
 										}
@@ -701,7 +705,7 @@ export class SearchUI extends React.Component {
 								</div>
 							</div>
 							<div className="form-group row">
-								<label for="status_id" className="col-md-3 col-form-label">Publication status</label>
+								<label htmlFor="status_id" className="col-md-3 col-form-label">Publication status</label>
 								<div className="col-md-9">
 									<div className="row px-3">
 										{/*
@@ -711,8 +715,8 @@ export class SearchUI extends React.Component {
 											if ($key) {
 												print "
 												<div className='custom-control custom-checkbox form-check col-auto' style='min-width:8rem'>
-													<input type='checkbox' className='custom-control-input' name='status_id[]' id='status_id_$key' $checked value='$key'>
-													<label className='custom-control-label' for='status_id_$key'>$status</label>
+													<input type='checkbox' className='custom-control-input' name='status_id[]' id='status_id_$key' $checked defaultValue='$key'>
+													<label className='custom-control-label' htmlFor='status_id_$key'>$status</label>
 												</div>";
 											}
 										}
@@ -722,7 +726,7 @@ export class SearchUI extends React.Component {
 								</div>
 							</div>
 							<div className="form-group row">
-								<label for="status_id" className="col-md-3 col-form-label">Content rating</label>
+								<label htmlFor="status_id" className="col-md-3 col-form-label">Content rating</label>
 								<div className="col-md-9">
 									<div className="row px-3">
 										{["safe","suggestive","erotica","pornographic"].map((r,idx) => {
@@ -734,14 +738,14 @@ export class SearchUI extends React.Component {
 													<input 
 														type='checkbox' 
 														className='custom-control-input' 
-														name='rating[]' 
+														name='rating' 
 														id={`status_id_${r}`}
-														checked={this.props.rating != null && this.props.rating.includes(r)}
-														value={r}
+														defaultChecked={this.props.rating != null && this.props.rating.includes(r)}
+														defaultValue={r}
 													/>
 													<label 
 														className='custom-control-label' 
-														for={`status_id_${r}`}
+														htmlFor={`status_id_${r}`}
 													>
 														<Badge 
 															bg={["success","info","warning","danger"][idx]} 
@@ -766,22 +770,22 @@ export class SearchUI extends React.Component {
 								</div>
 							</div>
 							{/*
-							<input type="submit" value="Search" className="d-none" />
+							<input type="submit" defaultValue="Search" className="d-none" />
 							<div className="form-group row mb-0 tag-display-mode-wrapper" data-tag-display="dropdowns">
-								<label for="tags_inc" className="col-md-3 col-form-label">Include tags</label>
+								<label htmlFor="tags_inc" className="col-md-3 col-form-label">Include tags</label>
 								<div className="col-md-9 genres-filter-wrapper">
 									display_genres_dropdown($grouped_genres->toGroupedArray(), $templateVar['tags_inc'], 'tags_inc')
 								</div>
 							</div>
 							<div className="form-group row mb-0 tag-display-mode-wrapper" data-tag-display="dropdowns">
-								<label for="tags_exc" className="col-md-3 col-form-label">Exclude tags</label>
+								<label htmlFor="tags_exc" className="col-md-3 col-form-label">Exclude tags</label>
 								<div className="col-md-9 genres-filter-wrapper">
 									display_genres_dropdown($grouped_genres->toGroupedArray(), !empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), 'tags_exc')
 								</div>
 							</div>
 							*/}
 							<div className="form-group row tag-display-mode-wrapper" data-tag-display="checkboxes">
-								<label for="tags_both" className="col-md-3 col-form-label">Include/Exclude tags</label>
+								<label htmlFor="tags_both" className="col-md-3 col-form-label">Include/Exclude tags</label>
 								<div className="col-md-9 genres-filter-wrapper pl-4">
 									<div className="container">
 										{
@@ -790,8 +794,8 @@ export class SearchUI extends React.Component {
 												this.props.tag,
 												[],
 												true,
-												true,
-												"tags_both[]"
+												false,
+												"tag"
 											)
 										}
 										{/*
@@ -801,7 +805,7 @@ export class SearchUI extends React.Component {
 											!empty($templateVar['tags_exc']) ? $templateVar['tags_exc'] : explode(',', $templateVar['user']->excluded_genres), 
 											true, 
 											false, 
-											'tags_both[]'
+											'tag='
 										)
 										*/}
 									</div>
@@ -811,14 +815,14 @@ export class SearchUI extends React.Component {
 								<label className="col-md-3 col-form-label">Tag inclusion mode</label>
 								<div className="col-md-9">
 									<div className="form-check form-check-inline">
-										<input className="form-check-input" type="radio" name="tag_mode_inc" id="tag_mode_inc_all" value="all" />
+										<input className="form-check-input" type="radio" name="tag_mode_inc" id="tag_mode_inc_all" defaultValue="all" />
 										{/*$templateVar['tag_mode_inc'] === 'all' ? 'checked' : ''*/}
-										<label className="form-check-label" for="tag_mode_inc_all">All <small>(AND)</small></label>
+										<label className="form-check-label" htmlFor="tag_mode_inc_all">All <small>(AND)</small></label>
 									</div>
 									<div className="form-check form-check-inline">
-										<input className="form-check-input" type="radio" name="tag_mode_inc" id="tag_mode_inc_any" value="any" />
+										<input className="form-check-input" type="radio" name="tag_mode_inc" id="tag_mode_inc_any" defaultValue="any" />
 										{/*$templateVar['tag_mode_inc'] === 'any' ? 'checked' : ''*/}
-										<label className="form-check-label" for="tag_mode_inc_any">Any <small>(OR)</small></label>
+										<label className="form-check-label" htmlFor="tag_mode_inc_any">Any <small>(OR)</small></label>
 									</div>
 								</div>
 							</div>
@@ -826,14 +830,14 @@ export class SearchUI extends React.Component {
 								<label className="col-md-3 col-form-label">Tag exclusion mode</label>
 								<div className="col-md-9">
 									<div className="form-check form-check-inline">
-										<input className="form-check-input" type="radio" name="tag_mode_exc" id="tag_mode_exc_all" value="all" />
+										<input className="form-check-input" type="radio" name="tag_mode_exc" id="tag_mode_exc_all" defaultValue="all" />
 										{/*$templateVar['tag_mode_exc'] === 'all' ? 'checked' : ''*/}
-										<label className="form-check-label" for="tag_mode_exc_all">All <small>(AND)</small></label>
+										<label className="form-check-label" htmlFor="tag_mode_exc_all">All <small>(AND)</small></label>
 									</div>
 									<div className="form-check form-check-inline">
-										<input className="form-check-input" type="radio" name="tag_mode_exc" id="tag_mode_exc_any" value="any" />
+										<input className="form-check-input" type="radio" name="tag_mode_exc" id="tag_mode_exc_any" defaultValue="any" />
 										{/*$templateVar['tag_mode_exc'] === 'any' ? 'checked' : ''*/}
-										<label className="form-check-label" for="tag_mode_exc_any">Any <small>(OR)</small></label>
+										<label className="form-check-label" htmlFor="tag_mode_exc_any">Any <small>(OR)</small></label>
 									</div>
 								</div>
 							</div>
