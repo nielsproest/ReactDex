@@ -233,7 +233,7 @@ export class MangaCards extends React.Component {
 		const follows_render = () => {
 			if (this.state.followMangas == null) {
 				if (user != null) {
-					return Array.from(Array(20).keys()).map((_) => <MangaCardFake />)
+					return Array.from(Array(8).keys()).map((_) => <MangaCardFake />)
 				}
 
 				return display_alert("info" ,"m-2 widthfix", "Notice", [
@@ -262,7 +262,7 @@ export class MangaCards extends React.Component {
 					return (<MangaCard manga={i} key={i.getUUID()} />)
 				})
 			}
-			return Array.from(Array(20).keys()).map((_) => <MangaCardFake />)
+			return Array.from(Array(8).keys()).map((_) => <MangaCardFake />)
 		}
 
 		return (

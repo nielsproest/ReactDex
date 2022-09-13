@@ -588,7 +588,7 @@ export class MangaDisplay extends React.Component {
 											<div className="col-lg-9 col-xl-10">
 												{manga.attributes.tags.filter((k,v) => k.attributes.group == t).map((k,v) => {
 													const genreName = Object.values(k.attributes.name)[0];
-													const genreLink = `/search?tag[]=${k.id}`;
+													const genreLink = `/search?tag=${k.id}`;
 													//const genreLink = "/tag/" + k.id + "/" + slugify(genreName);
 													return (
 														<Link to={genreLink}>
