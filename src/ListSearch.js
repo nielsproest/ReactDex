@@ -737,6 +737,27 @@ export class SearchUI extends React.Component {
 								</div>
 							</div>
 							<div className="form-group row">
+								<label htmlFor="sorting_type" className="col-md-3 col-form-label">Sort by</label>
+								<div className="col-md-9">
+									<select 
+										className="manga-sort-select form-control d-inline-block w-auto ml-1"
+									>
+										<option value="2" selected>Title &#x25B2;</option>
+										<option value="3" >Title &#x25BC;</option>
+										<option value="0" >Last updated &#x25B2;</option>
+										<option value="1" >Last updated &#x25BC;</option>
+										<option value="4" >Comments &#x25B2;</option>
+										<option value="5" >Comments &#x25BC;</option>
+										<option value="6" >Rating &#x25B2;</option>
+										<option value="7" >Rating &#x25BC;</option>
+										<option value="8" >Views &#x25B2;</option>
+										<option value="9" >Views &#x25BC;</option>
+										<option value="10">Follows &#x25B2;</option>
+										<option value="11">Follows &#x25BC;</option>
+									</select>
+								</div>
+							</div>
+							<div className="form-group row">
 								<label htmlFor="status_id" className="col-md-3 col-form-label">Content rating</label>
 								<div className="col-md-9">
 									<div className="row px-3">
@@ -877,7 +898,7 @@ export class SearchUI extends React.Component {
 			<React.Fragment>
 				{this.searchHeader()}
 				{/*<MangaUIHeaders getRender={() => this.state.mode} setRender={(i) => this.setRenderer(i)} />*/}
-				<div id="listing" style={{height: "40px", paddingBottom: "60px"}}>
+				{/*<div id="listing" style={{height: "40px", paddingBottom: "60px"}}>
 					<Row className="my-2">
 						<div className="col-auto ml-auto">
 							Sort by 
@@ -899,7 +920,7 @@ export class SearchUI extends React.Component {
 							</select>
 						</div>
 					</Row>
-				</div>
+				</div>*/}
 				{/* If mangas empty, display partials/alert */}
 				{this.getRenderer()}
 				<DPagination 

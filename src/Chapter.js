@@ -120,6 +120,7 @@ class SinglePageReader extends React.Component {
 							this.props.setLoaded(idx);
 							console.log("onload", e);
 							//TODO: Report
+							//TODO: Remove min size
 						}}
 					/>
 				)
@@ -636,8 +637,11 @@ class ReaderSidebar extends React.Component {
 						</Col>
 						<Col className="reader-controls-footer col-auto mt-auto d-none d-lg-flex justify-content-center" style={{"flex":"0 1 auto", "overflow":"hidden"}}>
 							<div className="text-muted text-center text-truncate row flex-wrap justify-content-center p-2 no-gutters">
-								<span className="col-auto mx-1">©2021</span>
-								<a href="/" className="col-auto mx-1">MangaDex</a>
+								{/*<span class="col-auto mx-1">©2021</span>*/}
+								<a href="https://mangadex.org/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">MangaDex</a>
+								<a href="https://mangadex.network/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">MD@Home</a>
+								<a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">Cloudflare</a>
+								<a href="https://github.com/SagsMug/ReactDex" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">Github</a>
 							</div>
 						</Col>
 						<Col className="reader-controls-pages col-auto d-none d-lg-flex row no-gutters align-items-center">
