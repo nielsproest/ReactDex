@@ -384,10 +384,7 @@ function App() {
 				<LoginCheck />
 				<LoginForm />
 				<DNavbar/>
-				<Container fluid="xxl" role="main" id="content" style={{
-					marginBottom: "50px", 
-					marginTop: "20px"
-				}}>
+				<Container fluid="xxl" role="main" id="content">
 					<Routes>
 						<Route path="/" element={<Home user={user} />}></Route>
 						<Route path="/manga/:mangaId" element={<MangaPage user={user} />}></Route>

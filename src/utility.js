@@ -1,5 +1,6 @@
 //utility.js
 import React from "react";
+import Placeholder from "react-bootstrap/Placeholder";
 
 export const TIME_MS = 0.001;
 export const TIME_SECOND = 1;
@@ -40,6 +41,18 @@ export function getTimeDiff(ms) {
 	}
 
 	return "0";
+}
+
+export function APlaceholder(num, as="span") {
+	return (
+		<Placeholder as={as} xs={num} animation="glow">
+			<Placeholder xs={num}/>
+		</Placeholder>
+	)
+}
+
+export function IntArray(num) {
+	return Array.from(Array(num).keys());
 }
 
 export function userUUID(user) {

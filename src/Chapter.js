@@ -11,6 +11,7 @@ import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import axios from "axios";
 
 import API from "./MangaDexAPI/API";
+import { IntArray, APlaceholder } from "./utility";
 
 import './css/Chapter.css';
 
@@ -66,6 +67,9 @@ class SinglePageReader extends React.Component {
 		this.state = {};
 	}
 
+	componentDidMount() {}
+	componentWillUnmount() {}
+
 	isLongStrip() {
 		return false;
 	}
@@ -94,14 +98,10 @@ class SinglePageReader extends React.Component {
 
 				return (
 					<img
-						className={`noselect nodrag cursor-pointer reader-image ${displayed}`}
+						className={`noselect nodrag cursor-pointer reader-image fillimg ${displayed}`}
 						src={full_img}
 						loading={loading}
 						page={idx}
-						style={{
-							minWidth: "360",
-							minHeight: "640"
-						}}
 						onError={(e) => {
 							this.props.onError(refreshidx);
 							console.log("onerror", e);
@@ -175,6 +175,31 @@ class SinglePageReader extends React.Component {
 }
 class DoublePageReader extends SinglePageReader {}
 class LongStripReader extends SinglePageReader {
+	scrollEvent(e) {
+		/*var visible = null;
+		Array.from(this.renderRef().pageAll()).forEach((e) => {
+			if (checkVisible(e)) { //TODO: Check middle
+				visible = e.getAttribute("page");
+			}
+		});
+		if (visible) {
+			visible = parseInt(visible)
+			this.renderRef().pageCurrentSet(visible);
+		}*/
+	}
+
+	componentDidMount() {
+		super.componentDidMount();
+
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		render_window.addEventListener("scroll", this.scrollEvent, false);
+	}
+	componentWillUnmount() {
+		super.componentWillUnmount();
+
+		const render_window = document.getElementsByClassName("reader-images")[0];
+		render_window.removeEventListener("scroll", this.scrollEvent, false);
+	}
 	isLongStrip() {
 		return true;
 	}
@@ -211,7 +236,7 @@ class ReaderMain extends React.Component {
 					} else {
 						this.setState({
 							pages: c,
-							lpages: Array.from(Array(c.chapter.data.length).keys()).map((_) => false)
+							lpages: IntArray(c.chapter.data.length).map((_) => false)
 						});
 					}
 				});
@@ -220,7 +245,23 @@ class ReaderMain extends React.Component {
 	}
 
 	componentDidMount() {
-		this.fetchPages(0);
+		if (this.props.chapter != null) {
+			this.fetchPages(0);
+		}
+	}
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+	componentDidUpdate(prevProps) {
+		const prevId = prevProps.chapter != null && prevProps.chapter.getId();
+		const currId = this.props.chapter != null && this.props.chapter.getId();
+		if (prevId != currId) {
+			this.refreshCounter = 0;
+			this.setState({
+				pages: null
+			});
+			this.componentDidMount();
+		}
 	}
 
 	renderRef() {
@@ -311,7 +352,7 @@ class ReaderMain extends React.Component {
 				<div className="reader-page-bar col-auto d-none d-lg-flex directional">
 					<div className="track cursor-pointer row no-gutters">
 						<div className="trail position-absolute h-100" style={{display: "flex"}}>
-							{Array.from(Array(pages != null ? pages.chapter.data.length : 0).keys()).map((idx) => {
+							{IntArray(pages != null ? pages.chapter.data.length : 0).map((idx) => {
 								const _selected = idx == page && "thumb";
 								const _loaded = this.state.lpages[idx] && "loaded";
 
@@ -347,6 +388,10 @@ class ReaderSidebar extends React.Component {
 
 	componentDidMount() {
 		const ch = this.props.chapter;
+		if (ch == null) {
+			return
+		}
+
 		const manga = ch.GetRelationship("manga")[0];
 		const user = ch.GetRelationship("user")[0];
 		const group = ch.GetRelationship("scanlation_group");
@@ -372,6 +417,13 @@ class ReaderSidebar extends React.Component {
 				chapters: chs
 			});
 		});
+	}
+	componentDidUpdate(prevProps) {
+		const prevId = prevProps.chapter != null && prevProps.chapter.getId();
+		const currId = this.props.chapter != null && this.props.chapter.getId();
+		if (prevId != currId) {
+			this.componentDidMount();
+		}
 	}
 
 	//TODO: componentDidUpdate
@@ -546,7 +598,7 @@ class ReaderSidebar extends React.Component {
 								<select className="form-control" id="jump-page" onChange={(e) => {
 									this.props.setPage(e.target.value);
 								}}>
-									{Array.from(Array(pages).keys()).map((idx) => {
+									{IntArray(pages).map((idx) => {
 										return (<option value={idx} selected={page == idx ? true : false}>Page {idx+1}</option>)
 									})}
 								</select>
@@ -638,10 +690,10 @@ class ReaderSidebar extends React.Component {
 						<Col className="reader-controls-footer col-auto mt-auto d-none d-lg-flex justify-content-center" style={{"flex":"0 1 auto", "overflow":"hidden"}}>
 							<div className="text-muted text-center text-truncate row flex-wrap justify-content-center p-2 no-gutters">
 								{/*<span class="col-auto mx-1">©2021</span>*/}
-								<a href="https://mangadex.org/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">MangaDex</a>
-								<a href="https://mangadex.network/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">MD@Home</a>
-								<a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">Cloudflare</a>
-								<a href="https://github.com/SagsMug/ReactDex" target="_blank" rel="noopener noreferrer" title="" class="col-auto mx-1">Github</a>
+								<a href="https://mangadex.org/" target="_blank" rel="noopener noreferrer" title="" className="col-auto mx-1">MangaDex</a>
+								<a href="https://mangadex.network/" target="_blank" rel="noopener noreferrer" title="" className="col-auto mx-1">MD@Home</a>
+								<a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" title="" className="col-auto mx-1">Cloudflare</a>
+								<a href="https://github.com/SagsMug/ReactDex" target="_blank" rel="noopener noreferrer" title="" className="col-auto mx-1">Github</a>
 							</div>
 						</Col>
 						<Col className="reader-controls-pages col-auto d-none d-lg-flex row no-gutters align-items-center">
@@ -1188,17 +1240,13 @@ export class ChapterDisplay extends React.Component {
 	}
 
 	componentWillUnmount() {
-		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
-			f.style.display = "unset";
-		});
+		document.getElementById("root").classList.remove("hide-footer");
 
 		window.removeEventListener("resize", this.resizeAnon, false);
 	}
 
 	componentDidMount() {
-		Array.from(document.getElementsByTagName("footer")).forEach((f) => {
-			f.style.display = "none";
-		});
+		document.getElementById("root").classList.add("hide-footer");
 
 		window.addEventListener("resize", this.resizeAnon, false);
 
@@ -1215,7 +1263,6 @@ export class ChapterDisplay extends React.Component {
 			});
 		});
 	}
-
 	componentDidUpdate(prevProps) {
 		if (prevProps.id != this.props.id) {
 			this.setState({
@@ -1284,31 +1331,29 @@ export class ChapterDisplay extends React.Component {
 				data-direction={this.c_cfg.getValue("DIRECTION")} 
 				data-renderer={this.c_cfg.getValue("READER_TYPE")} 
 			>
-				{this.state.chapter != null ? (
-					<React.Fragment>
-						<ReaderSidebar 
-							ref={this.changeChild} 
-							page={this.getPage()} 
-							setPage={(i) => this.setPage(i)} 
-							reader={this.changeReader} 
-							panel={this.changeSettings} 
-							chapter={this.state.chapter} 
-							cfg={this.c_cfg} 
-							nav={this.props.nav} 
-						/>
-						<ReaderMain 
-							ref={this.changeReader} 
-							page={this.getPage()} 
-							setPage={(i) => this.setPage(i)} 
-							chapter={this.state.chapter} 
-							cfg={this.c_cfg} 
-						/>
-						<ReaderSettingsMenu 
-							ref={this.changeSettings} 
-							cfg={this.c_cfg} 
-						/>
-					</React.Fragment>
-				) : (<div>Loading...</div>)}
+				<React.Fragment>
+					<ReaderSidebar 
+						ref={this.changeChild} 
+						page={this.getPage()} 
+						setPage={(i) => this.setPage(i)} 
+						reader={this.changeReader} 
+						panel={this.changeSettings} 
+						chapter={this.state.chapter} 
+						cfg={this.c_cfg} 
+						nav={this.props.nav} 
+					/>
+					<ReaderMain 
+						ref={this.changeReader} 
+						page={this.getPage()} 
+						setPage={(i) => this.setPage(i)} 
+						chapter={this.state.chapter} 
+						cfg={this.c_cfg} 
+					/>
+					<ReaderSettingsMenu 
+						ref={this.changeSettings} 
+						cfg={this.c_cfg} 
+					/>
+				</React.Fragment>
 			</Container>
 		)
 	}

@@ -334,14 +334,18 @@ body {
 	max-width: none;
 	max-height: none;
 }*/
-.reader.fit-vertical .reader-main {
+.reader.fit-vertical:not([data-renderer="long-strip"]) .reader-main {
 	/* this height & .reader-images.col seem necessary */
 	height: calc(100vh - 3.5rem);
 	max-height: calc(100vh - 3.5rem);
 	overflow-x: auto;
 }
+.reader.fit-vertical[data-renderer="long-strip"] .reader-main {
+	height: calc(100vh - 3.5rem);
+	max-height: unset;
+}
 .reader.fit-vertical.hide-header .reader-main {
-	height: 100vh;
+	height: calc(100vh - 3.5rem);
 	max-height: 100vh;
 }
 .reader.fit-vertical .reader-images,

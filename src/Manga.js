@@ -7,7 +7,9 @@ import Tabs from "react-bootstrap/Tabs";
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
-import Pagination from 'react-bootstrap/Pagination';
+import Pagination from "react-bootstrap/Pagination";
+import Placeholder from "react-bootstrap/Placeholder";
+
 
 import { UserContext } from "./user-context";
 
@@ -29,7 +31,7 @@ import {
 } from "./partials"
 
 import API from "./MangaDexAPI/API";
-import { slugify, capitalizeFirstLetter, ElementUpdater } from "./utility";
+import { slugify, capitalizeFirstLetter, ElementUpdater, IntArray, APlaceholder } from "./utility";
 
 //TODO: Move direct access (.attribute) functions to API classes
 
@@ -481,7 +483,6 @@ export class MangaDisplay extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			mangaId: props.id,
 			manga: null
 		};
 	}
@@ -490,7 +491,7 @@ export class MangaDisplay extends React.Component {
 
 	componentDidMount() {
 		//Can include related manga for some reason
-		API.manga({"ids": [this.state.mangaId], "includes": ["cover_art", "author", "artist"]}, true).then(
+		API.manga({"ids": [this.props.id], "includes": ["cover_art", "author", "artist"]}, true).then(
 			(m) => {
 				this.setState({
 					manga: m.data[0]
@@ -504,39 +505,46 @@ export class MangaDisplay extends React.Component {
 		const manga = this.state.manga;
 		const user = this.context;
 
-		//TODO: Use bootstrap placeholder for missing stuff
-		if (manga == null) {
-			return (
-				<React.Fragment>
-					Loading...
-				</React.Fragment>
-			)
-		}
-
 		return (
 			<React.Fragment>
 				<Card className="mb-3" style={{padding: "0"}}>
 					<h6 className="card-header d-flex align-items-center py-2">
 						{display_fa_icon("book")}
-						<span className="mx-1">{manga.getTitle()}</span>
-						{display_lang_flag_v3(manga.attributes.originalLanguage)}
-						{display_labels(manga.isHentai())}
+						{manga != null ? (
+							<React.Fragment>
+								<span className="mx-1">{manga.getTitle()}</span>
+								{display_lang_flag_v3(manga.attributes.originalLanguage)}
+								{display_labels(manga.isHentai())}
+							</React.Fragment>
+						) : (
+							<React.Fragment>
+								{APlaceholder(5)}
+							</React.Fragment>
+						)}
 						{/*display_rss_link($templateVar["user"], "manga_id", $templateVar["manga"]->manga_id)*/}
 					</h6>
 					<div className="card-body p-0">
 						<div className="row edit">
 							<div className="col-xl-3 col-lg-4 col-md-5">
 								<Link to={"#"} title="See covers">
-									<img className="rounded" width="100%" src={manga.getCover()} />
+									<img 
+										className="rounded fillimg" 
+										width="100%" 
+										src={manga != null && manga.getCover()} 
+									/>
 								</Link>
 							</div>
 							<div className="col-xl-9 col-lg-8 col-md-7">
 								<div className="row m-0 py-1 px-0">
 									<div className="col-lg-3 col-xl-2 strong">Title ID:</div>
-									<div className="col-lg-9 col-xl-10">{display_fa_icon("hashtag")} {manga.id}</div>
+									<div className="col-lg-9 col-xl-10">{display_fa_icon("hashtag")} {manga != null ? manga.id : (
+										<React.Fragment>
+											{APlaceholder(3)}
+										</React.Fragment>
+									)}</div>
 								</div>
 
-								{(manga.attributes.altTitles.length > 0) && (
+								{(manga != null && manga.attributes.altTitles.length > 0) && (
 									<div className="row m-0 py-1 px-0 border-top">
 										<div className="col-lg-3 col-xl-2 strong">Alt name(s):</div>
 										<div className="col-lg-9 col-xl-10">
@@ -553,22 +561,30 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Author:</div>
 									<div className="col-lg-9 col-xl-10">
-										{manga.GetRelationship("author", []).map((a) => {
+										{manga != null ? manga.GetRelationship("author", []).map((a) => {
 											return (<a href={a.getUrl()} title="Other manga by this author">{display_fa_icon("external-link-alt")} {a.attributes.name}</a>)
-										})}
+										}) : (
+											<React.Fragment>
+												{APlaceholder(3)}
+											</React.Fragment>
+										)}
 									</div>
 								</div>
 
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Artist:</div>
 									<div className="col-lg-9 col-xl-10">
-										{manga.GetRelationship("artist", []).map((a) => {
+										{manga != null ? manga.GetRelationship("artist", []).map((a) => {
 											return (<a href={a.getUrl()} title="Other manga by this artist">{display_fa_icon("external-link-alt")} {a.attributes.name}</a>)
-										})}
+										}) : (
+											<React.Fragment>
+												{APlaceholder(3)}
+											</React.Fragment>
+										)}
 									</div>
 								</div>
 
-								{(manga.attributes.publicationDemographic != null) && (
+								{(manga != null && manga.attributes.publicationDemographic != null) && (
 									<div className="row m-0 py-1 px-0 border-top">
 										<div className="col-lg-3 col-xl-2 strong">Demographic:</div>
 										<div className="col-lg-9 col-xl-10">
@@ -586,7 +602,7 @@ export class MangaDisplay extends React.Component {
 										<div className="row m-0 py-1 px-0 border-top">
 											<div className="col-lg-3 col-xl-2 strong">{capitalizeFirstLetter(t)}: </div>
 											<div className="col-lg-9 col-xl-10">
-												{manga.attributes.tags.filter((k,v) => k.attributes.group == t).map((k,v) => {
+												{manga != null ? manga.attributes.tags.filter((k,v) => k.attributes.group == t).map((k,v) => {
 													const genreName = Object.values(k.attributes.name)[0];
 													const genreLink = `/search?tag=${k.id}`;
 													//const genreLink = "/tag/" + k.id + "/" + slugify(genreName);
@@ -595,7 +611,11 @@ export class MangaDisplay extends React.Component {
 															<Badge bg="secondary">{genreName}</Badge>
 														</Link>
 													)
-												})}
+												}) : (
+													<React.Fragment>
+														{APlaceholder(3)}
+													</React.Fragment>
+												)}
 											</div>
 										</div>
 									)
@@ -604,18 +624,24 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Content rating:</div>
 									<div className="col-lg-9 col-xl-10">
-										<Link to={`/search?rating=${manga.attributes.contentRating}`}>
-											<Badge 
-												bg={
-													["success","info","warning","danger"][
-														["safe","suggestive","erotica","pornographic"].indexOf(manga.attributes.contentRating)
-													]
-												} 
-												title={`Search for ${manga.attributes.contentRating} rating`} 
-											>
-												{capitalizeFirstLetter(manga.attributes.contentRating)} 
-											</Badge>
-										</Link>
+										{manga != null ? (
+											<Link to={`/search?rating=${manga.attributes.contentRating}`}>
+												<Badge 
+													bg={
+														["success","info","warning","danger"][
+															["safe","suggestive","erotica","pornographic"].indexOf(manga.attributes.contentRating)
+														]
+													} 
+													title={`Search for ${manga.attributes.contentRating} rating`} 
+												>
+													{capitalizeFirstLetter(manga.attributes.contentRating)} 
+												</Badge>
+											</Link>
+										) : (
+											<React.Fragment>
+												{APlaceholder(4, "a")}
+											</React.Fragment>
+										)}
 									</div>
 								</div>
 
@@ -623,8 +649,8 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Rating:</div>
 									<div className="col-lg-9 col-xl-10">
 										<ul className="list-inline m-0">
-											<li className="list-inline-item"><span className="text-primary">{display_fa_icon("star", "Bayesian rating")} {manga.getBayes()}</span> </li>
-											<li className="list-inline-item small">{display_fa_icon("star", "Mean rating")} {manga.getAverage()}</li>
+											<li className="list-inline-item"><span className="text-primary">{display_fa_icon("star", "Bayesian rating")} {manga != null ? manga.getBayes() : "N/A"}</span> </li>
+											<li className="list-inline-item small">{display_fa_icon("star", "Mean rating")} {manga != null ? manga.getAverage() : "N/A"}</li>
 											<li className="list-inline-item small">{display_fa_icon("user", "Users")} N/A</li>
 											<li className="list-inline-item"><button type="button" className="btn btn-secondary btn-xs" id="histogram_toggle">{display_fa_icon("chart-bar")}</button></li>
 										</ul>
@@ -634,7 +660,7 @@ export class MangaDisplay extends React.Component {
 
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Pub. status:</div>
-									<div className="col-lg-9 col-xl-10">{manga.attributes.status}</div>
+									<div className="col-lg-9 col-xl-10">{manga != null ? manga.attributes.status : "N/A"}</div>
 								</div>
 
 								<div className="row m-0 py-1 px-0 border-top">
@@ -642,7 +668,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-9 col-xl-10">
 										<ul className="list-inline m-0">
 											<li className="list-inline-item text-info">{display_fa_icon("eye", "Views")} N/A</li>
-											<li className="list-inline-item text-success">{display_fa_icon("bookmark", "Follows")} {manga.getFollows()}</li>
+											<li className="list-inline-item text-success">{display_fa_icon("bookmark", "Follows")} {manga != null ? manga.getFollows() : "N/A"}</li>
 											<li className="list-inline-item">{display_fa_icon("file", "Total chapters", "", "far")} N/A</li>
 										</ul>
 									</div>
@@ -650,7 +676,11 @@ export class MangaDisplay extends React.Component {
 
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Description:</div>
-									<div className="col-lg-9 col-xl-10">{manga.getDesc()}</div>
+									<div className="col-lg-9 col-xl-10">{manga != null ? manga.getDesc() : (
+										<React.Fragment>
+											{APlaceholder(5)}
+										</React.Fragment>
+									)}</div>
 								</div>
 								{/*
 								display_manga_relations($manga_relations)
@@ -695,7 +725,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Actions:</div>
 									<div className="col-lg-9 col-xl-10">
 										{/*display_upload_button($templateVar["user"])*/}
-										<FollowButton id={manga.getId()}/>
+										<FollowButton id={manga != null && manga.getId()}/>
 										{/*display_manga_rating_button($templateVar["user"]->user_id, $templateVar["manga"]->get_user_rating($templateVar["user"]->user_id), $templateVar["manga"]->manga_id)*/}
 										{/*display_edit_manga($templateVar["user"], $templateVar["manga"])*/}
 										{/*<?php if (validate_level($templateVar["user"], "member")) :
@@ -712,22 +742,24 @@ export class MangaDisplay extends React.Component {
 					</div>
 				</Card>
 				
-				<Tabs
-					defaultActiveKey="chapters"
-					className="mb-2"
-					selectedIndex={0}
-				>
-					<Tab eventKey="chapters" title={<span>{display_fa_icon("file", "", "", "far")} Chapters</span>}>
-						<Row className="m-0">
-							<ChapterList manga={manga} user={user}/>
-						</Row>
-					</Tab>
-					<Tab eventKey="covers" title={<span>{display_fa_icon("image")} Covers</span>}>
-						<Row className="m-0">
-							<MangaDisplayCovers manga={manga} />
-						</Row>
-					</Tab>
-				</Tabs>
+				{manga != null && (
+					<Tabs
+						defaultActiveKey="chapters"
+						className="mb-2"
+						selectedIndex={0}
+					>
+						<Tab eventKey="chapters" title={<span>{display_fa_icon("file", "", "", "far")} Chapters</span>}>
+							<Row className="m-0">
+								<ChapterList manga={manga} user={user}/>
+							</Row>
+						</Tab>
+						<Tab eventKey="covers" title={<span>{display_fa_icon("image")} Covers</span>}>
+							<Row className="m-0">
+								<MangaDisplayCovers manga={manga} />
+							</Row>
+						</Tab>
+					</Tabs>
+				)}
 			</React.Fragment>
 		)
 	}

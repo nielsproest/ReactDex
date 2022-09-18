@@ -42,6 +42,22 @@
 	100%{color: violet;}
 }
 
+/**/
+div#root > div#content {
+	margin-top: 20px;
+	margin-bottom: 50px;
+}
+div#root.hide-footer > div#content {
+	margin-bottom: 0px;
+}
+div#root.hide-footer > footer {
+	display: none;
+}
+.fillimg {
+	min-width: 720;
+	min-height: 1280;
+}
+
 /*
 Bootstrap 5 reduced it from 12 to 6 (0-5 respectively) 
 So we undo that
