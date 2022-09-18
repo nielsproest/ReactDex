@@ -393,34 +393,26 @@ export class FollowButton extends React.Component {
 		}
 	}
 
-	static contextType = UserContext;
-
 	componentDidMount() {
-		const { user, setUser } = this.context;
-
-		//TODO: This doesn't always fire?
-		if (user != null && this.props.id != null) {
+		if (this.props.user != null && this.props.id != null) {
 			API.followsManga(this.props.id).then((r) => {
-				if (this.state.isFollowed != r) {
-					this.setState({
-						isFollowed: r
-					});
-				}
+				this.setState({
+					isFollowed: r
+				});
 			})
 		}
 	}
 	componentDidUpdate(prevProps) {
-		if (this.props.id != prevProps.id) {
+		if (this.props.id != prevProps.id || this.props.user != prevProps.user) {
 			this.componentDidMount();
 		}
 	}
 
 	render() {
-		const { user, setUser } = this.context;
 		const style = this.props.style != null;
 		const dropup = this.props.dropup != null;
 
-		if (user == null || this.state.isFollowed == null) {
+		if (this.props.user == null || this.state.isFollowed == null) {
 			return (
 				<button 
 					className={`btn btn-secondary ${style && "btn-xs"}`}
@@ -432,6 +424,7 @@ export class FollowButton extends React.Component {
 				</button>
 			)
 		}
+		//TODO: if this.state.isFollowed == null then error
 
 		return (
 			<div className={`btn-group ${style && "btn-group-xs"}  ${dropup && "dropup"}`}>
@@ -730,7 +723,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Actions:</div>
 									<div className="col-lg-9 col-xl-10">
 										{/*display_upload_button($templateVar["user"])*/}
-										<FollowButton id={manga != null ? manga.getId() : null}/>
+										<FollowButton id={manga != null ? manga.getId() : null} user={user}/>
 										{/*display_manga_rating_button($templateVar["user"]->user_id, $templateVar["manga"]->get_user_rating($templateVar["user"]->user_id), $templateVar["manga"]->manga_id)*/}
 										{/*display_edit_manga($templateVar["user"], $templateVar["manga"])*/}
 										{/*<?php if (validate_level($templateVar["user"], "member")) :
