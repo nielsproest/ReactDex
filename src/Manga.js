@@ -399,7 +399,7 @@ export class FollowButton extends React.Component {
 		const { user, setUser } = this.context;
 
 		//TODO: This doesn't always fire?
-		if (user != null) {
+		if (user != null && this.props.id != null) {
 			API.followsManga(this.props.id).then((r) => {
 				if (this.state.isFollowed != r) {
 					this.setState({
@@ -407,6 +407,11 @@ export class FollowButton extends React.Component {
 					});
 				}
 			})
+		}
+	}
+	componentDidUpdate(prevProps) {
+		if (this.props.id != prevProps.id) {
+			this.componentDidMount();
 		}
 	}
 
@@ -725,7 +730,7 @@ export class MangaDisplay extends React.Component {
 									<div className="col-lg-3 col-xl-2 strong">Actions:</div>
 									<div className="col-lg-9 col-xl-10">
 										{/*display_upload_button($templateVar["user"])*/}
-										<FollowButton id={manga != null && manga.getId()}/>
+										<FollowButton id={manga != null ? manga.getId() : null}/>
 										{/*display_manga_rating_button($templateVar["user"]->user_id, $templateVar["manga"]->get_user_rating($templateVar["user"]->user_id), $templateVar["manga"]->manga_id)*/}
 										{/*display_edit_manga($templateVar["user"], $templateVar["manga"])*/}
 										{/*<?php if (validate_level($templateVar["user"], "member")) :
