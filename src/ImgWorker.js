@@ -1,5 +1,4 @@
-const worker = () => {
-
+export default () => {
 	function reportImg(event,r,time,size,url,success) {
 		console.log(r.headers);
 		console.log("reportImg", {
@@ -46,7 +45,6 @@ const worker = () => {
 	}
 
 	onmessage = async (e) => {
-		console.log(e);
 		const { msg } = e.data;
 
 		console.log("IW Message", msg)
@@ -86,8 +84,3 @@ const worker = () => {
 		}
 	};
 }
-
-const code = worker.toString();
-const blob = new Blob([`(${code})()`]);
-const url = URL.createObjectURL(blob);
-export default url;

@@ -195,7 +195,10 @@ class ReaderMain extends React.Component {
 			this.webWorker.terminate();
 		}
 	
-		this.webWorker=new window.Worker(worker);
+		const code = worker.toString();
+		const blob = new Blob([`(${code})()`]);
+		const url = URL.createObjectURL(blob);
+		this.webWorker=new window.Worker(url);
 
 		this.webWorker.postMessage({msg: {
 			cmd: "fetch", 
