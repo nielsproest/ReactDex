@@ -44,7 +44,7 @@ const worker = () => {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	let handle = async(e) => {
+	onmessage = async (e) => {
 		const { msg } = e.data;
 
 		console.log("IW Message", msg)
@@ -82,9 +82,7 @@ const worker = () => {
 				}
 			}
 		}
-	}
-
-	onmessage = (e) => handle(e);
+	};
 }
 
 let code = worker.toString();
