@@ -12,6 +12,7 @@ import axios from "axios";
 
 import API, { CORS_BYPASS } from "./MangaDexAPI/API";
 import { IntArray, APlaceholder } from "./utility";
+import worker from "./ImgWorker";
 
 import './css/Chapter.css';
 
@@ -193,8 +194,8 @@ class ReaderMain extends React.Component {
 		if (this.webWorker != null) {
 			this.webWorker.terminate();
 		}
-
-		this.webWorker=new window.Worker("/ImgWorker.js");
+	
+		this.webWorker=new window.Worker(worker);
 
 		this.webWorker.postMessage({msg: {
 			cmd: "fetch", 
