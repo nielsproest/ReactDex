@@ -12,7 +12,11 @@ import axios from "axios";
 
 import API, { CORS_BYPASS } from "./MangaDexAPI/API";
 import { IntArray, APlaceholder } from "./utility";
-import worker from "./ImgWorker";
+
+// WebWorker helper class
+import WebWorker from "./WebWorker";
+// Your web worker
+import ImgWorker from "./ImgWorker";
 
 import './css/Chapter.css';
 
@@ -195,10 +199,8 @@ class ReaderMain extends React.Component {
 			this.webWorker.terminate();
 		}
 	
-		const code = worker.toString();
-		const blob = new Blob([`(${code})()`]);
-		const url = URL.createObjectURL(blob);
-		this.webWorker=new window.Worker(url);
+		this.webWorker = new WebWorker(ImgWorker);
+		//this.webWorker=new window.Worker(worker);
 
 		this.webWorker.postMessage({msg: {
 			cmd: "fetch", 

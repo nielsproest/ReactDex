@@ -1,5 +1,5 @@
-export default () => {
-	function reportImg(event,r,time,size,url,success) {
+export default function ImgWorker(args) {
+	let reportImg = (event,r,time,size,url,success) => {
 		console.log(r.headers);
 		console.log("reportImg", {
 			url: url,
@@ -8,7 +8,7 @@ export default () => {
 			bytes: size,
 			duration: time
 		});
-
+	
 		/*event.respondWith((async () => {
 			return fetch(
 				"https://api.mangadex.network/report", 
@@ -21,7 +21,7 @@ export default () => {
 		})());*/
 	}
 
-	function fetchImg(event,url) {
+	let fetchImg = (event,url) => {
 		const when = Date.now()
 		return fetch(url)
 			.then((r) => r.blob())
@@ -40,7 +40,7 @@ export default () => {
 			});
 	}
 
-	function sleep(ms) {
+	let sleep = (ms) => {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
