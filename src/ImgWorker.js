@@ -46,6 +46,7 @@ const worker = () => {
 	}
 
 	onmessage = async (e) => {
+		console.log(e);
 		const { msg } = e.data;
 
 		console.log("IW Message", msg)
