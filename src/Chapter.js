@@ -10,7 +10,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import axios from "axios";
 
-import API from "./MangaDexAPI/API";
+import API, { CORS_BYPASS } from "./MangaDexAPI/API";
 import { IntArray, APlaceholder } from "./utility";
 
 import './css/Chapter.css';
@@ -78,50 +78,16 @@ class SinglePageReader extends React.Component {
 		const cfg = this.props.cfg;
 		const page = this.props.page;
 		const pages = this.props.pages;
-		const refreshidx = this.props.refreshCounter;
-
-		if (pages == null) {
-			return (
-				<div>Loading...</div>
-			)
-		}
-
-		//TODO: Retain loaded images?
-		var dataTbl = cfg.getValue("DATASAVER") ? pages.chapter.dataSaver : pages.chapter.data;
 
 		return (
-			dataTbl.map((file, idx) => {
+			pages.map((full_img, idx) => {
 				const displayed = (idx != page && !this.isLongStrip()) ? "d-none" : "";
-				const loading = (Math.abs(page-idx) < cfg.getValue("PRELOAD") || cfg.getValue("PRELOAD_ALL")) ? "eager" : "lazy";
-
-				const full_img = `${pages.baseUrl}/data/${pages.chapter.hash}/${file}`;
 
 				return (
 					<img
 						className={`noselect nodrag cursor-pointer reader-image fillimg ${displayed}`}
 						src={full_img}
-						loading={loading}
 						page={idx}
-						onError={(e) => {
-							this.props.onError(refreshidx);
-							console.log("onerror", e);
-							//TODO: Report
-							/*
-							{
-								"url": "https://foo.bar:5678/abcdef/1a2b3c4d/data/3303dd03ac8d27452cce3f2a882e94b2/2-2a5e95dfec7f15cd01f9a63835be18a22fb77a10fd2d62858c7dcbb6e6c622f9.png",
-								"success": true,
-								"bytes": 674687,
-								"duration": time for response,
-								"cached": if X-Hit in response headers
-							}
-							*/
-						}}
-						onLoad={(e) => {
-							this.props.setLoaded(idx);
-							console.log("onload", e);
-							//TODO: Report
-							//TODO: Remove min size
-						}}
 					/>
 				)
 			})
@@ -209,48 +175,82 @@ class ReaderMain extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			pages: null,
+			pages: [],
 			lpages: null
 		};
-		this.refreshCounter = 0;
 		this.onReadCalled = false;
 		this.changeChild=React.createRef();
+		this.webWorker = null;
 	}
 
-	fetchPages(idx) {
-		const chapter = this.props.chapter;
-		const counter = this.refreshCounter;
-
-		console.log(idx,counter);
-		if (idx == counter) {
-			const waiter = idx == 0 ? 0 : Math.min(200*Math.pow(1.7, counter), 5000);
-			//const waiter = idx > 0 ? axios.exponentialDelay(idx) : 0;
-			console.log("fetchPages: ", counter, waiter);
-
-			this.refreshCounter += 1;
-			this.timer = setTimeout(() => {
-				//TODO: Detect http failure
-				API.chapterPages(chapter.getId()).then((c) => {
-					if (c == null) {
-						this.fetchPages(counter+1);
-					} else {
-						this.setState({
-							pages: c,
-							lpages: IntArray(c.chapter.data.length).map((_) => false)
-						});
-					}
-				});
-			}, waiter); //Exponential backoff
+	createWorker() {
+		if (
+			this.props.chapter == null || //No chapter yet
+			(this.webWorker != null && this.refreshCounter != 0) //Didnt switch page
+		) {
+			return;
 		}
+		if (this.webWorker != null) {
+			this.webWorker.terminate();
+		}
+
+		this.webWorker=new window.Worker("/ImgWorker.js");
+
+		this.webWorker.postMessage({msg: {
+			cmd: "fetch", 
+			args: [this.props.chapter.getId()],
+			datasave: this.props.cfg.getValue("DATASAVER"),
+			CORS_BYPASS: CORS_BYPASS
+		}});
+		this.webWorker.onerror = () => {
+			console.log("WW-Error");
+		};
+		this.webWorker.onmessage = (e) => {
+			if (e.data) {
+				const data = e.data.result;
+
+				const ffff = () => {
+					var pages = this.state.pages;
+					pages.push(data.url); //TODO?: Relies on proper order
+					//TODO: Why does this work?
+	
+					/*this.setState({
+						pages: pages
+					})*/
+	
+					this.setLoaded(data.page);
+				}
+
+				if (this.state.lpages == null) {
+					this.setState({
+						lpages: IntArray(data.pages).map((_) => false)
+					}, ffff);
+				} else {
+					ffff();
+				}
+
+				console.log("WW-Response", e.data.result);
+
+			} else {
+				console.log("WW-Error");
+			}
+		};
 	}
 
 	componentDidMount() {
-		if (this.props.chapter != null) {
+		this.createWorker();
+
+		/*if (this.props.chapter != null) {
 			this.fetchPages(0);
-		}
+		}*/
 	}
 	componentWillUnmount() {
-		clearTimeout(this.timer);
+		if (this.timer != null) {
+			clearTimeout(this.timer);
+		}
+		if (this.webWorker != null) {
+			this.webWorker.terminate();
+		}
 	}
 	componentDidUpdate(prevProps) {
 		const prevId = prevProps.chapter != null && prevProps.chapter.getId();
@@ -258,7 +258,7 @@ class ReaderMain extends React.Component {
 		if (prevId != currId) {
 			this.refreshCounter = 0;
 			this.setState({
-				pages: null
+				pages: []
 			});
 			this.componentDidMount();
 		}
@@ -274,12 +274,9 @@ class ReaderMain extends React.Component {
 			lpages: lpages
 		});
 	}
-	onError(refreshidx) {
-		this.fetchPages(parseInt(refreshidx));
-	}
-
 	render() {
 		const pages = this.state.pages;
+		const lpages = this.state.lpages;
 		const page = this.props.page;
 		const cfg = this.props.cfg;
 
@@ -298,9 +295,6 @@ class ReaderMain extends React.Component {
 					ref={this.changeChild} 
 					page={page} 
 					setPage={(i) => this.props.setPage(i)} 
-					setLoaded={(i) => this.setLoaded(i)} 
-					onError={(i) => this.onError(i)} 
-					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
@@ -309,9 +303,6 @@ class ReaderMain extends React.Component {
 					ref={this.changeChild} 
 					page={page} 
 					setPage={(i) => this.props.setPage(i)} 
-					setLoaded={(i) => this.setLoaded(i)} 
-					onError={(i) => this.onError(i)} 
-					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
@@ -320,9 +311,6 @@ class ReaderMain extends React.Component {
 					ref={this.changeChild} 
 					page={page} 
 					setPage={(i) => this.props.setPage(i)} 
-					setLoaded={(i) => this.setLoaded(i)} 
-					onError={(i) => this.onError(i)} 
-					refreshCounter={this.refreshCounter} 
 					pages={pages} 
 					cfg={cfg} 
 				/>
@@ -352,7 +340,7 @@ class ReaderMain extends React.Component {
 				<div className="reader-page-bar col-auto d-none d-lg-flex directional">
 					<div className="track cursor-pointer row no-gutters">
 						<div className="trail position-absolute h-100" style={{display: "flex"}}>
-							{IntArray(pages != null ? pages.chapter.data.length : 0).map((idx) => {
+							{IntArray(lpages != null ? lpages.length : 0).map((idx) => {
 								const _selected = idx == page && "thumb";
 								const _loaded = this.state.lpages[idx] && "loaded";
 

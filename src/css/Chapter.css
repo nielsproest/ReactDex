@@ -349,9 +349,15 @@ body {
 		max-height: calc(100vh - 3.5rem);
 		overflow-x: auto;
 	}
+	.reader[data-renderer="long-strip"] .reader-main {
+		max-height: 100%;
+	}
+	.reader.fit-horizontal[data-renderer="long-strip"] .reader-main {
+		height: calc(100vh - 3.5rem);
+		max-height: 100%;
+	}
 	.reader.fit-vertical[data-renderer="long-strip"] .reader-main {
 		height: calc(100vh - 3.5rem);
-		max-height: unset;
 	}
 }
 .reader.fit-vertical.hide-header .reader-main {

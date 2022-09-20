@@ -494,7 +494,7 @@ export class MangaDisplay extends React.Component {
 				this.setState({
 					manga: m.data[0]
 				})
-				document.title = `${m.data[0].getTitle()}`;
+				document.title = `${m.data[0].getTitle()} - ReactDex`;
 			}
 		);
 	}

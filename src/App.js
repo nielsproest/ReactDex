@@ -314,11 +314,9 @@ function LoginCheck() {
 	const { user, setUser } = useContext(UserContext);
 
 	useEffect(() => {
-		const TYPE = localStorage.getItem("TYPE_OF_THEME");
-		if (TYPE != null) {
-			console.log("SET_THEME", TYPE);
-			SiteThemeSet(TYPE);
-		}
+		const TYPE = localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark";
+		console.log("SET_THEME", TYPE);
+		SiteThemeSet(TYPE);
 	});
 
 	const loginRefresh = (UT) => {
