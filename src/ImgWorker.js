@@ -1,4 +1,4 @@
-export default function ImgWorker(args) {
+const worker = () => {
 	let reportImg = (event,r,time,size,url,success) => {
 		console.log(r.headers);
 		console.log("reportImg", {
@@ -84,3 +84,9 @@ export default function ImgWorker(args) {
 		}
 	};
 }
+
+let code = worker.toString();
+code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
+
+const blob = new Blob([code], { type: "application/javascript" });
+export default URL.createObjectURL(blob);
