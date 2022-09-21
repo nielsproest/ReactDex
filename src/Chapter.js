@@ -13,9 +13,6 @@ import axios from "axios";
 import API, { CORS_BYPASS } from "./MangaDexAPI/API";
 import { IntArray, APlaceholder } from "./utility";
 
-// Your web worker
-import ImgWorker from "./ImgWorker";
-
 import './css/Chapter.css';
 
 import {
@@ -196,16 +193,10 @@ class ReaderMain extends React.Component {
 		if (this.webWorker != null) {
 			this.webWorker.terminate();
 		}
-	
-		//this.webWorker = new WebWorker(ImgWorker);
-		this.webWorker=new window.Worker(ImgWorker);
 
-		this.webWorker.postMessage({msg: {
-			cmd: "fetch", 
-			args: [this.props.chapter.getId()],
-			datasave: this.props.cfg.getValue("DATASAVER"),
-			CORS_BYPASS: CORS_BYPASS
-		}});
+		this.webWorker=new window.Worker("/ImgWorker.js");
+		this.refreshCounter = 1;
+
 		this.webWorker.onerror = () => {
 			console.log("WW-Error");
 		};
@@ -239,6 +230,14 @@ class ReaderMain extends React.Component {
 				console.log("WW-Error");
 			}
 		};
+
+		//TODO: Load on demand instead of all of them
+		this.webWorker.postMessage({msg: {
+			cmd: "fetch", 
+			args: [this.props.chapter.getId(),null],
+			datasave: this.props.cfg.getValue("DATASAVER"),
+			CORS_BYPASS: CORS_BYPASS
+		}});
 	}
 
 	componentDidMount() {
@@ -262,7 +261,8 @@ class ReaderMain extends React.Component {
 		if (prevId != currId) {
 			this.refreshCounter = 0;
 			this.setState({
-				pages: []
+				pages: [],
+				lpages: null
 			});
 			this.componentDidMount();
 		}
