@@ -114,7 +114,7 @@ onmessage = async (e) => {
 				}
 
 				const file = imgs[page];
-				const url = await fetchImg2(e,`${msg.CORS_BYPASS}${JSN.baseUrl}/data/${JSN.chapter.hash}/${file}`);
+				const url = await fetchImg(e,`${msg.CORS_BYPASS}${JSN.baseUrl}/data/${JSN.chapter.hash}/${file}`);
 
 				if (url == null) {
 					await sleep(exponentialBackoff(i));
