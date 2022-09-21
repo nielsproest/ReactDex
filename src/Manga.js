@@ -675,8 +675,8 @@ export class MangaDisplay extends React.Component {
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Description:</div>
 									<div className="col-lg-9 col-xl-10" style={{
-										maxHeight: "240px",
-										overflowY: "scroll",
+										/*maxHeight: "240px",
+										overflowY: "scroll",*/
 										wordBreak: "break-word"
 									}}>
 										<p>
@@ -689,7 +689,7 @@ export class MangaDisplay extends React.Component {
 													{APlaceholder(5)}
 												</React.Fragment>
 											)}
-
+											{/* TODO: Show more button */}
 										</p>
 									</div>
 								</div>
