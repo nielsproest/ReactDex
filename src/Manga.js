@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
 import Pagination from "react-bootstrap/Pagination";
 import Placeholder from "react-bootstrap/Placeholder";
-
+import ReactMarkdown from 'https://esm.sh/react-markdown@7'
 
 import { UserContext } from "./user-context";
 
@@ -674,11 +674,24 @@ export class MangaDisplay extends React.Component {
 
 								<div className="row m-0 py-1 px-0 border-top">
 									<div className="col-lg-3 col-xl-2 strong">Description:</div>
-									<div className="col-lg-9 col-xl-10">{manga != null ? manga.getDesc() : (
-										<React.Fragment>
-											{APlaceholder(5)}
-										</React.Fragment>
-									)}</div>
+									<div className="col-lg-9 col-xl-10" style={{
+										maxHeight: "240px",
+										overflowY: "scroll",
+										wordBreak: "break-word"
+									}}>
+										<p>
+											{manga != null ? (
+												<ReactMarkdown>
+													{manga.getDesc()}
+												</ReactMarkdown>
+											) : (
+												<React.Fragment>
+													{APlaceholder(5)}
+												</React.Fragment>
+											)}
+
+										</p>
+									</div>
 								</div>
 								{/*
 								display_manga_relations($manga_relations)
