@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import Carousel from "react-bootstrap/Carousel";
 import Pagination from "react-bootstrap/Pagination";
 import Placeholder from "react-bootstrap/Placeholder";
-import ReactMarkdown from 'https://esm.sh/react-markdown@7'
+import ReactMarkdown from 'react-markdown';
 
 import { UserContext } from "./user-context";
 
