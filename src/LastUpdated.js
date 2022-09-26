@@ -99,7 +99,7 @@ export class LastUpdated extends React.Component {
 														display: "flex",
 														justifyContent: "center"
 													}}>
-														<Link to={manga.getUrl()}>
+														<Link to={manga.getUrl()} style={{height: "inherit"}}>
 															<img 
 																className="rounded" 
 																src={manga.getCover256()} 

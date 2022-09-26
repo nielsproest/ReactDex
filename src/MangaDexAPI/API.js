@@ -319,6 +319,11 @@ export class UserToken {
 		})
 	}*/
 
+	purgeAuth() {
+		this.state = undefined;
+		localStorage.removeItem("USERTOKEN");
+	}
+
 	getUser() {
 		return this.state.user;
 	}
@@ -327,12 +332,12 @@ export class UserToken {
 		return axios.get(`${CORS_BYPASS}https://api.mangadex.org/user/me`).then((u) => {
 			this.state.user = new User(u.data.data);
 			localStorage.setItem("USERTOKEN", JSON.stringify(this.state));
-		})
+		})//.catch((r) => {
 	}
 
 	refresh() {
 		if (this.state == undefined) {
-			return;
+			return this.purgeAuth();
 		}
 
 		return axios.post(`${CORS_BYPASS}https://api.mangadex.org/auth/refresh`, { 
@@ -341,7 +346,7 @@ export class UserToken {
 			console.log("Refresh", req);
 
 			if (req.data.result != "ok") {
-				this.state = undefined;
+				this.purgeAuth();
 			} else {
 				this.state.session = req.data.token.session;
 				this.state.refresh = req.data.token.refresh;
@@ -349,6 +354,8 @@ export class UserToken {
 				this.state.date = Date.now();
 				this.setAuth();
 			}
+		/*}).catch((r) => {
+			setTimeout(() => this.refresh(), 1000);*/
 		});
 	}
 }
