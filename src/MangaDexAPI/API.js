@@ -410,7 +410,8 @@ class DexFS {
 		var params = {
 			limit: limit,
 			offset: offset,
-			"includes": ["cover_art"]
+			"includes": ["cover_art"],
+			"contentRating": ["safe","suggestive","erotica","pornographic"]
 			//"includes": Object.keys(RELATION_MAP)
 		};
 
