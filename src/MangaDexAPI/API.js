@@ -465,6 +465,7 @@ class DexFS {
 			limit: limit,
 			offset: offset,
 			"translatedLanguage": ["en"],
+			"contentRating": ["safe","suggestive","erotica","pornographic"]
 			//"includes": Object.keys(RELATION_MAP)
 		};
 		//Possible:
