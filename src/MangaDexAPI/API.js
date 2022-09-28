@@ -251,7 +251,6 @@ class Manga extends MdData {
 		return this._getMap(this.attributes.description);
 	}
 	getTitle() {
-		console.log(this);
 		return this._getMap(this.attributes.title);
 	}
 	getUrl() {
