@@ -603,10 +603,12 @@ class DexFS {
 			"limit": 100,
 			"offset": 0,
 			"ids": mangas.map((m) => m.id),
-			"includes": ["cover_art"]
+			"includes": ["cover_art"],
+			"contentRating": ["safe","suggestive","erotica","pornographic"]
 		};
 
 		//TODO: Standardize this entire procedure for future use
+		//TODO: Use _manga func
 		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/manga`, { params: params });
 		for (var i in req.data.data) {
 			const res_m = req.data.data[i];

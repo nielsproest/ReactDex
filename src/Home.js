@@ -105,14 +105,6 @@ export class MangaCard extends React.Component {
 			manga.GetRelationship("chapter").length
 		); //Limit display length
 
-		if (manga.attributes == undefined) {
-			console.log(manga);
-			console.log(manga.attributes);
-			return (
-				<a>attributes undefined error</a>
-			)
-		}
-
 		return (
 			<Col md={6} className="col-md-6 border-bottom p-2">
 				<div className="hover sm_md_logo rounded float-left mr-2">
