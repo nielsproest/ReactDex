@@ -1,40 +1,49 @@
 //TODO: This file compiles to invalid JavaScript
 //Thus its in the public folder
 
-let reportImg = (event,r,time,size,url,success) => {
-	console.log(r.headers);
+let reportImg = (event,c,r,xhr,time) => {
+	const cacheHit = xhr.getResponseHeader("X-Cache");
+	const contentLength = xhr.getResponseHeader("Content-Length");
+
 	const data = {
-		url: url,
-		success: success,
-		cached: r != null && r.headers.get("X-Cache") == "HIT",
-		bytes: size,
+		url: r.responseURL.replace(c, ""),
+		success: 200 <= r.status && r.status < 300,
+		cached: cacheHit == "HIT",
+		bytes: parseInt(contentLength),
 		duration: time
 	};
-	console.log("reportImg", data);
+	if (cacheHit != null) {
+		console.log("reportImg", data);
 
-	/*event.respondWith((async () => {
-		return fetch(
-			"https://api.mangadex.network/report", 
-			{
-				method: "POST",
-				headers: {"Content-Type": "application/json"},
-				body: data
-			}
-		);
-	})());*/
+		/*event.respondWith((async () => {
+			return fetch(
+				"https://api.mangadex.network/report", 
+				{
+					method: "POST",
+					headers: {"Content-Type": "application/json"},
+					body: data
+				}
+			);
+		})());*/
+	}
 }
 
-function makeRequest(method, url) {
+function getUnixDate() {
+	return new Date().getTime();
+}
+
+function makeRequest(e, b, method, url) {
+	const start_time = getUnixDate();
 	return new Promise(function (resolve, reject) {
 		let xhr = new XMLHttpRequest();
 		xhr.responseType = "blob";
 		xhr.open(method, url);
 		xhr.onload = function () {
-			if (this.status >= 200 && this.status < 300) {
-				const cacheHit = xhr.getResponseHeader("X-Cache");
-				console.log(cacheHit);
+			if (200 <= this.status && this.status < 300) {
+				reportImg(e,b,this,xhr,getUnixDate() - start_time);
 				resolve(URL.createObjectURL(xhr.response));
 			} else {
+				reportImg(e,b,this,xhr,getUnixDate() - start_time);
 				reject({
 					status: this.status,
 					statusText: xhr.statusText
@@ -42,6 +51,7 @@ function makeRequest(method, url) {
 			}
 		};
 		xhr.onerror = function () {
+			reportImg(e,b,this,xhr,getUnixDate() - start_time);
 			reject({
 				status: this.status,
 				statusText: xhr.statusText
@@ -51,10 +61,8 @@ function makeRequest(method, url) {
 	});
 }
 
-let fetchImg2 = async (event,url) => {
-	const resp = await makeRequest("GET", url);
-	console.log(resp);
-	return resp;
+let fetchImg2 = (event,ee,url) => {
+	return makeRequest(event, ee, "GET", url);
 }
 let fetchImg = async (event,url) => {
 	const when = Date.now()
@@ -114,7 +122,7 @@ onmessage = async (e) => {
 				}
 
 				const file = imgs[page];
-				const url = await fetchImg(e,`${msg.CORS_BYPASS}${JSN.baseUrl}/data/${JSN.chapter.hash}/${file}`);
+				const url = await fetchImg2(e,msg.CORS_BYPASS,`${msg.CORS_BYPASS}${JSN.baseUrl}/data/${JSN.chapter.hash}/${file}`);
 
 				if (url == null) {
 					await sleep(exponentialBackoff(i));
