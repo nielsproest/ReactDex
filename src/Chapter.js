@@ -79,7 +79,7 @@ class SinglePageReader extends React.Component {
 		const page = this.props.page;
 		const pages = this.props.pages;
 
-		return (
+		return ([
 			pages.map((full_img, idx) => {
 				const displayed = (idx != page && !this.isLongStrip()) ? "d-none" : "";
 
@@ -90,8 +90,30 @@ class SinglePageReader extends React.Component {
 						page={idx}
 					/>
 				)
-			})
-		)
+			}),
+			IntArray(this.props.lpages - pages.length).map((idx) => {
+				const pid = pages.length + idx;
+				const displayed = (pid != page && !this.isLongStrip()) ? "d-none" : "";
+
+				//TODO: Center this
+				return (
+					<div 
+						page={pid}
+						className={`m-5 d-flex align-items-center justify-content-center ${displayed}`}
+						style={{
+							height: "5vh",
+							width: "5vh",
+							color: "#fff", 
+							textShadow: "0 0 7px rgba(0,0,0,0.5)"
+						}}
+					>
+						<span className="fas fa-circle-notch fa-spin" style={{opacity: "0.5", fontSize: "7em"}} />
+						<span className="loading-page-number" style={{fontSize: "2em"}}></span>
+					</div>
+				)
+			}),
+			this.isLongStrip() ? (<p>End</p>) : (<React.Fragment></React.Fragment>)
+		])
 	}
 	/*scrollEvent(e) {
 		var visible = null;
@@ -298,6 +320,7 @@ class ReaderMain extends React.Component {
 				return <DoublePageReader 
 					ref={this.changeChild} 
 					page={page} 
+					lpages={lpages != null ? lpages.length : 0}
 					setPage={(i) => this.props.setPage(i)} 
 					pages={pages} 
 					cfg={cfg} 
@@ -306,6 +329,7 @@ class ReaderMain extends React.Component {
 				return <LongStripReader 
 					ref={this.changeChild} 
 					page={page} 
+					lpages={lpages != null ? lpages.length : 0}
 					setPage={(i) => this.props.setPage(i)} 
 					pages={pages} 
 					cfg={cfg} 
@@ -314,6 +338,7 @@ class ReaderMain extends React.Component {
 				return <SinglePageReader 
 					ref={this.changeChild} 
 					page={page} 
+					lpages={lpages != null ? lpages.length : 0}
 					setPage={(i) => this.props.setPage(i)} 
 					pages={pages} 
 					cfg={cfg} 

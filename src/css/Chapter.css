@@ -592,6 +592,7 @@ body {
 .reader .reader-main {
 	padding: 0;
 	margin: 0;
+	min-height: calc(100vh - 3.5rem);
 }
 .reader .reader-main .reader-images {
 	margin: 0px;
@@ -605,6 +606,7 @@ body {
 		position: fixed;
 		padding: inherit;
 		margin: inherit;
+		min-height: inherit;
 	}
 	.reader .reader-main .reader-images {
 		margin: inherit;
