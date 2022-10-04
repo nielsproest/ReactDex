@@ -34,9 +34,12 @@ export class LastUpdated extends React.Component {
 		}
 	}
 
+	static contextType = UserContext;
+
 	componentDidMount() {
-		console.log(this.props.user);
-		if (this.props.user != null) {
+		const { user, setUser } = this.context;
+
+		if (user != null) {
 			API.getFollowedManga(this.state.mlimit, this.state.moffset).then(res => {
 				this.setState({
 					mangas: res.data,
@@ -49,6 +52,8 @@ export class LastUpdated extends React.Component {
 	}
 
 	render() {
+		const { user, setUser } = this.context;
+
 		const page_switch = (value) => {
 			console.log("Set page ", value);
 			//TODO: Push history?
@@ -63,7 +68,7 @@ export class LastUpdated extends React.Component {
 		//TODO: Select mlimit
 		return (
 			<React.Fragment>
-				{this.props.user == null && display_alert("info" ,"m-2 widthfix", "Notice", [
+				{user == null && display_alert("info" ,"m-2 widthfix", "Notice", [
 					"Please ",
 					display_fa_icon("sign-in-alt"),
 					" ",
