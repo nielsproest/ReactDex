@@ -94,8 +94,8 @@ function Home(props) {
 	return (
 		<Row>
 			<Announcements/>
-			<MangaCards user={props.user} key={`MangaCards ${userUUID(props.user)}`}/>
-			<Sidebars user={props.user} key={`Sidebars ${userUUID(props.user)}`}/>
+			<MangaCards key={`MangaCards`}/>
+			<Sidebars key={`Sidebars`}/>
 			<MangaTitles/>
 		</Row>
 	);
@@ -106,7 +106,7 @@ function Chapter(props) {
 	const navigation = useNavigate();
 
 	return (
-		<ChapterDisplay user={props.user} id={chapterId} nav={navigation}/>
+		<ChapterDisplay id={chapterId} nav={navigation}/>
 	);
 }
 
@@ -143,7 +143,6 @@ function Search(props) {
 	return (
 		<Row>
 			<SearchUI 
-				user={props.user} 
 				nav={navigation} 
 				title={search_query} 
 				rating={rating_query} 
@@ -199,7 +198,11 @@ function Updates(props) {
 
 	return (
 		<Row>
-			<LastUpdated user={props.user} key={`LastUpdated ${userUUID(props.user)}`}/>
+			<UserContext.Consumer>
+				{value => {
+					<LastUpdated user={value.user} key={`LastUpdated ${userUUID(props.user)}`}/>
+				}}
+			</UserContext.Consumer>
 		</Row>
 	);
 }
@@ -310,8 +313,9 @@ function PageNotFound(props) {
 	);
 }
 
-function LoginCheck() {
-	const { user, setUser } = useContext(UserContext);
+function LoginCheck({ children }) {
+	const [ user, setUser ] = useState(null);
+	//TODO: Remove static contextType = UserContext; and just pass user down, almost everything needs it
 
 	useEffect(() => {
 		const TYPE = localStorage.getItem("TYPE_OF_THEME") != null ? localStorage.getItem("TYPE_OF_THEME") : "dark";
@@ -362,7 +366,11 @@ function LoginCheck() {
 		return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
 	}, []);
 
-	return (<React.Fragment />)
+	return (
+		<UserContext.Provider value={{ user, setUser }}>
+			{children}
+		</UserContext.Provider>
+	)
 }
 
 //TODO: Move login components here
@@ -373,39 +381,35 @@ class LoginForm extends React.Component {
 }
 
 function App() {
-	const [ user, setUser ] = useState(null);
-	//TODO: Remove static contextType = UserContext; and just pass user down, almost everything needs it
-
 	return (
 		<Router>
-			<UserContext.Provider value={{ user, setUser }}>
-				<LoginCheck />
+			<LoginCheck>
 				<LoginForm />
 				<DNavbar/>
 				<Container fluid="xxl" role="main" id="content">
 					<Routes>
-						<Route path="/" element={<Home user={user} />}></Route>
-						<Route path="/manga/:mangaId" element={<MangaPage user={user} />}></Route>
-						<Route path="/manga/:mangaId/:mangaTitle" element={<MangaPage user={user} />}></Route>
-						<Route path="/group/:groupId" element={<Group user={user} />}></Route>
-						<Route path="/group/:groupId/:groupTitle" element={<Group user={user} />}></Route>
-						<Route path="/user/:userId" element={<UserPage user={user} />}></Route>
-						<Route path="/user/:userId/:userTitle" element={<UserPage user={user} />}></Route>
-						<Route path="/chapter/:chapterId" element={<Chapter user={user} />}></Route>
-						<Route path="/outside/*" element={<Outside user={user} />}></Route>
-						<Route path="/titles" element={<Titles user={user} />}></Route>
-						<Route path="/history" element={<History user={user} />}></Route>
-						<Route path="/top" element={<Top user={user} />}></Route>
-						<Route path="/featured" element={<Featured user={user} />}></Route>
-						<Route path="/random" element={<Random user={user} />}></Route>
-						<Route path="/search" element={<Search user={user} />}></Route>
-						<Route path="/groups/:groupTitle" element={<Groups user={user} />}></Route>
-						<Route path="/users/:userTitle" element={<Users user={user} />}></Route>
-						<Route path="/follows" element={<Follows user={user} />}></Route>
-						<Route path="/updates" element={<Updates user={user} />}></Route>
-						<Route path="/login" element={<PLogin user={user} setUser={setUser} />}></Route>
-						<Route path="/logout" element={<PLogout user={user} setUser={setUser} />}></Route>
-						<Route path="/signup" element={<Signup user={user} setUser={setUser} />}></Route>
+						<Route path="/" element={<Home />}></Route>
+						<Route path="/manga/:mangaId" element={<MangaPage />}></Route>
+						<Route path="/manga/:mangaId/:mangaTitle" element={<MangaPage />}></Route>
+						<Route path="/group/:groupId" element={<Group />}></Route>
+						<Route path="/group/:groupId/:groupTitle" element={<Group />}></Route>
+						<Route path="/user/:userId" element={<UserPage />}></Route>
+						<Route path="/user/:userId/:userTitle" element={<UserPage />}></Route>
+						<Route path="/chapter/:chapterId" element={<Chapter />}></Route>
+						<Route path="/outside/*" element={<Outside />}></Route>
+						<Route path="/titles" element={<Titles />}></Route>
+						<Route path="/history" element={<History />}></Route>
+						<Route path="/top" element={<Top />}></Route>
+						<Route path="/featured" element={<Featured />}></Route>
+						<Route path="/random" element={<Random />}></Route>
+						<Route path="/search" element={<Search />}></Route>
+						<Route path="/groups/:groupTitle" element={<Groups />}></Route>
+						<Route path="/users/:userTitle" element={<Users />}></Route>
+						<Route path="/follows" element={<Follows />}></Route>
+						<Route path="/updates" element={<Updates />}></Route>
+						<Route path="/login" element={<PLogin />}></Route>
+						<Route path="/logout" element={<PLogout />}></Route>
+						<Route path="/signup" element={<Signup />}></Route>
 
 						<Route path="*" element={<PageNotFound />}></Route>
 					</Routes>
@@ -413,7 +417,7 @@ function App() {
 					{/* mobile menus? */}
 				</Container>
 				<DFooter/>
-			</UserContext.Provider>
+			</LoginCheck>
 		</Router>
 	);
 }

@@ -7,7 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import ListGroup from 'react-bootstrap/ListGroup';
 import Placeholder from 'react-bootstrap/Placeholder';
 
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
 	Link
 } from "react-router-dom";
@@ -174,25 +174,21 @@ export class Announcements extends React.Component {
 	}
 }
 
-export class MangaCards extends React.Component {
+export class FollowsAux extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			mangas: null,
-			mpage: 0,
-			mtotal: 0,
-			followMangas: null,
-			fpage: 0,
-			ftotal: 0
+			followMangas: null, 
+			ftotal: 0, 
+			fpage: 0
 		};
 	}
 
-	followsGet() {
-		const user = this.props.user;
+	static contextType = UserContext;
 
-		//TODO: API Call fails due to race condition when app has been asleep
-		//We must wait for login to be successful
-		//Or just retry
+	componentDidMount() {
+		const { user, setUser } = this.context;
+
 		if (user != null) {
 			API.getFollowedManga(30, this.state.fpage * 30).then(res => {
 				this.setState({
@@ -204,6 +200,72 @@ export class MangaCards extends React.Component {
 			})
 		}
 	}
+	componentDidUpdate() {
+		this.componentDidMount();
+	}
+
+	follows_render() {
+		const { user, setUser } = this.context;
+
+		if (this.state.followMangas == null) {
+			if (user != null) {
+				return IntArray(8).map((_) => <MangaCardFake />)
+			}
+
+			return display_alert("info" ,"m-2 widthfix", "Notice", [
+				"Please ",
+				display_fa_icon("sign-in-alt"),
+				" ",
+				<Link to="/login">login</Link>,
+				" to see updates from your follows."
+			]);
+		}
+
+		if (this.state.followMangas.data.length > 0) {
+			return this.state.followMangas.data.map((i) => {
+				//TODO: Why is this a key violation?
+				return (<MangaCard manga={i} key={i.getUUID()}/>)
+			})
+		} else {
+			return display_alert("info", "m-2 widthfix", "Notice", "You haven't followed any manga!")
+		}
+	}
+
+	render() {
+		const { user, setUser } = this.context;
+
+		return (
+			<React.Fragment>
+				<Row className="m-0">
+					{this.follows_render()}
+				</Row>
+				<DPagination 
+					pages={Math.ceil(this.state.ftotal / 30)} 
+					sizeof={30} 
+					callback={(p) => {
+						this.setState({
+							fpage: p,
+							followMangas: null
+						}, () => {
+							this.componentDidMount();
+						});
+					}} 
+				/>
+			</React.Fragment>
+		)
+	}
+}
+
+export class MangaCards extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			mangas: null,
+			mpage: 0,
+			mtotal: 0,
+		};
+	}
+
 	componentDidMount() {
 		API.mangaByChapterUpload(30, this.state.mpage * 30).then(res => {
 			console.log("Retrieve succeded!");
@@ -216,45 +278,12 @@ export class MangaCards extends React.Component {
 			console.log("Retrieve failed!");
 			console.log(e);
 		})
-		this.followsGet();
 	}
 	componentDidUpdate(prevProps) {
 		console.log("MangaCards - componentDidUpdate");
-		//TODO: Or last update is old?
-		if (this.state.followMangas == null) {
-			this.followsGet();
-		}
 	}
 
 	render() {
-		const user = this.props.user;
-
-		//TODO: Seperate function for UserContext
-		const follows_render = () => {
-			if (this.state.followMangas == null) {
-				if (user != null) {
-					return IntArray(8).map((_) => <MangaCardFake />)
-				}
-
-				return display_alert("info" ,"m-2 widthfix", "Notice", [
-					"Please ",
-					display_fa_icon("sign-in-alt"),
-					" ",
-					<Link to="/login">login</Link>,
-					" to see updates from your follows."
-				]);
-			}
-
-			if (this.state.followMangas.data.length > 0) {
-				return this.state.followMangas.data.map((i) => {
-					//TODO: Why is this a key violation?
-					return (<MangaCard manga={i} key={i.getUUID()}/>)
-				})
-			} else {
-				return display_alert("info", "m-2 widthfix", "Notice", "You haven't followed any manga!")
-			}
-		}
-
 		const renderMangas = () => {
 			if (this.state.mangas != null) {
 				return this.state.mangas.data.map((i) => {
@@ -297,21 +326,7 @@ export class MangaCards extends React.Component {
 							/>
 						</Tab>
 						<Tab eventKey="follows_update" title="Follows updates">
-							<Row className="m-0">
-								{follows_render()}
-							</Row>
-							<DPagination 
-								pages={Math.ceil(this.state.ftotal / 30)} 
-								sizeof={30} 
-								callback={(p) => {
-									this.setState({
-										fpage: p,
-										followMangas: null
-									}, () => {
-										this.componentDidMount();
-									});
-								}} 
-							/>
+							<FollowsAux/>
 						</Tab>
 					</Tabs>
 				</Card>
@@ -462,8 +477,6 @@ export class Sidebars extends React.Component {
 	}
 
 	render() { 
-		const user = this.props.user;
-
 		return (
 			<Col lg={4}>
 				{/* Reactify */}
@@ -536,7 +549,7 @@ export class Sidebars extends React.Component {
 				{/* Reading history */}
 				<div className="card mb-3">
 					<h6 className="card-header text-center">{display_fa_icon("external-link-alt")} <Link to="/history">Reading history</Link></h6>
-					{display_reading_history(user)}
+					{display_reading_history(null)}
 				</div>
 				{/* Top manga box */}
 				<Card className="card mb-3">

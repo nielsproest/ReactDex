@@ -19,6 +19,7 @@ import {
 	Link,
 	Navigate
 } from "react-router-dom";
+import { UserContext } from "./user-context";
 
 const DefaultReaderSettings = {
 	"DISPLAY_TYPE": {
@@ -1252,6 +1253,8 @@ export class ChapterDisplay extends React.Component {
 		this.onReadCalled = false;
 	}
 
+	static contextType = UserContext;
+
 	isMobile() {
 		return window.innerWidth < 992;
 	}
@@ -1292,6 +1295,8 @@ export class ChapterDisplay extends React.Component {
 	}
 
 	setPage(idx) {
+		const { user, setUser } = this.context;
+
 		const chapter = this.state.chapter;
 		const num = chapter.attributes.pages;
 		if (0 <= idx && idx < num) {
@@ -1308,7 +1313,7 @@ export class ChapterDisplay extends React.Component {
 			if (!this.onReadCalled) {
 				this.onReadCalled = true;
 
-				if (this.props.user != null) {
+				if (user != null) {
 					console.log("onread");
 					API.readChapter(chapter.getId())
 				}
