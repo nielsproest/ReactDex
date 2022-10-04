@@ -22,6 +22,7 @@ import {
 import API from "./MangaDexAPI/API";
 import { DPagination } from "./Manga";
 import { ElementUpdater } from "./utility";
+import { UserContext } from "./user-context";
 
 export class LastUpdated extends React.Component {
 	constructor(props) {
