@@ -201,7 +201,9 @@ export class FollowsAux extends React.Component {
 		}
 	}
 	componentDidUpdate() {
-		this.componentDidMount();
+		if (this.state.followMangas == null) {
+			this.componentDidMount();
+		}
 	}
 
 	follows_render() {
@@ -236,6 +238,7 @@ export class FollowsAux extends React.Component {
 
 		return (
 			<React.Fragment>
+				<ElementUpdater delay={1000 * 60 * 10} func={() => this.componentDidMount()} />
 				<Row className="m-0">
 					{this.follows_render()}
 				</Row>
@@ -284,20 +287,37 @@ export class MangaCards extends React.Component {
 	}
 
 	render() {
-		const renderMangas = () => {
-			if (this.state.mangas != null) {
-				return this.state.mangas.data.map((i) => {
-					//TODO: Why is this a key violation?
-					return (<MangaCard manga={i} key={i.getUUID()} />)
-				})
-			}
-			return IntArray(8).map((_) => <MangaCardFake />)
+		const renderRender = () => {
+			return (
+				<React.Fragment>
+					{/* scripts/display.req.php line 123 */}
+					<ElementUpdater delay={1000 * 60 * 10} func={() => this.componentDidMount()} />
+					<Row className="m-0">
+						{this.state.mangas != null ? this.state.mangas.data.map((i) => {
+							//TODO: Why is this a key violation?
+							return (<MangaCard manga={i} key={i.getUUID()} />)
+						}) : IntArray(8).map((_) => <MangaCardFake />)}
+					</Row>
+					<DPagination 
+						pages={Math.ceil(this.state.mtotal / 30)} 
+						sizeof={30} 
+						callback={(p) => {
+							this.setState({
+								mpage: p,
+								mangas: null
+							}, () => {
+								this.componentDidMount();
+							});
+							//TODO: Better transition, facilitate with Suspense, or placeholder
+						}} 
+					/>
+				</React.Fragment>
+			)
 		}
 
 		return (
 			<Col lg={8}>
 				{/*mobile_app_ad*/}
-				<ElementUpdater delay={1000 * 60 * 10} func={() => this.componentDidMount()} />
 				<Card className="card mb-3">
 					<Card.Header className="text-center bg-custom">{display_fa_icon("external-link-alt")} <Link to="/updates">Latest updates</Link></Card.Header>
 					<Tabs
@@ -307,23 +327,7 @@ export class MangaCards extends React.Component {
 						className="mb-2 border-bottom bg-custom"
 					>
 						<Tab eventKey="latest_update" title="Latest updates">
-							{/* scripts/display.req.php line 123 */}
-							<Row className="m-0">
-								{renderMangas()}
-							</Row>
-							<DPagination 
-								pages={Math.ceil(this.state.mtotal / 30)} 
-								sizeof={30} 
-								callback={(p) => {
-									this.setState({
-										mpage: p,
-										mangas: null
-									}, () => {
-										this.componentDidMount();
-									});
-									//TODO: Better transition, facilitate with Suspense, or placeholder
-								}} 
-							/>
+							{renderRender()}
 						</Tab>
 						<Tab eventKey="follows_update" title="Follows updates">
 							<FollowsAux/>
