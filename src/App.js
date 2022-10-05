@@ -198,11 +198,7 @@ function Updates(props) {
 
 	return (
 		<Row>
-			<UserContext.Consumer>
-				{value => {
-					<LastUpdated user={value.user} key={`LastUpdated ${userUUID(props.user)}`}/>
-				}}
-			</UserContext.Consumer>
+			<LastUpdated key={`LastUpdated`}/>
 		</Row>
 	);
 }

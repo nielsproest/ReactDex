@@ -39,6 +39,7 @@ export class LastUpdated extends React.Component {
 
 	componentDidMount() {
 		const { user, setUser } = this.context;
+		console.log(user);
 
 		if (user != null) {
 			API.getFollowedManga(this.state.mlimit, this.state.moffset).then(res => {
