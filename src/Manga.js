@@ -208,7 +208,7 @@ class ChapterList extends React.Component {
 			if (chapterRead.includes(chapter.id)) {
 				return (
 					<span className="clickable" title="Mark as unread" onClick={(e) => {
-						API.unreadChapter(chapter.id);
+						API.readChapter(manga.getId(),[],[chapter.id]);
 
 						const arr = this.state.chapterRead;
 
@@ -222,7 +222,7 @@ class ChapterList extends React.Component {
 			} else {
 				return (
 					<span className="clickable" title="Mark as read" onClick={(e) => {
-						API.readChapter(chapter.id);
+						API.readChapter(manga.getId(),[chapter.id],[]);
 
 						const arr = this.state.chapterRead;
 						arr.push(chapter.id);

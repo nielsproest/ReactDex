@@ -500,15 +500,13 @@ class DexFS {
 		const req = await axios.get(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/read`);
 		return APIResponseGen(req.data);
 	}
-	async readChapter(chapterId) {
-		const req = await axios.post(`${CORS_BYPASS}https://api.mangadex.org/chapter/${chapterId}/read`);
+	async readChapter(mangaId,readChapterIds,unreadChapterIds) {
+		const req = await axios.post(`${CORS_BYPASS}https://api.mangadex.org/manga/${mangaId}/read`, { params: {
+			chapterIdsRead: readChapterIds,
+			chapterIdsUnread: unreadChapterIds
+		}});
 		return APIResponseGen(req.data);
 	}
-	async unreadChapter(chapterId) {
-		const req = await axios.delete(`${CORS_BYPASS}https://api.mangadex.org/chapter/${chapterId}/read`);
-		return APIResponseGen(req.data);
-	}
-
 
 	async cover(manga, custom={}, limit=100, offset=0) {
 		var params = {

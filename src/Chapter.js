@@ -1279,7 +1279,7 @@ export class ChapterDisplay extends React.Component {
 
 			//TODO: Sort by oneshot-volume-chapter (see reader/api.js line 241)
 			this.setState({
-				chapter: c.data[0]
+				chapter: ch
 			});
 		});
 	}
@@ -1315,7 +1315,8 @@ export class ChapterDisplay extends React.Component {
 
 				if (user != null) {
 					console.log("onread");
-					API.readChapter(chapter.getId())
+					const manga = chapter.GetRelationship("manga")[0];
+					API.readChapter(manga.getId(),[chapter.getId()],[])
 				}
 			}
 		}
